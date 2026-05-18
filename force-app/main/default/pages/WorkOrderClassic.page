@@ -1,0 +1,20 @@
+<apex:page standardController="Work_Order__c" > 
+     <apex:includeLightning />
+    <div id="lightning" />
+
+    <apex:includeScript value="/lightning/lightning.out.js" />
+    <script>
+    $Lightning.use("c:WorkOrderApp", function() {
+        $Lightning.createComponent("c:WorkOrderComponent",
+                                   {
+                                     
+                                   },
+                                   "lightning",
+                                   function(cmp) {
+                                       console.log(cmp)
+                                   });
+    });
+    
+    
+    </script>
+</apex:page>

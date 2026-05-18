@@ -1,0 +1,871 @@
+<template>
+    <div class="spinnerDiv" style="display: none;">
+        <div class="popupBackground"></div>
+        <div class="PopupPanel">
+            <table border="0" width="100%">
+                <tr>
+                    <td style="text-align: center;font-size: 13px;"><b>Please Wait</b></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;"><img src={spinner} /></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="myDIV slds-grid slds-gutters" style="color: #000;font-size: 12px;width: 100%;background: #F4F4F4">
+        <div class="mid-bg" style="background: #FFFFFF;width: 100%;float: left;">
+            
+            <div class="sub-warp" style="max-width: 1300px;margin: 0 auto;">
+                <div class="mid-user-sec" style="position: absolute;top: 138px;width: 83%;left: 124px;">
+                </div>
+                <div class="mid-white">
+                    <div class="timeline-scroll" id="divID">
+                        &nbsp;
+                        <div class="pull-right"><br>
+
+                            <lightning-button variant="brand" class="slds-m-top_small submitButton"
+                                onclick={handleCreateCon} type="submit" label="ADD CONTACT">
+                            </lightning-button>
+                        </div>
+                        <div class="timeline-scroll" style="float: left;width: 100%;">
+                            <table class="slds-table  slds-table_bordered"
+                                style="width: 100%;font-size: 18px;padding: 6px 5px 3px;margin-top: 5px;float: left;min-width: 900px;background-color: transparent;">
+
+                                <!--Header of the table-->
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th class="slds-size_1-of-6 " scope="col"
+                                            style="color: #fff;font-family: 'Open Sans', sans-serif;font-size: 13px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;background: #4bc9f4;padding: 4px 10px;text-transform: uppercase;">
+                                            <div class="slds-truncate " title="NAME"> NAME</div>
+                                        </th>
+                                        <th class="slds-size_1-of-6 " scope="col"
+                                            style="color: #fff;font-family: 'Open Sans', sans-serif;font-size: 13px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;background: #4bc9f4;padding: 4px 10px;text-transform: uppercase;">
+                                            <div class="slds-truncate " title="ACCOUNT NAME">ACCOUNT NAME</div>
+                                        </th>
+                                        <th class="slds-size_1-of-6 " scope="col"
+                                            style="color: #fff;font-family: 'Open Sans', sans-serif;font-size: 13px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;background: #4bc9f4;padding: 4px 10px;text-transform: uppercase;">
+                                            <div class="slds-truncate " title="PHONE">PHONE
+                                            </div>
+                                        </th>
+                                        <th class="slds-size_1-of-6" scope="col"
+                                            style="color: #fff;font-family: 'Open Sans', sans-serif;font-size: 13px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;background: #4bc9f4;padding: 4px 10px;text-transform: uppercase;">
+                                            <div class="slds-truncate " title="MOBILE">MOBILE
+                                            </div>
+                                        </th>
+                                        <th class="slds-size_1-of-6" scope="col"
+                                            style="color: #fff;font-family: 'Open Sans', sans-serif;font-size: 13px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;background: #4bc9f4;padding: 4px 10px;text-transform: uppercase;">
+                                            <div class="slds-truncate " title="EMAIL">EMAIL
+                                            </div>
+                                        </th>
+                                        <th class="slds-size_1-of-6" scope="col"
+                                            style="color: #fff;font-family: 'Open Sans', sans-serif;font-size: 13px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;background: #4bc9f4;padding: 4px 10px;text-transform: uppercase;">
+                                            <div class="slds-truncate " title="Action">Action
+                                            </div>
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <template for:each={items} for:item="con">
+
+                                    <tr key={con.id}>
+                                        <td
+                                            style="color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;font-weight: normal;border: 1px solid #d7d7d7;padding: 5px 10px;text-align: center;">
+                                            {con.Name}
+                                        </td>
+                                        <td
+                                            style="color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;font-weight: normal;border: 1px solid #d7d7d7;padding: 5px 10px;text-align: center;">
+                                            {con.Account.Name}
+                                        </td>
+                                        <td
+                                            style="color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;font-weight: normal;border: 1px solid #d7d7d7;padding: 5px 10px;text-align: center;">
+                                            {con.Phone}
+                                        </td>
+                                        <td
+                                            style="color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;font-weight: normal;border: 1px solid #d7d7d7;padding: 5px 10px;text-align: center;">
+                                            {con.MobilePhone}
+                                        </td>
+                                        <td
+                                            style="color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;font-weight: normal;border: 1px solid #d7d7d7;padding: 5px 10px;text-align: center;">
+                                            {con.Email}
+                                        </td>
+                                        <td
+                                            style="text-align: left;color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;padding: 5px 25px;">
+                                            <lightning-icon data-item={con.Id} key={con.Id} id={con.Id}
+                                                style="color: #4ECAF4;float: left;" icon-name="utility:preview"
+                                                alternative-text="Preview" title="Preview"
+                                                onclick={handleGetContactDetail} class="slds-icon_medium"
+                                                aria-hidden="true"></lightning-icon>
+
+                                        </td>
+                                    </tr>
+                                </template>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="SearchDiv slds-grid slds-gutters"
+        style="display:none;color: #000;font-size: 12px;width: 100%;background: #F4F4F4">
+        <div class="mid-bg" style="background: #FFFFFF;width: 100%;padding: 30px 2% 15px 2%;float: left;">
+            <div class="sub-warp" style="max-width: 1300px;margin: 0 auto;">
+                <lightning-record-edit-form record-id={selectcontactId} object-api-name='Contact'
+                    onsubmit={handleUpdate} >
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4;">
+                            <h3 style=" display:inline;font-size: 16px;" class="panel-title">CONTACT</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Account Name</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-combobox name="" value={accountIdForSelectedContact}
+                                                options={Accoutlist} onchange={handleAccountForUpdate} placeholder=""
+                                                class="accountPickList">
+                                            </lightning-combobox>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Main</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='Phone' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Contact Last Name</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='LastName' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Direct</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            
+                                            <lightning-input value={MobilePhoneForSelectedContact} maxlength="10"   pattern="^(0|[0-9][0-9]*)$"
+                                            message-when-pattern-mismatch="Enter only Numbers"  onchange={MobilePhoneForUpdate} variant="label-hidden">
+                                            </lightning-input>
+
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Contact First Name</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='FirstName' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Email</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='Email' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Title</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='Title' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">ODS DotNet Status</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='ODS_DotNet_Status__c'
+                                                variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Reports To</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-combobox name="" value={ReportsToIdForSelectedContact}
+                                                options={getContactList} onchange={handleReportIdForUpdate}
+                                                placeholder="" class="">
+                                            </lightning-combobox>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">IsPrimary</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='isPrimary__c' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Role - Level</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='Role_Level__c' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Email Opt Out</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='HasOptedOutOfEmail'
+                                                variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Force.com Status</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='Status__c' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Is Portal Access</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='Is_Portal_Access__c'
+                                                variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Mailing Address:</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Other Address:</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Mailing Street</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='MailingStreet' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Other Street</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='OtherStreet' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Mailing City</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='MailingCity' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Other City</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='OtherCity' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Mailing State/Province</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input value={MailingStateForSelectedContact} maxlength="2" onchange={handleMailingStateForUpdate} variant="label-hidden">
+                                            </lightning-input>
+                                            <p>[Please enter TWO letter State/Province code]</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Other State/Province</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                           
+                                            <lightning-input value={OtherStateForSelectedContact} maxlength="2" onchange={handleOtherStateForUpdate} variant="label-hidden">
+                                            </lightning-input>
+                                            <p>[Please enter TWO letter State/Province code]</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Mailing Zip/Postal Code</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            
+                                                <lightning-input value={MailingPostalCodeForSelectedContact} maxlength="6" pattern="[0-9]+"
+                                                message-when-pattern-mismatch="Enter only Numbers" onchange={handleMailingPostalCodeForUpdate} variant="label-hidden">
+                                                </lightning-input>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Other Zip/Postal Code</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                           
+                                            <lightning-input value={OtherPostalCodeForSelectedContact} maxlength="6" pattern="[0-9]+"
+                                            message-when-pattern-mismatch="Enter only Numbers" onchange={OtherPostalCodeForUpdate} variant="label-hidden">
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Mailing Country</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='MailingCountry' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Other Country</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='OtherCountry' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pull-right"><br>
+                        <lightning-button class="slds-m-top_small cancelButton" variant="brand" label="Back"
+                            onclick={handleReset}>
+                        </lightning-button> &nbsp; <lightning-button variant="brand"
+                            class="slds-m-top_small submitButton" type="submit" label="Update">
+                        </lightning-button> <lightning-button variant="brand"
+                            class="slds-m-top_small submitButton" label="Cancel" onclick={handleReset}>
+                        </lightning-button>
+
+                    </div>
+
+                </lightning-record-edit-form>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+    <div class="addcontact slds-grid slds-gutters"
+        style="display:none;color: #000;font-size: 12px;width: 100%;background: #F4F4F4">
+        <div class="mid-bg" style="background: #FFFFFF;width: 100%;padding: 30px 2% 15px 2%;float: left;">
+            <div class="sub-warp" style="max-width: 1300px;margin: 0 auto;">
+                <lightning-record-edit-form object-api-name='Contact' layout-type="Full" onsuccess={handleSuccess} onsubmit={handleSubmitCreateContact}
+                onerror={handleErrorForNewContact}>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4;">
+                            <h3 style=" display:inline; font-size: 16px;" class="panel-title">CONTACT</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Account Name</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-combobox class="dropDownCSS" value={selectedAccountId}
+                                                onchange={handleAccountName} options={AccountNameList}>
+                                            </lightning-combobox>
+                                            <lightning-input-field field-name='AccountId' variant="label-hidden"
+                                                value={selectedAccountId} style="display:none;">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Main</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='Phone' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label" >Contact Last Name</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='LastName' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Direct</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input value={SelectedMobilePhone} maxlength="10" pattern="[0-9]+"
+                                            message-when-pattern-mismatch="Enter only Numbers" onchange={handleMobilePhone}  variant="label-hidden">
+                                            </lightning-input>
+                                            <lightning-input-field field-name='MobilePhone' variant="label-hidden" style="display: none;" value={SelectedMobilePhone}>
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Contact First Name</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='FirstName' variant="label-hidden" required>
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Email</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='Email' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Title</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='Title' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">ODS DotNet Status</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-combobox class="dropDownCSS" value={selectedDotNetPickListValue}
+                                            onchange={handleDotNetStatus} options={DotNetPickListValue}>
+                                        </lightning-combobox>
+                                            <lightning-input-field field-name='ODS_DotNet_Status__c'
+                                                variant="label-hidden" value={selectedDotNetPickListValue} style="display: none;">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Reports To</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-combobox class="dropDownCSS" value={selectedReportId}
+                                                onchange={handleReportId} options={ReportNameList}></lightning-combobox>
+                                            <lightning-input-field field-name='ReportsToId' variant="label-hidden"
+                                                style="display: none;" value={selectedReportId}>
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">IsPrimary</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='isPrimary__c' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Role - Level</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='Role_Level__c' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Email Opt Out</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='HasOptedOutOfEmail'
+                                                variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Force.com Status</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-combobox class="dropDownCSS" value={selectedStatusPickListValue}
+                                            onchange={handleForceComStatus} options={StatusPickListValue}></lightning-combobox>
+                                            <lightning-input-field field-name='Status__c' variant="label-hidden" value={selectedStatusPickListValue} style="display: none;">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Is Portal Access</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='Is_Portal_Access__c'
+                                                variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Mailing Address:</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Other Address:</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Mailing Street</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='MailingStreet' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Other Street</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='OtherStreet' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Mailing City</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='MailingCity' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Other City</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='OtherCity' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Mailing State/Province</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input value={selectedMailingState} maxlength="2" onchange={handleMailingState} variant="label-hidden">
+                                            </lightning-input>
+                                            <lightning-input-field field-name='MailingState' variant="label-hidden" style="display: none;" value={selectedMailingState}>
+                                            </lightning-input-field>
+                                            <p>[Please enter TWO letter State/Province code]</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Other State/Province</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input value={selectedOtherState} maxlength="2" onchange={handleOtherState} variant="label-hidden">
+                                            </lightning-input>
+                                            <lightning-input-field field-name='OtherState' variant="label-hidden" style="display: none;" value={selectedOtherState}>
+                                            </lightning-input-field>
+                                            <p>[Please enter TWO letter State/Province code]</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Mailing Zip/Postal Code</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input value={selectedMailingPostalCode} maxlength="6" pattern="[0-9]+"
+                                            message-when-pattern-mismatch="Enter only Numbers" onchange={handleMailingPostalCode} variant="label-hidden" >
+                                            </lightning-input>
+                                            <lightning-input-field field-name='MailingPostalCode'
+                                                variant="label-hidden" style="display: none;" value={selectedMailingPostalCode}>
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Other Zip/Postal Code</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input value={selectedOtherPostalCode} maxlength="6" pattern="[0-9]+"
+                                            message-when-pattern-mismatch="Enter only Numbers" onchange={handleOtherPostalCode} variant="label-hidden" >
+                                            </lightning-input>
+                                            <lightning-input-field field-name='OtherPostalCode' variant="label-hidden" style="display: none;" value={selectedOtherPostalCode}>
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Mailing Country</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='MailingCountry' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                        <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                            <label class="form-label">Other Country</label>
+                                        </div>
+                                        <div class="slds-col slds-size_8-of-12">
+                                            <lightning-input-field field-name='OtherCountry' variant="label-hidden">
+                                            </lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="pull-right"><br>
+                        <lightning-button class="slds-m-top_small cancelButton" variant="brand" label="Back"
+                            onclick={handleBack}>
+                        </lightning-button> &nbsp; <lightning-button variant="brand"
+                            class="slds-m-top_small submitButton" type="submit" label="Save">
+                        </lightning-button> <lightning-button class="slds-m-top_small submitButton"
+                            variant="brand" label="Cancel" onclick={handleCancle}>
+                        </lightning-button>
+                    </div>
+
+                </lightning-record-edit-form>
+            </div>
+        </div>
+
+    </div>
+</template>

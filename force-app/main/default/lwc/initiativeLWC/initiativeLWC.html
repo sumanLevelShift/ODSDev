@@ -1,0 +1,877 @@
+<template>
+    <lightning-card class="initiative-container">
+        <!-- Header -->
+        <div class="page-header slds-p-around_medium">
+            <h1 class="slds-text-heading_large">Initiative Management</h1>
+        </div>
+
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </template>
+
+        <!-- Error Message -->
+        <template if:true={errorMessage}>
+            <div class="slds-p-around_medium">
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">error</span>
+                    <h2>Error</h2>
+                    <p>{errorMessage}</p>
+                </div>
+            </div>
+        </template>
+
+        <!-- Success Message -->
+        <template if:true={successMessage}>
+            <div class="slds-p-around_medium">
+                <div class="slds-notify slds-notify_alert slds-alert_success" role="alert">
+                    <span class="slds-assistive-text">success</span>
+                    <h2>Success</h2>
+                    <p>{successMessage}</p>
+                </div>
+            </div>
+        </template>
+
+        <!-- Inactive Approver Warning -->
+        <template if:true={inactiveApproverWarning}>
+            <div class="slds-p-around_medium">
+                <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                    <span class="slds-assistive-text">warning</span>
+                    <h2>Warning</h2>
+                    <p><strong>{inactiveApproverName}</strong> is inactive as an approver in the system. 
+                    Please select an active approver.</p>
+                </div>
+            </div>
+        </template>
+
+        <template if:false={isLoading}>
+            <!-- Initiative Section -->
+            <lightning-accordion active-section-name={activeSections} allow-multiple-sections-open>
+                
+                <!-- INITIATIVE PANEL -->
+                <lightning-accordion-section name="initiative" label="INITIATIVE">
+                    <div slot="actions">
+                        <div class="slds-text-body_regular">
+                            <strong>Account:</strong> {accountName} &nbsp;&nbsp;
+                            <strong>Service:</strong> {serviceName}
+                        </div>
+                    </div>
+                    
+                    <div class="slds-grid slds-wrap slds-gutters">
+                        <!-- Left Column -->
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                            <!-- Initiative Name -->
+                            <lightning-input 
+                                label="Initiative Name" 
+                                required
+                                value={initiative.Name}
+                                onchange={handleFieldChange}
+                                data-field="Name"
+                                disabled={isFieldDisabled}>
+                            </lightning-input>
+
+                            <!-- JIRA ID -->
+                            <lightning-input 
+                                label="JIRA ID" 
+                                required={isJiraRequired}
+                                value={initiative.JIRA_ID__c}
+                                onchange={handleFieldChange}
+                                data-field="JIRA_ID__c"
+                                disabled={isFieldDisabled}>
+                            </lightning-input>
+                            <template if:true={showSaveCreateJira}>
+                                <div class="slds-text-body_small slds-text-color_weak">
+                                    * optional for Save & Create Jira action
+                                </div>
+                            </template>
+
+                            <!-- Probable Start Date -->
+                            <lightning-input 
+                                type="date" 
+                                label="Probable Start Date" 
+                                required
+                                value={initiative.Probable_Start_Date__c}
+                                onchange={handleFieldChange}
+                                data-field="Probable_Start_Date__c"
+                                disabled={isFieldDisabled}>
+                            </lightning-input>
+
+                            <!-- Probable End Date -->
+                            <lightning-input 
+                                type="date" 
+                                label="Probable End Date" 
+                                required
+                                value={initiative.Probable_End_Date__c}
+                                onchange={handleFieldChange}
+                                data-field="Probable_End_Date__c"
+                                disabled={isFieldDisabled}>
+                            </lightning-input>
+
+                            <!-- Approver -->
+                            <lightning-combobox 
+                                label="Approver" 
+                                required
+                                value={selectedApprover}
+                                options={approverOptions}
+                                onchange={handleApproverChange}
+                                disabled={isFieldDisabled}>
+                            </lightning-combobox>
+
+                            <template if:false={isCustomer}>
+                                <!-- Initiative Category -->
+                                <template if:false={nonABCType}>
+                                    <lightning-combobox 
+                                        label="Initiative Category"
+                                        value={initiative.Initiative_Billing_Type__c}
+                                        options={initiativeBillingTypeOptions}
+                                        onchange={handleFieldChange}
+                                        data-field="Initiative_Billing_Type__c"
+                                        disabled={isFieldDisabled}>
+                                    </lightning-combobox>
+                                </template>
+
+                                <!-- Initiative Type -->
+                                <lightning-combobox 
+                                    label="Initiative Type" 
+                                    required
+                                    value={initiative.Initiative_Type__c}
+                                    options={initiativeTypeOptions}
+                                    onchange={handleFieldChange}
+                                    data-field="Initiative_Type__c"
+                                    disabled={isFieldDisabled}>
+                                </lightning-combobox>
+
+                                <!-- Reasons for Programming -->
+                                <lightning-textarea 
+                                    label="Reasons for Programming"
+                                    value={initiative.Initiative_Programming_Reason__c}
+                                    max-length="1500"
+                                    onchange={handleFieldChange}
+                                    data-field="Initiative_Programming_Reason__c"
+                                    disabled={isFieldDisabled}>
+                                </lightning-textarea>
+
+                                <!-- Trigger For Initiative -->
+                                <lightning-combobox 
+                                    label="Trigger For Initiative" 
+                                    required
+                                    value={initiative.Trigger_For_Initiative__c}
+                                    options={triggerForInitiativeOptions}
+                                    onchange={handleFieldChange}
+                                    data-field="Trigger_For_Initiative__c"
+                                    disabled={isFieldDisabled}>
+                                </lightning-combobox>
+
+                                <!-- Solution Architect/Engineer -->
+                                <lightning-combobox 
+                                    label="Solution Architect/Engineer"
+                                    value={initiative.Solution_Architect_Engineer__c}
+                                    options={architectEngineerOptions}
+                                    onchange={handleFieldChange}
+                                    data-field="Solution_Architect_Engineer__c"
+                                    disabled={isFieldDisabled}>
+                                </lightning-combobox>
+
+                                <!-- Technical Project Manager -->
+                                <lightning-combobox 
+                                    label="Technical Project Manager"
+                                    value={initiative.Technical_Project_Manager__c}
+                                    options={technicalPMOptions}
+                                    onchange={handleFieldChange}
+                                    data-field="Technical_Project_Manager__c"
+                                    disabled={isFieldDisabled}>
+                                </lightning-combobox>
+
+                                <!-- Tags About Initiative -->
+                                <lightning-dual-listbox 
+                                    label="Tags About Initiative" 
+                                    required
+                                    source-label="Available Tags"
+                                    selected-label="Selected Tags"
+                                    value={selectedTags}
+                                    options={initiativeTagOptions}
+                                    onchange={handleTagsChange}
+                                    disabled={isFieldDisabled}>
+                                </lightning-dual-listbox>
+
+                                <!-- Probability Percentage -->
+                                <lightning-input 
+                                    type="number" 
+                                    label="Probability Percentage"
+                                    value={initiative.Probability_Percentage__c}
+                                    min="0"
+                                    max="100"
+                                    step="0.01"
+                                    formatter="decimal"
+                                    onchange={handleFieldChange}
+                                    data-field="Probability_Percentage__c"
+                                    disabled={isProbabilityDisabled}>
+                                </lightning-input>
+
+                                <!-- UAT Expected Date -->
+                                <lightning-input 
+                                    type="date" 
+                                    label="UAT Expected Date"
+                                    value={initiative.UAT_Expected_Date__c}
+                                    onchange={handleFieldChange}
+                                    data-field="UAT_Expected_Date__c"
+                                    disabled={isFieldDisabled}>
+                                </lightning-input>
+
+                                <!-- Delivery Estimate -->
+                                <lightning-input 
+                                    type="number" 
+                                    label="Delivery Estimate"
+                                    value={initiative.Offshore_Estimate__c}
+                                    formatter="decimal"
+                                    step="0.01"
+                                    onchange={handleFieldChange}
+                                    data-field="Offshore_Estimate__c"
+                                    disabled={isOffshoreDisabled}>
+                                </lightning-input>
+
+                                <!-- Is a bucket of hours type -->
+                                <lightning-input 
+                                    type="checkbox" 
+                                    label="Is a bucket of hours type?"
+                                    checked={initiative.Is_a_bucket_of_hours_type__c}
+                                    onchange={handleFieldChange}
+                                    data-field="Is_a_bucket_of_hours_type__c"
+                                    disabled={isBucketDisabled}>
+                                </lightning-input>
+                            </template>
+
+                            <!-- Status Display -->
+                            <div class="slds-form-element slds-m-top_medium">
+                                <label class="slds-form-element__label">Status:</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-badge label={statusLabel} class={statusBadgeClass}></lightning-badge>
+                                </div>
+                            </div>
+
+                            <!-- Active Initiative Actions -->
+                            <template if:true={showActiveInitiativeActions}>
+                                <div class="slds-m-top_medium">
+                                    <lightning-button 
+                                        label="Mark As On Hold" 
+                                        variant="neutral"
+                                        onclick={handleMarkOnHold}
+                                        class="slds-m-right_small">
+                                    </lightning-button>
+                                    <lightning-button 
+                                        label="Mark As Delivered" 
+                                        variant="success"
+                                        onclick={handleMarkDelivered}>
+                                    </lightning-button>
+                                </div>
+                            </template>
+
+                            <!-- On Hold Actions -->
+                            <template if:true={showOnHoldActions}>
+                                <div class="slds-m-top_medium">
+                                    <lightning-button 
+                                        label="Make Active" 
+                                        variant="brand"
+                                        onclick={handleMakeActive}>
+                                    </lightning-button>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                            <!-- Brief Description -->
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label">Brief Description:</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input-rich-text 
+                                        value={initiative.Brief_Description__c}
+                                        onchange={handleRichTextChange}
+                                        data-field="Brief_Description__c"
+                                        disabled={isDescriptionDisabled}
+                                        formats="font,size,bold,italic,underline,list,align">
+                                    </lightning-input-rich-text>
+                                </div>
+                            </div>
+
+                            <!-- Products -->
+                            <template if:false={isCustomer}>
+                                <div class="slds-m-top_medium">
+                                    <lightning-textarea 
+                                        label="Products"
+                                        value={initiative.Product__c}
+                                        readonly
+                                        rows="5">
+                                    </lightning-textarea>
+                                    <lightning-button 
+                                        label="Select Products" 
+                                        variant="base"
+                                        onclick={handleSelectProducts}
+                                        disabled={isFieldDisabled}
+                                        class="slds-m-top_x-small">
+                                    </lightning-button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </lightning-accordion-section>
+
+                <!-- BUSINESS IMPACT PANEL -->
+                <lightning-accordion-section name="businessImpact" label="BUSINESS IMPACT">
+                    <div class="slds-grid slds-wrap slds-gutters">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                            <!-- Business Challenge -->
+                            <lightning-textarea 
+                                label="Business Challenge"
+                                value={initiative.Business_Challenge__c}
+                                max-length="500"
+                                rows="5"
+                                onchange={handleFieldChange}
+                                data-field="Business_Challenge__c"
+                                disabled={isBusinessImpactDisabled}
+                                field-level-help="Describe the business challenge this initiative addresses">
+                            </lightning-textarea>
+
+                            <!-- Persona's Involved -->
+                            <lightning-textarea 
+                                label="Persona's Involved"
+                                value={initiative.Persona_s_Involved__c}
+                                max-length="500"
+                                rows="5"
+                                onchange={handleFieldChange}
+                                data-field="Persona_s_Involved__c"
+                                disabled={isBusinessImpactDisabled}
+                                field-level-help="Identify the personas involved in this initiative">
+                            </lightning-textarea>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                            <!-- Technology Details -->
+                            <lightning-textarea 
+                                label="Technology Details"
+                                value={initiative.Technology_Details__c}
+                                max-length="500"
+                                rows="5"
+                                onchange={handleFieldChange}
+                                data-field="Technology_Details__c"
+                                disabled={isBusinessImpactDisabled}
+                                field-level-help="Provide technology details for this initiative">
+                            </lightning-textarea>
+
+                            <!-- Outcome Of Our Solution -->
+                            <lightning-textarea 
+                                label="Outcome Of Our Solution"
+                                value={initiative.Outcome_of_our_solution__c}
+                                max-length="500"
+                                rows="5"
+                                onchange={handleFieldChange}
+                                data-field="Outcome_of_our_solution__c"
+                                disabled={isBusinessImpactDisabled}
+                                field-level-help="Describe the expected outcome of the solution">
+                            </lightning-textarea>
+                        </div>
+                    </div>
+                </lightning-accordion-section>
+
+                <!-- ESTIMATE PANEL -->
+                <lightning-accordion-section name="estimate" label="ESTIMATE">
+                    <!-- Estimation Summary Link -->
+                    <template if:true={hasEstimationSummary}>
+                        <div class="slds-text-align_right slds-m-bottom_small">
+                            <a href={estimationSummaryUrl} target="_blank">View Estimation Sheet</a>
+                        </div>
+                    </template>
+
+                    <!-- Estimate Table -->
+                    <div class="estimate-table-container">
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>
+                                <tr class="slds-text-title_caps">
+                                    <th scope="col" style="width: 150px;">
+                                        <div class="slds-truncate">Phase</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate">Task/Components *</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate">Assumptions</div>
+                                    </th>
+                                    <th scope="col" style="width: 100px;">
+                                        <div class="slds-truncate">Hours *</div>
+                                    </th>
+                                    <th scope="col" style="width: 80px;">
+                                        <div class="slds-truncate">Action</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={estimates} for:item="estimate" for:index="index">
+                                    <tr key={estimate.id}>
+                                        <td>
+                                            <lightning-combobox 
+                                                value={estimate.Phase__c}
+                                                options={phaseOptions}
+                                                variant="label-hidden"
+                                                data-index={index}
+                                                onchange={handleEstimateChange}
+                                                data-field="Phase__c"
+                                                disabled={isEstimateDisabled}>
+                                            </lightning-combobox>
+                                        </td>
+                                        <td>
+                                            <lightning-textarea 
+                                                value={estimate.Task_Components__c}
+                                                max-length="1500"
+                                                variant="label-hidden"
+                                                data-index={index}
+                                                onchange={handleEstimateChange}
+                                                data-field="Task_Components__c"
+                                                disabled={isEstimateDisabled}>
+                                            </lightning-textarea>
+                                        </td>
+                                        <td>
+                                            <lightning-textarea 
+                                                value={estimate.Assumptions__c}
+                                                max-length="1500"
+                                                variant="label-hidden"
+                                                data-index={index}
+                                                onchange={handleEstimateChange}
+                                                data-field="Assumptions__c"
+                                                disabled={isEstimateDisabled}>
+                                            </lightning-textarea>
+                                        </td>
+                                        <td>
+                                            <lightning-input 
+                                                type="number" 
+                                                value={estimate.Hours__c}
+                                                max-length="4"
+                                                formatter="decimal"
+                                                variant="label-hidden"
+                                                data-index={index}
+                                                onchange={handleEstimateChange}
+                                                data-field="Hours__c"
+                                                disabled={isEstimateDisabled}>
+                                            </lightning-input>
+                                        </td>
+                                        <td>
+                                            <template if:false={isEstimateDisabled}>
+                                                <lightning-button-icon 
+                                                    icon-name="utility:delete"
+                                                    alternative-text="Delete"
+                                                    variant="bare"
+                                                    data-index={index}
+                                                    onclick={handleDeleteEstimate}>
+                                                </lightning-button-icon>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3">
+                                        <template if:false={isEstimateDisabled}>
+                                            <lightning-button 
+                                                label="Add Row" 
+                                                icon-name="utility:add"
+                                                variant="base"
+                                                onclick={handleAddEstimate}>
+                                            </lightning-button>
+                                        </template>
+                                        <span class="slds-float_right slds-text-heading_small">TOTAL</span>
+                                    </td>
+                                    <td>
+                                        <strong>{totalEstimateHours}</strong>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </lightning-accordion-section>
+
+                <!-- PROGRESS PANEL (Only for Active/Delivered initiatives) -->
+                <template if:true={showProgressPanel}>
+                    <lightning-accordion-section name="progress" label="PROGRESS">
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <h3 class="slds-text-heading_small slds-text-align_center">CONSUMED HOURS</h3>
+                                <div class="gauge-container">
+                                    <c-gauge-chart 
+                                        percentage={utilizationPercent}
+                                        value={consumedHours}
+                                        label="Hours">
+                                    </c-gauge-chart>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <h3 class="slds-text-heading_small slds-text-align_center">REMAINING HOURS</h3>
+                                <div class="gauge-container">
+                                    <c-gauge-chart 
+                                        percentage={remainingPercent}
+                                        value={remainingHours}
+                                        label="Hours">
+                                    </c-gauge-chart>
+                                </div>
+                            </div>
+                        </div>
+                    </lightning-accordion-section>
+
+                    <!-- BURNDOWN CHART -->
+                    <lightning-accordion-section name="burndown" label="BURNDOWN CHART">
+                        <c-burndown-chart chart-data={burndownData}></c-burndown-chart>
+                        <div class="slds-text-body_small slds-text-color_weak slds-m-top_medium">
+                            * burndown chart includes only submitted & approved hours and does not include 
+                            the hours pending for submission.
+                        </div>
+                    </lightning-accordion-section>
+                </template>
+
+                <!-- DOCUMENTS PANEL -->
+                <template if:false={isCustomer}>
+                    <template if:true={showDocumentSection}>
+                        <lightning-accordion-section name="documents" label="DOCUMENTS">
+                            <!-- Upload Attachment (only for certain statuses) -->
+                            <template if:true={showAttachmentUpload}>
+                                <div class="slds-m-bottom_medium">
+                                    <lightning-file-upload 
+                                        label="Upload Attachment"
+                                        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip"
+                                        record-id={initiativeId}
+                                        onuploadfinished={handleUploadFinished}
+                                        multiple>
+                                    </lightning-file-upload>
+                                </div>
+                            </template>
+
+                            <!-- Attachments List -->
+                            <template if:true={hasAttachments}>
+                                <lightning-datatable 
+                                    key-field="Id"
+                                    data={attachments}
+                                    columns={attachmentColumns}
+                                    hide-checkbox-column
+                                    onrowaction={handleAttachmentAction}>
+                                </lightning-datatable>
+                            </template>
+                            <template if:false={hasAttachments}>
+                                <div class="slds-text-align_center slds-p-around_medium">
+                                    <p>No documents available</p>
+                                </div>
+                            </template>
+                        </lightning-accordion-section>
+                    </template>
+                </template>
+
+                <!-- ESCALATION DETAILS PANEL -->
+                <template if:true={showEscalationPanel}>
+                    <lightning-accordion-section name="escalation" label="ESCALATION DETAILS">
+                        <template if:true={hasEscalations}>
+                            <lightning-datatable 
+                                key-field="Id"
+                                data={escalations}
+                                columns={escalationColumns}
+                                hide-checkbox-column>
+                            </lightning-datatable>
+                        </template>
+                        <template if:false={hasEscalations}>
+                            <div class="slds-text-align_center slds-p-around_medium">
+                                <p><strong>None</strong></p>
+                            </div>
+                        </template>
+                    </lightning-accordion-section>
+                </template>
+            </lightning-accordion>
+
+            <!-- Action Buttons -->
+            <div class="slds-p-around_medium slds-text-align_right action-buttons">
+                <!-- Back Button -->
+                <lightning-button 
+                    label="Back" 
+                    variant="neutral"
+                    onclick={handleBack}
+                    class="slds-m-right_small">
+                </lightning-button>
+
+                <!-- Save Button -->
+                <template if:true={showSaveButton}>
+                    <lightning-button 
+                        label="Save" 
+                        variant="neutral"
+                        onclick={handleSave}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                </template>
+
+                <!-- Save Post Submit Button -->
+                <template if:true={showSavePostSubmitButton}>
+                    <lightning-button 
+                        label="Save" 
+                        variant="neutral"
+                        onclick={handleSavePostSubmit}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                </template>
+
+                <!-- Submit Button -->
+                <template if:true={showSubmitButton}>
+                    <lightning-button 
+                        label="Submit" 
+                        variant="brand"
+                        onclick={handleSubmit}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                </template>
+
+                <!-- Save & Create Jira Button -->
+                <template if:true={showSaveCreateJiraButton}>
+                    <lightning-button 
+                        label="Save & Create Jira" 
+                        variant="brand"
+                        onclick={handleSaveCreateJira}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                </template>
+
+                <!-- Re-Send Button -->
+                <template if:true={showResendButton}>
+                    <lightning-button 
+                        label="Re-Send" 
+                        variant="neutral"
+                        onclick={handleResend}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                </template>
+
+                <!-- Re-Call Button -->
+                <template if:true={showRecallButton}>
+                    <lightning-button 
+                        label="Re-Call" 
+                        variant="destructive-text"
+                        onclick={handleRecall}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                </template>
+
+                <!-- Approve Initiative Button -->
+                <template if:true={showApproveButton}>
+                    <lightning-button 
+                        label="Approve Initiative" 
+                        variant="success"
+                        onclick={handleApproveClick}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                </template>
+
+                <!-- Re-evaluate Estimates Button -->
+                <template if:true={showRejectButton}>
+                    <lightning-button 
+                        label="Re-evaluate Estimates" 
+                        variant="destructive"
+                        onclick={handleRejectClick}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                </template>
+
+                <!-- Escalate Button -->
+                <template if:true={showEscalateButton}>
+                    <lightning-button 
+                        label="Escalate" 
+                        variant="neutral"
+                        onclick={handleEscalateClick}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                </template>
+
+                <!-- Cancel Initiative Button -->
+                <template if:true={showCancelButton}>
+                    <lightning-button 
+                        label="Cancel Initiative" 
+                        variant="destructive"
+                        onclick={handleCancelInitiative}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                </template>
+
+                <!-- Clone Button -->
+                <template if:true={showCloneButton}>
+                    <lightning-button 
+                        label="Clone" 
+                        variant="neutral"
+                        onclick={handleClone}
+                        class="slds-m-right_small">
+                    </lightning-button>
+                </template>
+
+                <!-- Export to Excel Button -->
+                <template if:true={showExportButton}>
+                    <lightning-button 
+                        label="Export to Excel" 
+                        variant="neutral"
+                        onclick={handleExport}>
+                    </lightning-button>
+                </template>
+            </div>
+        </template>
+
+        <!-- Approve/Reject Modal -->
+        <template if:true={showApproveRejectModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 class="slds-text-heading_medium">{modalTitle}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning-textarea 
+                            label="Comments"
+                            value={modalComments}
+                            onchange={handleModalCommentsChange}
+                            required={isRejectAction}>
+                        </lightning-textarea>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button 
+                            label="Close" 
+                            variant="neutral"
+                            onclick={handleModalClose}>
+                        </lightning-button>
+                        <lightning-button 
+                            label={modalActionLabel} 
+                            variant={modalActionVariant}
+                            onclick={handleModalAction}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Escalation Modal -->
+        <template if:true={showEscalationModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 class="slds-text-heading_medium">Escalation Details</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning-textarea 
+                            label="Escalation Comments"
+                            value={escalationComments}
+                            onchange={handleEscalationCommentsChange}
+                            required>
+                        </lightning-textarea>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button 
+                            label="Close" 
+                            variant="neutral"
+                            onclick={handleEscalationModalClose}>
+                        </lightning-button>
+                        <lightning-button 
+                            label="Escalate" 
+                            variant="brand"
+                            onclick={handleEscalationSubmit}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Product Selection Modal -->
+        <template if:true={showProductModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close" onclick={handleProductModalClose}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium">What products will this initiative use?</h2>
+                        <div class="slds-text-align_center slds-m-top_medium">
+                            <template if:true={allProductsExpanded}>
+                                <a href="#" onclick={handleExpandAllProducts} class="slds-text-link">Collapse All</a>
+                            </template>
+                            <template if:false={allProductsExpanded}>
+                                <a href="#" onclick={handleExpandAllProducts} class="slds-text-link">Expand All</a>
+                            </template>
+                        </div>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <div class="slds-grid slds-gutters">
+                            <!-- Column 1 -->
+                            <div class="slds-col slds-size_1-of-3">
+                                <template for:each={productMap1} for:item="group">
+                                    <lightning-accordion-section key={group.key} name={group.key} label={group.key}>
+                                        <template for:each={group.value} for:item="product">
+                                            <div key={product.pname} class="slds-p-around_x-small">
+                                                <lightning-input 
+                                                    type="checkbox" 
+                                                    label={product.pname}
+                                                    checked={product.ischecked}
+                                                    data-product={product.pname}
+                                                    onchange={handleProductCheckboxChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </template>
+                                    </lightning-accordion-section>
+                                </template>
+                            </div>
+                            
+                            <!-- Column 2 -->
+                            <div class="slds-col slds-size_1-of-3">
+                                <template for:each={productMap2} for:item="group">
+                                    <lightning-accordion-section key={group.key} name={group.key} label={group.key}>
+                                        <template for:each={group.value} for:item="product">
+                                            <div key={product.pname} class="slds-p-around_x-small">
+                                                <lightning-input 
+                                                    type="checkbox" 
+                                                    label={product.pname}
+                                                    checked={product.ischecked}
+                                                    data-product={product.pname}
+                                                    onchange={handleProductCheckboxChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </template>
+                                    </lightning-accordion-section>
+                                </template>
+                            </div>
+                            
+                            <!-- Column 3 -->
+                            <div class="slds-col slds-size_1-of-3">
+                                <template for:each={productMap3} for:item="group">
+                                    <lightning-accordion-section key={group.key} name={group.key} label={group.key}>
+                                        <template for:each={group.value} for:item="product">
+                                            <div key={product.pname} class="slds-p-around_x-small">
+                                                <lightning-input 
+                                                    type="checkbox" 
+                                                    label={product.pname}
+                                                    checked={product.ischecked}
+                                                    data-product={product.pname}
+                                                    onchange={handleProductCheckboxChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </template>
+                                    </lightning-accordion-section>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button 
+                            label="Close" 
+                            variant="neutral"
+                            onclick={handleProductModalClose}>
+                        </lightning-button>
+                        <lightning-button 
+                            label="SELECT" 
+                            variant="brand"
+                            onclick={handleProductSelect}>
+                        </lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </lightning-card>
+</template>

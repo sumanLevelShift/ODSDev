@@ -1,0 +1,582 @@
+<apex:page controller="ODS_AddStatusReportControllerMobile" showHeader="false" sidebar="false" standardStyleSheets="false" id="PageId" docType="html-5.0">
+    
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+
+        <title>ON DEMAND SERVICES </title>
+      <!--  <apex:includeScript value="https://code.jquery.com/jquery-latest.min.js"/>
+        
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/bootstrap.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/bootstrap.js')}"/>
+        <apex:stylesheet value="https://fonts.googleapis.com/css?family=Open+Sans:400,700"/>
+        <apex:includeScript value="https://www.google.com/recaptcha/api.js"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/style.css')}"/>
+        <link href="{!URLFOR($Resource.ODS_Assets,'css/style_dev.css')}" rel="stylesheet" type="text/css"  />
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/jquery-ui.css')}"/> -->
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'ckeditor/ckeditor.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'ckeditor/adapters/jquery.js')}" /> 
+        
+        <!-- <apex:includeScript value="{!URLFOR($Resource.ods_mobile_assets,'ckeditor/ckeditor.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ods_mobile_assets,'js/jquery-3.4.1.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ods_mobile_assets,'ckeditor/adapters/jquery.js')}" /> -->
+
+    <script>
+    $(document).ready(function(){
+        $(".ddlstAccount").hide();
+        $(".ddlstService").hide();
+        $(".ApplyBtn").hide();
+        $("#statusreport").addClass("active");
+    
+        var IsCustomer = {!isCustomer};
+  
+  if(IsCustomer){
+  $("#mnuMyAccount").css("display","block");
+  
+  }else{
+ 
+   $("#mnuCustomer").css("display","block");
+  }
+        $("button.collapsed").click(function(){
+            $(".header").toggleClass("header-fixed");
+            $(".navbar-toggle").toggleClass("nav-btn-fixed");
+            $(".mid-bg").toggleClass("mid-bg-fixed");
+        });
+        
+    });
+    
+    </script>
+    <script type="text/javascript">
+        window.onload = function()
+        {
+            CKEDITOR.replace( 'PageId:formId:editor1', { language: 'EN', toolbar: 'PageId:formId:editor1',scayt_autoStartup: true,disableNativeSpellChecker: true,});
+            CKEDITOR.replace( 'PageId:formId:editor2', { language: 'EN', toolbar: 'PageId:formId:editor2',scayt_autoStartup: true,disableNativeSpellChecker: true,});
+            CKEDITOR.replace( 'PageId:formId:editor3', { language: 'EN', toolbar: 'PageId:formId:editor3',scayt_autoStartup: true,disableNativeSpellChecker: true,});
+            
+            var SRStatus = '{!SRStatus}';
+            if(SRStatus === 'Submitted')
+            {
+                CKEDITOR.on("instanceReady", function (ev) 
+                {
+                var bodyelement = ev.editor.document.$.body;
+                bodyelement.setAttribute("contenteditable", false);
+                });
+            }
+            else
+            {
+                CKEDITOR.on("instanceReady", function (ev) 
+                {
+                var bodyelement = ev.editor.document.$.body;
+                bodyelement.setAttribute("contenteditable", true);
+                });
+            }
+        }
+        
+        function readonlyCkedtor()
+        {
+            var SRStatus = '{!SRStatus}';
+            alert(SRStatus)
+            if(SRStatus === 'Submitted')
+            {
+                CKEDITOR.on("instanceReady", function (ev) 
+                {
+                var bodyelement = ev.editor.document.$.body;
+                bodyelement.setAttribute("contenteditable", false);
+                });
+            }
+            else
+            {
+                CKEDITOR.on("instanceReady", function (ev) 
+                {
+                var bodyelement = ev.editor.document.$.body;
+                bodyelement.setAttribute("contenteditable", true);
+                });
+            }
+        }
+        
+       function copyPrevSR()
+          {   
+              
+              var workPrfmToday = $('.SReditor1').val();
+              var workPrfmNextDy = $('.SReditor2').val();
+              var IssuesCrn = $('.SReditor3').val();
+              
+              if($.trim(workPrfmToday).length === 0)
+              {
+                  getStatusReport(); 
+                  
+              }
+              else
+              {
+                  var strConfirm = confirm("Are you sure to copy previous status report");
+                  if(strConfirm == true)
+                  {
+                     getStatusReport();
+                     
+                  }
+              }
+               
+         }
+        
+         function loadcontentSr(){
+            var StatusReportFrequency = '{!StatusReportFrequency}';    
+             if(StatusReportFrequency =='Weekly'){ 
+                 $("#weeklyid").show();
+                 $("#headerweekid").show(); 
+                  $("#headernextweekid").show();
+                 $("#dailyid").hide();
+                 $("#headerdayid").hide();
+                  $("#headernextdayid").hide();
+                 
+             }
+             else
+             {
+                 $("#dailyid").show();
+                 $("#headerdayid").show();
+                 $("#headernextdayid").show();
+                 $("#weeklyid").hide(); 
+                 $("#headerweekid").hide(); 
+                 $("#headernextweekid").hide();
+             }            
+         }
+        
+        function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if (!(charCode > 31 && (charCode < 48 || charCode > 57) && charCode ==91 )) {
+                    return false;
+                }
+                return true;
+            }
+        
+            
+        function AssignDate()
+         {
+            var StatusReportFrequency = '{!StatusReportFrequency}'; 
+            var selectedDate;
+            if(StatusReportFrequency =='Weekly'){
+                var arr = $('.week-picker').val();
+                selectedDate = arr.split("-")[0];
+            }
+            else{
+                selectedDate = $('.tfrom_date').val();
+            }
+            CustomSRDate(selectedDate);
+        }
+        function RefreshCKTEditor()
+        {
+            CKEDITOR.replace( 'PageId:formId:editor1', { language: 'EN', toolbar: 'PageId:formId:editor1',scayt_autoStartup: true,disableNativeSpellChecker: true,});
+            CKEDITOR.replace( 'PageId:formId:editor2', { language: 'EN', toolbar: 'PageId:formId:editor2',scayt_autoStartup: true,disableNativeSpellChecker: true,});
+            CKEDITOR.replace( 'PageId:formId:editor3', { language: 'EN', toolbar: 'PageId:formId:editor3',scayt_autoStartup: true,disableNativeSpellChecker: true,});
+            
+            var SRStatus = $('.lblStatus').html();
+            if(SRStatus === 'Submitted')
+            {
+                CKEDITOR.on("instanceReady", function (ev) 
+                {
+                var bodyelement = ev.editor.document.$.body;
+                bodyelement.setAttribute("contenteditable", false);
+                });
+            }
+            else
+            {
+                CKEDITOR.on("instanceReady", function (ev) 
+                {
+                var bodyelement = ev.editor.document.$.body;
+                bodyelement.setAttribute("contenteditable", true);
+                });
+            }
+            
+         }
+        
+        
+        </script>
+        
+  
+
+    <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'font-awesome/css/font-awesome.css')}"/>
+        
+    </head>
+
+    <body>
+        
+        <!-- Mobile CSS -->
+        <style>
+            .mid-bg{
+            display:none;
+            }
+        </style>        
+        <!-- Mobile CSS -->
+        
+        
+        <apex:form id="formId">
+            <!-- <apex:pageMessages id="pgMsg"/> -->
+            <apex:actionFunction id="fetchSR" name="getStatusReport" action="{!fetchStatusReportByDate}"  status="statusSaveTrip" rerender="outptPanl" oncomplete="RefreshCKTEditor();loadcontentSr();"/>
+            
+            <apex:actionFunction id="CustomSRDate" name="CustomSRDate" action="{!fetchCustomDateSR}"  status="statusSaveTrip" rerender="inputDate,outptPanl,CpyoutptPnl,sveSubPnl,SRStatus" onComplete="RefreshCKTEditor();loadcontentSr();" >
+                <apex:param id="CstmSR" assignTo="{!SRDate}" name="CustomDateSR" value="" /> 
+            </apex:actionFunction>
+            
+            <div class="shadow-show"></div>
+            <c:ODS_HeaderComponent_Mobile />
+        
+            <!--Mobile Code-->
+            <!-- Page Header -->
+            <div class="page-header no-filterhead">
+                <div class="d-flex align-items-center justify-content-between">                    
+                    <a href="ODS_StatusReport_Mobile" >
+                        <img src="{!URLFOR($Resource.ods_mobile_assets,'images/backarrow.svg')}" alt="back"  />
+                    </a>
+                    <p>
+                        Add Status Report
+                    </p>
+                    <a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#prelude_mnu" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <img src="{!URLFOR($Resource.ods_mobile_assets,'images/navdots.svg')}" alt="navdots"  />
+                    </a>
+                    <!-- <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#prelude_mnu"><i class="fa fa-ellipsis-v"></i></button> -->                                                             
+                </div>                
+            </div>
+            <!-- Page Header -->
+            <!-- App Page -->            
+            <div class="page-info">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-6 col-sm-6 col-md-6 text-left">
+                            <label class="info-label">Customer</label>
+                            <p class="info-value">
+                                {!AccountName}
+                            </p>
+                        </div>
+                        <div class="col-6 col-sm-6 col-md-6 text-right">
+                            <label class="info-label">Account</label>
+                            <p class="info-value">
+                                {!ServiceName}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pglist-wrapper">
+                <div class="container-fluid">
+                    <div class="page-option">
+                        <div class="row">
+                            <div class="col-6 col-sm-6 col-md-6 text-left">
+                                <label class="info-label">Status</label>
+                                <p class="info-value">
+                                    <apex:outputText id="SRStatus" styleClass="lblStatus" label="Status" value="{!SRStatus}" />
+                                </p>
+                                <div id = "dayid">
+                                    
+                                                             <strong>Selected Date: </strong> 
+                                <apex:outputText id="inputDate" styleclass="lblDate" label="date_pick" value="{0,date,MM'/'dd'/'yyyy}" >
+                                    <apex:param value="{!SRDate}"/>                                                                 
+                                </apex:outputText>
+                                      </div>
+                                <div id = "weekid">
+                                    
+                                                             <strong>Selected week: </strong> 
+                                <apex:outputText id="inputDat" styleclass="lblDate" label="date_pick" value="{0,date,MM'/'dd'/'yyyy}" >
+                                    <apex:param value="{!SRDate}"/>                                                                 
+                                </apex:outputText>
+                                      </div>
+                            </div>
+                            <div class="col-6 col-sm-6 col-md-6">
+                                <div class="calendar-input" id= "dailyid">
+                                   <!--  <i class="fa fa-calendar icon"></i> 
+<input class="CC input-field" type="text" value="{!SRDate}" name="txt_from" id="date_service" onkeypress="return isNumber(event)" onchange="AssignDate()" onautocomplete = "off"
+placeholder="Select Date" oncomplete="RefreshCKTEditor()" /> -->
+                                   <i class="fa fa-calendar icon"></i>
+                                    <input type="text"  name="txt_from" styleClass = "testDate" class="CC input-field tfrom_date"  
+                                           id="date_service" onkeypress="return isNumber(event)" onchange="AssignDate();RefreshCKTEditor();" onautocomplete = "off" placeholder="Select Date"/>
+                                           
+                                </div>
+                                <div class="calendar-input" id ="weeklyid">
+                                  
+                                   <i class="fa fa-calendar icon"></i>
+                                    <input type="text"  name="txt_from" styleClass = "testDate" class="CC input-field week-picker"  
+                                           id="week_service"  onkeypress="return isNumber(event)" onchange="AssignDate();RefreshCKTEditor();" onautocomplete = "off" placeholder="Select Week"/>
+                                           
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-12">
+                                <apex:outputPanel id="CpyoutptPnl" >
+                                    <apex:outputPanel rendered="{!blShowCopyButton}">
+                                        <input type="button" id="btnSave" class="btncopy" value="Copy previous status " title="Copy Previous Status Report" Onclick="copyPrevSR()" /> 
+                                    </apex:outputPanel>
+                                </apex:outputPanel> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="status-content">
+                        <apex:outputPanel id="outptPanl">  
+                            <apex:pageMessages id="pgMsg2" />
+                            <div id="statusitem" class="accordion">
+                                <div class="card mb-0">
+                                    <div class="card-header collapsed" id = "headerdayid" data-toggle="collapse" href="#collapseOne">
+                                        <a class="card-title" >Work performed today
+                                        </a>
+                                    </div>
+                                     <div class="card-header collapsed" id = "headerweekid" data-toggle="collapse" href="#collapseOne">
+                                        <a class="card-title" >Work performed for the week
+                                        </a>
+                                    </div>
+                                    <div id="collapseOne" class="card-body collapse show" data-parent="#statusitem" >
+                                        <apex:inputTextArea id="editor1"  styleclass="SReditor1" value="{!WorkDayParam}" label="WORK PERFORMED FOR THE DAY" />                    
+                                    </div>
+                                    <div class="card-header collapsed"  id = "headernextdayid"  data-toggle="collapse" data-parent="#statusitem" href="#collapseTwo">
+                                        <a class="card-title" >Work to be performed next working day
+                                        </a>
+                                    </div>
+                                     <div class="card-header collapsed"  id = "headernextweekid" data-toggle="collapse" data-parent="#statusitem" href="#collapseTwo">
+                                        <a class="card-title" >Work to be Performed Next Week
+                                        </a>
+                                    </div>
+                                    <div id="collapseTwo" class="card-body collapse" data-parent="#statusitem" >
+                                        <apex:inputTextArea id="editor2" styleclass="SReditor2" value="{!WorkNextDayParam}" label="editor2" />               
+                                    </div>
+                                    <div class="card-header collapsed" data-toggle="collapse" data-parent="#statusitem" href="#collapseThree">
+                                        <a class="card-title">Issues/questions/concerns/road blocks
+                                        </a>
+                                    </div>
+                                    <div id="collapseThree" class="card-body collapse" data-parent="#statusitem" >
+                                        <apex:inputTextArea id="editor3" styleclass="SReditor3" value="{!IssuesConcernsParam}" label="editor3" />
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        <div class="page-footer" >  
+                            <apex:outputPanel id="sveSubPnl" >                 
+                                <apex:commandButton value="Save" action="{!saveStatusReport}" styleclass="btnsave" rendered="{!blShowSaveBtn}"/>
+                                <apex:commandButton value="Submit" action="{!submitStatusReport}" styleclass="btnsave" rendered="{!blShowSubmitBtn && !deliveryTeam}"/>
+                            </apex:outputPanel>
+                            <apex:commandButton value="Cancel" action="{!cancelStatusReport}" styleclass="btncancel" immediate="true"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+               
+            
+            <!-- App Page -->  
+            
+            
+<div class="mid-bg" >
+    <div class="sub-warp">
+        <h1 class="ts-title">Status Report</h1>
+        <div class="mid-white">
+               <div class="mid-user-sec cstm-asp">
+              <!-- <apex:pageMessages /> -->
+                    <apex:outputPanel id="CustomerPanel">
+                   <!-- <div class="mid-usertxt"><strong>Customer:</strong> {!AccountName}<a href="#">{!ServiceName}</a></div> -->
+                   <div class="mid-usertxt" style="line-height: 24px;"><strong>Customer:</strong> {!AccountName} <br/> <strong>Service:</strong>  {!ServiceName} <br/> <Strong align="right">Status: </Strong>
+                  <!--  <apex:outputText id="SRStatus" styleClass="lblStatus" label="Status" value="{!SRStatus}" /> --></div> 
+                    <div class="mid-dateroll">
+                    
+                  
+                    &nbsp;
+                    <Strong align="right">Select Date: </strong> &nbsp;
+                    <input type="text" name="txt_from" class="tfrom_date"  id="date_service" onkeypress="return isNumber(event)" onchange="AssignDate()" onautocomplete = "off"/>
+                    &nbsp;
+                    
+                    <strong>Date: </strong> 
+                    <apex:outputText id="inputDate1" styleclass="lblDate" label="date_pick" value="{0,date,MM'/'dd'/'yyyy}" >
+                        <apex:param value="{!SRDate}"/>                                                                 
+                    </apex:outputText>
+                    
+                    <br/>
+                    <div class="mid-dateroll1" >
+                    <!-- <apex:outputPanel id="CpyoutptPnl" >
+                        <apex:outputPanel rendered="{!blShowCopyButton}">
+                            <input type="button" id="btnSave" class="save-submit" style="margin-right: 0;  margin-top: 5px;"  value="Copy previous status " title="Copy Previous Status Report" Onclick="copyPrevSR()" /> 
+                        </apex:outputPanel> 
+                    </apex:outputPanel> -->
+                    &nbsp;
+                    
+                    </div>
+                    <!--<input type="text" name="date_pick" class="datepick" value="{!SRDate}" readonly="readonly" id="inputDate" />-->
+                    </div>                     
+                    </apex:outputPanel>
+                 </div>
+            
+      <!--  <apex:outputPanel id="outptPanl">  
+        <apex:pageMessages id="pgMsg2" />        
+       <div class="status-report-sec">
+                    <h2>Work Performed Today </h2>
+                    
+                    <apex:inputTextArea id="editor1"  styleclass="SReditor1" value="{!WorkDayParam}" label="WORK PERFORMED FOR THE DAY" />                    
+               </div>
+               <div class="status-report-sec status-rep-mid">
+                    <h2>WORK TO BE PERFORMED NEXT WORKING DAY</h2>
+                    <apex:inputTextArea id="editor2" styleclass="SReditor2" value="{!WorkNextDayParam}" label="editor2" />               
+                </div>
+               <div class="status-report-sec">
+                    <h2>Issues/Concerns/Road blocks/Questions </h2>
+                    <apex:inputTextArea id="editor3" styleclass="SReditor3" value="{!IssuesConcernsParam}" label="editor3" />
+               </div>
+               </apex:outputPanel> -->
+               <div class="time-submit">  
+                    <apex:outputPanel id="sveSubPnl1" >                 
+                    <apex:commandButton value="Save" action="{!saveStatusReport}" styleclass="save-submit" rendered="{!blShowSaveBtn}"/>
+                    <apex:commandButton value="Submit" action="{!submitStatusReport}" styleclass="btn_submit" rendered="{!blShowSubmitBtn }"/>
+                    </apex:outputPanel>
+                    <apex:actionRegion >
+                    <apex:commandButton value="Copy Previous Status Report" styleclass="btn_submit" onclick="getStatusReport(); return false;"/>
+                    <apex:commandButton value="Copy" styleclass="btn_submit" > 
+                    <apex:actionsupport event="onclick" status="statusSaveTrip" action="{!fetchStatusReportByDate}" rerender="outptPanl"/>
+                    </apex:commandButton>
+                    </apex:actionRegion>   
+                    
+                    <apex:commandButton value="Copy Previous Status Report" action="{!fetchStatusReportByDate}"  styleclass="btn_submit"/>  
+                    <apex:commandButton value="Cancel" action="{!cancelStatusReport}" styleclass="cancel" immediate="true"/>
+                </div>
+                 
+        </div>
+       
+
+    </div>
+</div>
+</apex:form>  
+   
+<!-- <c:ODS_FooterComponent /> -->
+
+</body>
+    <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/jquery-1.4.4.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/jquery-ui.js')}"/> 
+    <script type="text/javascript">//<![CDATA[   
+        $(function() {
+        $( ".datepick" ).datepicker({
+            dateFormat : 'dd/mm/yy',
+            monthNames: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", 
+                 "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+            changeMonth : true,
+            changeYear : true,
+            yearRange: '-100y:c+nn',
+            //minDate: '0d'
+        });
+        
+    }); 
+    </script>
+    
+    <script type="text/javascript">//<![CDATA[
+    var dbDate = '{!CurrentDate}';
+    var TodayDate= new Date(dbDate); 
+   
+    var dt = '{!SRDate}';
+    var SRDate = $('.lblDate').html();
+    var minDate = '{!minDate }';
+    var formattedMinDate = new Date(minDate);
+ var StatusReportFrequency = '{!StatusReportFrequency}';         
+    
+        
+        if(StatusReportFrequency =='Weekly'){$("#weekid").show();
+                                    $("#dayid").hide();
+                                             // {$("#weeklyid").show();
+                                    
+                                   }
+        
+        else
+        {
+            $("#weekid").hide();
+            $("#dayid").show();
+            //$("#dailyid").show();
+            
+        } 
+    loadcontentSr();
+    $(function() {
+        $( "#date_service" ).datepicker({
+            dateFormat : 'mm/dd/yy',
+            changeMonth : false,
+            changeYear : false,
+            yearRange: '-100y:c+nn',
+            minDate: formattedMinDate,
+            maxDate: TodayDate
+            
+        });
+        $("#date_service, #date_service1").bind('paste',function(e){
+            e.preventDefault();  //disable paste in datePicker
+        });
+  var startDate, endDate;
+        
+        var selectCurrentWeek = function () {
+            window.setTimeout(function () {
+                $('.ui-weekpicker').find('.ui-datepicker-current-day a').addClass('ui-state-active').removeClass('ui-state-default');
+            }, 1);
+        }
+        
+        var setDates = function (input) {
+            var $input = $(input);
+            var date = $input.datepicker('getDate');
+            if (date !== null) {
+                var firstDay = 1;
+                var dayAdjustment = (date.getDay() - firstDay + 7) % 7;
+                startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - dayAdjustment);
+                endDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - dayAdjustment + 4);
+                
+                var inst = $input.data('datepicker');
+                var dateFormat = inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
+                
+                $('.week-picker').val($.datepicker.formatDate(dateFormat, startDate, inst.settings)+'-'+$.datepicker.formatDate(dateFormat, endDate, inst.settings));
+                $('.lblDate').text($.datepicker.formatDate(dateFormat, startDate, inst.settings)+'-'+$.datepicker.formatDate(dateFormat, endDate, inst.settings));
+                
+            }
+        }
+        
+        $('.week-picker').datepicker({
+            dateFormat : 'mm/dd/yy',
+            changeMonth : false,
+            changeYear : false,
+            yearRange: '-100y:c+nn',
+            minDate: formattedMinDate,
+            maxDate: TodayDate,
+            showWeek: true,
+            beforeShow: function () {
+                $('#ui-datepicker-div').addClass('ui-weekpicker');
+                selectCurrentWeek();
+            },
+            onClose: function () {
+                $('#ui-datepicker-div').removeClass('ui-weekpicker');
+            },
+            showOtherMonths: true,
+            selectOtherMonths: true,
+            onSelect: function (dateText, inst) {
+                setDates(this);
+                selectCurrentWeek();
+                $(this).change();
+                //$(this).val($('#startDate').val()+'-'+$('#endDate'));
+            },
+            beforeShowDay: function (date) {
+                var cssClass = '';
+                if (date >= startDate && date <= endDate)
+                    cssClass = 'ui-datepicker-current-day';
+                return [true, cssClass];
+            },
+            onChangeMonthYear: function (year, month, inst) {
+                selectCurrentWeek();
+            }
+        });
+        
+        setDates('.week-picker');
+        
+        var $calendarTR = $('.ui-weekpicker .ui-datepicker-calendar tr');
+        $calendarTR.on('mousemove', function () {
+            $(this).find('td a').addClass('ui-state-hover');
+        });
+        $calendarTR.on('mouseleave', function () {
+            $(this).find('td a').removeClass('ui-state-hover');
+        });
+        
+        
+        $("#week_service").bind('paste',function(e){
+            e.preventDefault();  //disable paste in datePicker
+            
+        });
+        
+      
+    });    
+            
+     </script>
+    
+     
+</apex:page>

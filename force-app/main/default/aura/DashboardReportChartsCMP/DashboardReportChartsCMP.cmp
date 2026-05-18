@@ -1,0 +1,9 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:attribute access="public" name="accID" type="id"/> 
+    <aura:attribute access="public" name="servId" type="id"/> 
+    <div class="slds-gutters white-bg slds-grid slds-wrap chartThreeDiv" style="width: 100%;border-spacing: 10px;margin-bottom:20px;margin-left:0px;margin-top:-10px;">
+        <div class="slds-col slds-size — 1-of-1 slds-medium-size — 1-of-2 slds-large-size — 1-of-4" style="height:340px; width:430px;margin-bottom:10px;" ><c:oDSDashboardInitiativeChart aura:id="childlwcs" accId="{!v.accID}" serId="{!v.servId}"/></div>
+        <div class="slds-col slds-size — 1-of-1 slds-medium-size — 1-of-2 slds-large-size — 1-of-4" style="height:340px; width:330px" ><c:oDSDashboardTimesheetChart aura:id="childlwcs1" accId="{!v.accID}" serId="{!v.servId}"/></div>
+        <div class="slds-col slds-size — 1-of-1 slds-medium-size — 1-of-2 slds-large-size — 1-of-4"><c:oDSDashboardConsumption aura:id="childlwcs1" accId="{!v.accID}" serId="{!v.servId}"/></div>        
+    </div>   
+</aura:component>

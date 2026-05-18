@@ -1,0 +1,7 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:attribute access="public" name="accID" type="id"/> 
+    <aura:attribute access="public" name="servId" type="id"/> 
+    <aura:attribute access="public" name="estimateId" type="id"/> 
+    
+    <c:oDSEstimationSummaryDetailsPage aura:id="childlwcs" accountIFromAura="{!v.accID}" serviceIdFromAura="{!v.servId}" newEstimationSummaryId="{!v.estimateId}"/>
+</aura:component>

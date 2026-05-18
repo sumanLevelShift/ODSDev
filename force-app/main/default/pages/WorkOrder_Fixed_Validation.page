@@ -1,0 +1,14 @@
+<apex:page showHeader="false" applyHtmlTag="true" applyBodyTag="false" standardController="Work_Order__c" extensions="WorkOrder_Fixed_Validation_Controller" lightningStylesheets="true">
+    <head>
+        <apex:slds />
+    </head>
+    <body class="slds-scope">
+        <div style="display:{!IF(showErrorMessage,'block', 'none')}" class="slds-text-align_center slds-text-color_error slds-text-heading_small">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col">
+                    <apex:outputText value="ERROR: Bill Rate Amount of this Work Order does not match the total amount of its Deliverables." />
+                </div>
+            </div>
+        </div>
+    </body>
+</apex:page>

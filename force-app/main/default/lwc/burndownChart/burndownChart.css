@@ -1,0 +1,21 @@
+.burndown-chart-container {
+    width: 100%;
+    min-height: 400px;
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+.chart-canvas {
+    width: 100% !important;
+    height: 400px !important;
+}
+
+@media (max-width: 768px) {
+    .burndown-chart-container {
+        min-height: 300px;
+    }
+    
+    .chart-canvas {
+        height: 300px !important;
+    }
+}

@@ -1,0 +1,105 @@
+<template>
+    <div class="spinnerDiv" style="display: None;">
+        <div class="popupBackground"></div>
+        <div class="PopupPanel">
+            <table border="0" width="100%">
+                <tbody>
+                    <tr>
+                        <td style="text-align: center;font-size: 13px;"><b>Please Wait</b></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;"><img src={spinner} /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="header-info">
+        <div class="slds-grid slds-gutters slds-wrap">
+            <div class="slds-col slds-size_3-of-12 border-right">
+                <label class="lblname" id="Account_NameHeader">Customer</label>
+                <label class="lblvalue" id="Account_Name">{customerName}</label>
+            </div>
+            <div class="slds-col slds-size_3-of-12 border-right">
+                <label class="lblname">Initiative</label>
+                <label class="lblvalue" id="Tot_Months">{projectId}</label>
+            </div>
+            <div class="slds-col slds-size_2-of-12 border-right">
+                <label class="lblname" id="Tot_MonthsHeader">Total Effort In Months</label>
+                <label class="lblvalue">
+                    <lightning-formatted-number class="TotalEffortInMonthsClass" value={TotalEffortInMonths}
+                        maximum-fraction-digits="2">
+                    </lightning-formatted-number>
+                </label>
+            </div>
+            <div class="slds-col slds-size_2-of-12 border-right">
+                <label class="lblname" id="Tot_WeeksHeader">Total Effort In Weeks</label>
+                <label class="lblvalue" id="Tot_Weeks">
+                    <lightning-formatted-number class="TotalEffortInWeeksClass" value={TotalEffortInWeeks}
+                        maximum-fraction-digits="0">
+                    </lightning-formatted-number>
+                </label>
+            </div>
+            <div class="slds-col slds-size_2-of-12">
+                <label class="lblname" id="Tot_HoursHeader">Total Effort In Hours</label>
+                <label class="lblvalue" id="Tot_Hours">
+                    <lightning-formatted-number class="TotalEffortInHoursClass" value={TotalEffortInHours}
+                        maximum-fraction-digits="0"></lightning-formatted-number>
+                </label>
+            </div>
+        </div>
+    </div>
+    <c-create-effort-calculation account-id={accountIFromAura} estimation-summary={newEstimationSummaryId}
+        onwihoutriskforparent={getWithRisk} style="display: none;" class="effortCal1">
+    </c-create-effort-calculation>
+    <div class="tabset">
+
+        <lightning-tabset variant="scoped" class="tab-active" >
+
+            <template if:true={tabOne}>
+                <lightning-tab label="Summary" value="1" style="height: auto;" onactive={handleOnactiveTab}>
+                    <c-create-estimation-summary oncallgetestimationsummaryid={getEstimationSummaryId}
+                        oncallfromchildcmp={fromChildCmp} account-id={accountIFromAura} service-id={serviceIdFromAura}
+                        estimation-summary={newEstimationSummaryId}
+                        oncallfromestimationsummary={callFromEstimationSummary}
+                        oncallunsavedchanges={unsavedChangesFunction} oneditbutton={handleEditButton} edit={editbutton}
+                        total-effort-hours={TotalEffortInHours} oncallforresumbiteffortcal={resumbitEffort}>
+                    </c-create-estimation-summary>
+                </lightning-tab>
+            </template>
+
+            <template if:true={otherTabs}>
+                <lightning-tab label="Inventory" value="2" onactive={handleOnactiveTab}>
+                    <c-create-inventory account-id={accountIFromAura} estimation-summary={newEstimationSummaryId}
+                        oncallfromchildcmp={fromChildCmp} oncalleffortcalculation={calleffortcalCMP}
+                        oncallunsavedchanges={unsavedChangesFunction} oneditbutton={handleEditButton} edit={editbutton} oncallforresumbiteffortcal={resumbitEffort}>
+                    </c-create-inventory>
+
+                </lightning-tab>
+
+                <lightning-tab label="Estimation Complexity Matrix" value="3" onactive={handleOnactiveTab}>
+                    <c-create-estimation-complexity-matrix account-id={accountIFromAura}
+                        estimation-summary={newEstimationSummaryId} oncallfromchildcmp={fromChildCmp}
+                        oncallunsavedchanges={unsavedChangesFunction} oneditbutton={handleEditButton} edit={editbutton}>
+                    </c-create-estimation-complexity-matrix>
+                </lightning-tab>
+            </template>
+            <template if:true={otherTabs1}>
+                <lightning-tab label="Estimation Checklist" value="4" onactive={handleOnactiveTab}>
+                    <c-create-checklist account-id={accountIFromAura} estimation-summary={newEstimationSummaryId}
+                        oncallfromchildcmp={fromChildCmp} oncallunsavedchanges={unsavedChangesFunction}
+                        oneditbutton={handleEditButton} edit={editbutton}>
+                    </c-create-checklist>
+                </lightning-tab>
+                <lightning-tab label="Effort Calculation" value="5" onactive={handleOnactiveTab}>
+                    <c-create-effort-calculation class="effortCal" account-id={accountIFromAura}
+                        estimation-summary={newEstimationSummaryId} onwihoutriskforparent={getWithRisk}
+                        oncallunsavedchanges={unsavedChangesFunction} oneditbutton={handleEditButton} edit={editbutton}>
+                    </c-create-effort-calculation>
+                </lightning-tab>
+            </template>
+
+        </lightning-tabset>
+
+    </div>
+</template>

@@ -1,0 +1,109 @@
+<apex:page controller="SalesforceFeatureChartController" showHeader="false" sidebar="false" title="ON DEMAND SERVICES" >
+    <style>
+        .slds-scope .slds-input 
+        {
+        height: 29px;
+        }
+        .slds-scope .slds-has-error .slds-form-element__help 
+        {
+        font-size: 10px;
+        }
+        .slds-scope .slds-input-has-icon_left-right .slds-input__icon_right
+        {
+        width:20px
+        }
+        .slds-scope .slds-input-has-icon .slds-input__icon:not(button) 
+        {
+        width: 20px;
+        }
+    </style>
+    
+    <apex:stylesheet value="{!$Resource.chatgptstyle}" />
+    
+    
+    <apex:form >
+        <c:ODS_HeaderComponent />
+    </apex:form>
+    
+    <apex:includeLightning />
+    <apex:form id="apexForm">
+        <div style="float: right;margin-top: 10px;padding: 0;">
+            <apex:commandButton id="downloadReport" value="Download Report" styleClass="save-submit" rendered="{!ReportButton}" onclick="downloadReport();return false;"/>
+        </div>
+        <apex:actionFunction name="DownloadReportAction" action="{!downloadHeatMapReport}" status="statusSaveTrip" reRender="none" immediate="true" >
+            <apex:param name="chartURL" value="" assignTo="{!productImageUrl}"/>
+            <apex:param name="SelectedAccountId" value="" assignTo="{!AccountId}"/>
+            <apex:param name="SelectedServiceID" value="" assignTo="{!ServiceID}"/>
+        </apex:actionFunction>   
+        <apex:actionFunction name="ApplySearchAction" status="statusSaveTrip" action="{!GetAccountServiceID}" immediate="false" reRender="apexForm">
+            <apex:param name="SelectedAccountId" value="" assignTo="{!AccountId}"/>
+            <apex:param name="SelectedServiceID" value="" assignTo="{!ServiceID}"/>
+        </apex:actionFunction> 
+    </apex:form>
+    
+    <div id="lightning" style="clear: both;"/>
+    <c:ODS_FooterComponent /> 
+    
+    <script>
+    
+    var AccountID;
+    var ServiceID;
+    function downloadReport(){
+        // console.log(document.getElementById('lightning').getElementsByTagName('canvas')[0].toDataURL());
+        var ImageUrl=document.getElementById('lightning').getElementsByTagName('canvas')[0].toDataURL("image/png");
+        ImageUrl= ImageUrl.replace(/^data:image\/(png|jpg);base64,/, "");
+        DownloadReportAction(ImageUrl,AccountID,ServiceID);
+    }
+    
+    $(document).ready(function(){
+        $("#HeatMap").addClass("active");
+        AccountID = $(".ddlstAccount").val();
+        ServiceID = $(".ddlstService").val();
+        ApplySearchAction(AccountID,ServiceID);
+    });
+    
+    function ApplySearch(){
+        var elem = document.getElementById("lightning");
+        elem.innerHTML = ""; 
+        AccountID = $(".ddlstAccount").val();
+        ServiceID = $(".ddlstService").val();
+        
+        $Lightning.createComponent("c:odsSalesforceFeatureCmp",{
+            accID: AccountID,servId:ServiceID},
+                                   "lightning",
+                                   function(cmp) {
+                                       // do some stuff
+                                   });
+        ApplySearchAction(AccountID,ServiceID);
+        
+        $Lightning.createComponent("c:chatGPTCMP",
+                                   { 
+                                   },
+                                   "lightning",
+                                   function(cmp) {
+                                       console.log('LWC Component added in VF page');
+                                   });
+        
+    }
+    
+    $Lightning.use("c:odsSalesforceFeature", function() {
+        $Lightning.createComponent("c:odsSalesforceFeatureCmp", {
+            accID: AccountID,servId:ServiceID
+        },
+                                   "lightning",
+                                   function(cmp) {
+                                       
+                                   }
+                                  );
+    });
+    $Lightning.use("c:odsSalesforceFeature", function() {
+        $Lightning.createComponent("c:chatGPTCMP",
+                                   { 
+                                   },
+                                   "lightning",
+                                   function(cmp) {
+                                       console.log('LWC Component added in VF page');
+                                   });
+    });
+    </script>
+</apex:page>

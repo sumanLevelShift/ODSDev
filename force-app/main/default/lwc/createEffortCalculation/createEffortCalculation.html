@@ -1,0 +1,701 @@
+<template>
+    <div class="mid-bg" style="background: #FFFFFF;width: 100%;padding: 0 2% 15px 2%;float: left;"
+        onchange={unSavedChanges}>
+        <div class="spinnerDiv" style="display: None;">
+            <div class="popupBackground"></div>
+            <div class="PopupPanel">
+                <table border="0" width="100%">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;font-size: 12px;"><b>Please Wait</b></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;"><img src={spinner} /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- modal start -->
+        <template if:true={isShowModalForApprovalUser}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="max-width: 43% !important;">
+                    <!-- modal header start -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={hideModalBoxForApproval}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 style="text-align:center;font-size:16px;font-weight: bold;text-transform: uppercase"
+                            class="slds-text-heading_medium slds-hyphenat">Select the available user for
+                            the approval</h2>
+                    </header>
+                    <!-- modal body start -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1"
+                        style="height: 170px;">
+                        <br />
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_7-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_6-of-12 slds-text-align_right">
+                                        <label class="form-label">Approver List</label>
+                                    </div>
+                                    <div class="slds-col slds-size_8-of-12">
+                                        <lightning-combobox class="dropDownCSS" value={approverUserValue}
+                                            onchange={handleApproversPopUp} options={approverUserList}
+                                            name="ApproverList">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                        <div class="buttonSection" style="float: right;">
+                            <lightning-button variant="brand" label="Cancel" onclick={hideModalBoxForApproval}>
+                            </lightning-button>&nbsp;&nbsp;
+                            <lightning-button variant="brand" label="Approve" onclick={ApproveTheEstimation}
+                                class="searchButton" disabled={approverButtonOnPopUp}></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <!-- modal end -->
+        <!-- modal start -->
+        <template if:true={isShowModal}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container sldsBox" style="max-width: 43%;">
+                    <!-- modal header start -->
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={hideModalBox}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                            size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+
+
+                    <!-- modal body start -->
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <h2 style="text-align:center;font-size:14px;font-weight: bold;">ODS Estimate</h2>
+                        <br />
+                        <table class="lineItem css-serial">
+                            <tbody>
+                                <tr style="background-color: #4ECAF4 !important;">
+                                    <th>S.No.</th>
+                                    <th>Line Items</th>
+                                    <th style="text-align: right;">Percentage</th>
+                                    <th style="text-align: right;">Actual Hours</th>
+                                </tr>
+                                <template for:each={estimateLineItem} for:item="i">
+                                    <tr key={i.LineItem} style="border-bottom: 1px solid #ccc;">
+                                        <td style="text-align: centre;"></td>
+                                        <td>{i.LineItem}</td>
+                                        <td style="text-align: right;">{i.Percentage}%</td>
+                                        <td style="text-align: right;">
+                                            <lightning-formatted-number value={i.ActualHours}
+                                                maximum-fraction-digits="2">
+                                            </lightning-formatted-number>
+                                        </td>
+                                    </tr>
+                                    <template if:true={i.subtable}>
+                                        <tr key={i.LineItem} style="border-bottom: 1px solid #ccc;">
+                                            <th></th>
+                                            <td colspan="3" style="width: 400px;">
+                                                <div style="overflow: auto;max-height: 300px;">
+                                                    <table class="subtable">
+                                                        <tbody>
+                                                            <tr>
+                                                                <th>Task/Components</th>
+                                                                <th style="text-align: right;">Hours</th>
+                                                            </tr>
+                                                            <template for:each={i.inventory} for:item="j">
+                                                                <tr key={j.task} style="border-bottom: 1px solid #ccc;">
+                                                                    <th
+                                                                        style="word-wrap: break-word;font-weight: normal;white-space: unset;">
+                                                                        {j.task}</th>
+                                                                    <td style="text-align: right;">{j.hours}</td>
+                                                                </tr>
+                                                            </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </template>
+                                <tr>
+                                    <th colspan="2" style="text-align: right;">Total</th>
+                                    <td style="text-align: right;">100%</td>
+                                    <td style="text-align: right;">
+                                        <lightning-formatted-number value={totalActualHours}
+                                            maximum-fraction-digits="2">
+                                        </lightning-formatted-number>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <!-- modal end -->
+        <div class="sub-warp">
+            <div class="mid-white">
+                <br />
+                <div class="slds-grid slds-gutters slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12">
+                        <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_small">
+                            <div class="slds-col slds-size_12-of-12" style="text-align: center;">
+                                <label class="form-label">Technology SFDC</label>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters slds-m-bottom_small">
+                            <div class="slds-col slds-size_6-of-12 slds-text-align_right">
+                                <label class="form-label">Team Productivity</label>
+                            </div>
+                            <div class="slds-col slds-size_3-of-12">
+                                <lightning-input class="teamProductivity inputFieldCSS"
+                                    onfocusout={handleTeamProductivity} type="number" step="0.01"
+                                    value={teamProductivityValue} style="width: 90px;float: right;"
+                                    disabled={isApproved}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters slds-m-bottom_small">
+                            <div class="slds-col slds-size_6-of-12 slds-text-align_right">
+                                <label class="form-label">Total Base Effort (Declarative) -- in Person Hours</label>
+                            </div>
+                            <div class="slds-col slds-size_3-of-12">
+                                <p style="text-align: right;">
+                                    <lightning-formatted-number class="baseEffortDeclarative"
+                                        value={baseEffortDeclarativeValue} maximum-fraction-digits="2">
+                                    </lightning-formatted-number>
+                                </p>
+                            </div>
+                            <div class="slds-col slds-size_3-of-12">
+                                <p style="text-align: center;">
+                                    <lightning-formatted-number class="baseEffortDeclarativePercent"
+                                        value={baseEffortDeclarativePercentValue} format-style="percent">
+                                    </lightning-formatted-number>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters slds-m-bottom_small">
+                            <div class="slds-col slds-size_6-of-12 slds-text-align_right">
+                                <label class="form-label">Total Base Effort (Programming) -- in Person Hours</label>
+                            </div>
+                            <div class="slds-col slds-size_3-of-12">
+                                <p style="text-align: right;">
+                                    <lightning-formatted-number class="baseEffortProgramming"
+                                        value={baseEffortProgrammingValue} maximum-fraction-digits="2">
+                                    </lightning-formatted-number>
+                                </p>
+                            </div>
+                            <div class="slds-col slds-size_3-of-12">
+                                <p style="text-align: center;">
+                                    <lightning-formatted-number class="baseEffortProgrammingPercent"
+                                        value={baseEffortProgrammingPercentValue} format-style="percent">
+                                    </lightning-formatted-number>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters slds-m-bottom_small">
+                            <div class="slds-col slds-size_6-of-12 slds-text-align_right">
+                                <label class="form-label"> Total Base Effort -- in Person Months</label>
+                            </div>
+                            <div class="slds-col slds-size_3-of-12">
+                                <p style="text-align: right;">
+                                    <lightning-formatted-number class="totalBaseEffort" value={totalBaseEffortValue}
+                                        maximum-fraction-digits="2">
+                                    </lightning-formatted-number>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12">
+                        <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_small">
+                            <div class="slds-col slds-size_12-of-12" style="text-align: center;">
+                                <label class="form-label">Total Effort for the Project (In Person
+                                    Months)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters slds-m-bottom_small">
+                            <div class="slds-col slds-size_6-of-12 slds-text-align_right">
+                                <label class="form-label">With Risk
+                                </label>
+                            </div>
+                            <div class="slds-col slds-size_3-of-12">
+                                <p style="text-align: center;">
+                                    <lightning-formatted-number class="withRisk" value={withRiskValue}
+                                        maximum-fraction-digits="2">
+                                    </lightning-formatted-number>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters slds-m-bottom_small">
+                            <div class="slds-col slds-size_6-of-12 slds-text-align_right">
+                                <label class="form-label">Without Risk
+                                </label>
+                            </div>
+                            <div class="slds-col slds-size_3-of-12">
+                                <p style="text-align: center;">
+                                    <lightning-formatted-number class="withoutRisk" value={withoutRiskValue}
+                                        maximum-fraction-digits="2">
+                                    </lightning-formatted-number>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters slds-m-bottom_small">
+                            <div class="slds-col slds-size_6-of-12 slds-text-align_right">
+
+                            </div>
+                            <div class="slds-col slds-size_3-of-12">
+
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters slds-m-bottom_small">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_8-of-12 slds-large-size_8-of-12">
+                                <p style="margin-top:6%;text-align:right;" class="odsEstimateLine"><a
+                                        onclick={showModalBox}> Click here</a> to view ODS Estimate
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <details open>
+                    <summary>
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4;"
+                            onclick={handleForDetailsElement}>
+                            <h3 style=" display:inline; " class="panel-title">Effort Calculation for SDLC Phases
+                                (Phase-wise
+                                Effort Distribution) </h3>
+
+                            <div class="summary-chevron-up detailsClose clickable" style="float: right; display:none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="summary-chevron-down detailsOpen clickable" style="float: right;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-up">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </summary>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_3-of-3 tableDiv">
+                                    <!--  <br />
+
+                            <p style="text-align: center;font-weight: 600;">Effort Calculation for SDLC Phases
+                                (Phase-wise
+                                Effort Distribution)</p>
+                            <br />-->
+                                    <table class="list datatable timeline dataTable no-footer">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width: 25% !important">
+                                                    SDLC Phase
+                                                </th>
+                                                <th style="width: 10% !important">
+                                                    Recommended <br />(Org. wide)
+                                                </th>
+                                                <th style="width: 10% !important">
+                                                    Project<br /> Specific
+                                                </th>
+                                                <th style="width: 10% !important">
+                                                    Person <br />Months
+                                                </th>
+                                                <th style="width: 10% !important">
+                                                    Person<br /> Weeks
+                                                </th>
+                                                <th>
+                                                    Rationale If Different Than Recommended
+                                                </th>
+                                            </tr>
+                                            <template for:each={newSdlcPhaseWise} for:item="i">
+                                                <tr key={i.Phases} style="font-weight: 600;" class="SDLCPhasesTable">
+                                                    <td>
+                                                        <lightning-formatted-text value={i.Phases}
+                                                            class="SDLCPhasesName">
+                                                        </lightning-formatted-text>
+                                                    </td>
+                                                    <td style="text-align: right;">
+                                                        <lightning-formatted-number class="recommendedEffortSLDC"
+                                                            value={i.Recommended} format-style="percent-fixed">
+                                                        </lightning-formatted-number>
+                                                    </td>
+                                                    <td>
+                                                        <lightning-input class="projectSpecificWiseClass inputFieldCSS"
+                                                            type="number" formatter="percent-fixed"
+                                                            value={i.ProjectSpecfic}
+                                                            onfocusout={handleForSumOfProjectSpeicficSDLCWise}
+                                                            data-phases={i.Phases} step="0.1" disabled={disableForAll}>
+                                                        </lightning-input>
+                                                    </td>
+                                                    <td style="text-align: right;">
+
+                                                        <lightning-formatted-number class="personMonthsSDLCPhases"
+                                                            name="person month" data-phases={i.Phases}
+                                                            value={i.PersonMonth} maximum-fraction-digits="2">
+                                                        </lightning-formatted-number>
+                                                    </td>
+                                                    <td style="text-align: right;">
+                                                        <lightning-formatted-number class="personWeeksSDLCPhases"
+                                                            name="person week" data-phases={i.Phases}
+                                                            value={i.PersonWeeks} maximum-fraction-digits="1">
+                                                        </lightning-formatted-number>
+                                                    </td>
+                                                    <td>
+                                                        <lightning-textarea
+                                                            class="textAreaCss rationale rationaleSDLCPhases"
+                                                            value={i.Remarks} disabled={isApproved}>
+                                                        </lightning-textarea>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                            <tr style="font-weight: 600;">
+                                                <td style="text-align:right !important;font-weight: 600;height: 30px;">
+                                                    Total</td>
+                                                <td style="text-align: right;"> 100% </td>
+                                                <td style="text-align: right;">
+                                                    <lightning-formatted-number class="totalProjectSpecificSDLCPhase"
+                                                        format-style="percent-fixed" maximum-fraction-digits="1">
+                                                    </lightning-formatted-number>
+                                                </td>
+                                                <td style="text-align: right;">
+                                                    <lightning-formatted-number class="totalPersonMonthsSDLCPhase"
+                                                        maximum-fraction-digits="2"></lightning-formatted-number>
+                                                </td>
+                                                <td style="text-align: right;">
+                                                    <lightning-formatted-number class="totalPersonWeeksSDLCPhase"
+                                                        maximum-fraction-digits="1"></lightning-formatted-number>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+                <br />
+                <details open>
+                    <summary>
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4;"
+                            onclick={handleForDetailsElement1}>
+                            <h3 style=" display:inline; " class="panel-title">Effort Calculation for Other Activities
+                                (as a % of SDLC Phase Effort) </h3>
+
+                            <div class="summary-chevron-up detailsClose1 clickable" style="float: right; display:none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="summary-chevron-down detailsOpen1 clickable" style="float: right;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-up">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </summary>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_3-of-3 tableDiv">
+                                    <!--   <p style="text-align: center;font-weight: 600;"><br />
+                            Effort Calculation for Other Activities (as a % of SDLC Phase Effort)</p>
+                        <br />-->
+                                    <table class="list datatable timeline dataTable no-footer">
+
+                                        <tbody>
+                                            <tr>
+                                                <th style="width: 25% !important">
+                                                    Activity
+                                                </th>
+                                                <th style="width: 10% !important">
+                                                    Applicable SDLC <br />Phases
+
+                                                </th>
+                                                <th style="width: 10% !important">
+                                                    Project<br /> Specific
+                                                </th>
+                                                <th style="width: 10% !important">
+                                                    Person <br />Months
+                                                </th>
+                                                <th style="width: 10% !important">
+                                                    Person<br /> Weeks
+                                                </th>
+                                                <th>
+                                                    Comments
+                                                </th>
+                                            </tr>
+                                            <template for:each={newOtherActivities} for:item="i">
+                                                <tr key={i.Phase} style="font-weight: 600;"
+                                                    class="OtherActivitiesEffort">
+                                                    <td>
+                                                        <lightning-formatted-text value={i.Activity}
+                                                            class="activityClass">
+                                                        </lightning-formatted-text>
+                                                    </td>
+                                                    <td>
+                                                        <lightning-formatted-text value={i.Applicable}
+                                                            class="applicableClass">
+                                                        </lightning-formatted-text>
+                                                    </td>
+                                                    <td>
+                                                        <lightning-input class="projectSpecificOtherClass inputFieldCSS"
+                                                            type="number" formatter="percent-fixed" step="0.01"
+                                                            data-applicable={i.Applicable} value={i.ProjectSpecfic}
+                                                            data-activity={i.Activity}
+                                                            onfocusout={handleFocusOutprojectSpecificOther}
+                                                            disabled={disableForAll}>
+                                                        </lightning-input>
+                                                    </td>
+                                                    <td style="text-align: right;">
+                                                        <lightning-formatted-number class="personMonthsOtherActivities"
+                                                            name="person month" data-applicable={i.Applicable}
+                                                            data-activity={i.Activity} value={i.PersonMonth}
+                                                            maximum-fraction-digits="2">
+                                                        </lightning-formatted-number>
+                                                    </td>
+                                                    <td style="text-align: right;">
+                                                        <lightning-formatted-number class="personWeeksOtherActivities"
+                                                            name="person week" data-applicable={i.Applicable}
+                                                            value={i.PersonWeeks} data-activity={i.Activity}
+                                                            maximum-fraction-digits="1">
+                                                        </lightning-formatted-number>
+                                                    </td>
+                                                    <td>
+                                                        <lightning-textarea class="textAreaCss commentsOthers"
+                                                            value={i.Comments} disabled={isApproved}>
+                                                        </lightning-textarea>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                            <tr style="font-weight: 600;">
+                                                <td style="text-align:right !important;font-weight: 600;height: 30px;">
+                                                    Total</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td style="text-align:right !important;">
+                                                    <lightning-formatted-number
+                                                        class="totalPersonMonthsSDLCOtherActivity"
+                                                        maximum-fraction-digits="2"></lightning-formatted-number>
+                                                </td>
+                                                <td style="text-align:right !important;">
+                                                    <lightning-formatted-number
+                                                        class="totalPersonWeeksSDLCOtherActivity"
+                                                        maximum-fraction-digits="1"></lightning-formatted-number>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+                <br />
+                <details open>
+                    <summary>
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4;"
+                            onclick={handleForDetailsElement2}>
+                            <h3 style=" display:inline; " class="panel-title">Effort Calculation for Other Project
+                                Specific Activities </h3>
+
+                            <div class="summary-chevron-up detailsClose2 clickable" style="float: right; display:none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="summary-chevron-down detailsOpen2 clickable" style="float: right;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-up">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </summary>
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="slds-grid slds-gutters ">
+
+                                <div class="slds-col slds-size_3-of-3 tableDiv">
+                                    <a class="add-row actionButton" href="#" id="add-row2" onclick={handleAddRow}>
+                                        <b> ADD</b></a>
+                                    <br />
+                                    <table class="list datatable timeline dataTable no-footer">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width: 40% !important">
+                                                    Activity
+                                                </th>
+                                                <th style="width: 10% !important">
+                                                    Person <br />Months
+                                                </th>
+                                                <th style="width: 10% !important">
+                                                    Person<br /> Weeks
+                                                </th>
+                                                <th>
+                                                    Comments
+                                                </th>
+                                            </tr>
+                                            <template for:each={newSpecificActivities} for:item="i">
+                                                <tr key={i} style="font-weight: 600;"
+                                                    class="ProjectSpecificActivitiesRow" data-rowno={i.Activity}>
+                                                    <td>
+                                                        <lightning-formatted-text value={i.Activity}
+                                                            class="activityTextArea" data-other={i.NewOtherValue}>
+                                                        </lightning-formatted-text>
+                                                        
+                                                    </td>
+                                                    <td style="text-align: right;"> 
+                                                        <lightning-input
+                                                            class="personMonthSpecificActivities inputFieldCSS"
+                                                            type="number" step="0.01" data-rowno={i.Activity}
+                                                            value={i.PersonMonth} name="person month"
+                                                            onfocusout={handlePersonMonthSpecificActivites}
+                                                            disabled={disableForAll}>
+                                                        </lightning-input>
+                                                    </td>
+                                                    <td style="text-align: right;">
+                                                        <lightning-formatted-number
+                                                            class="personWeeksSpecificActivities" name="person week"
+                                                            maximum-fraction-digits="1" value={i.PersonWeeks}
+                                                            data-rowno={i.Activity}>
+                                                        </lightning-formatted-number>
+                                                    </td>
+
+                                                    <td>
+                                                        <lightning-textarea class="textAreaCss commentsSpecific"
+                                                            value={i.Comments} disabled={isApproved}>
+                                                        </lightning-textarea>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                            <template for:each={rows} for:item="i" for:index="indx">
+                                                <tr key={i} class="ProjectSpecificActivitiesRow newAddedRow" id={i}
+                                                    data-rowno={i}>
+                                                    <td>
+                                                        <lightning-textarea class="textAreaCss activityTextArea"
+                                                            data-rowno={i} data-classification="other">
+                                                        </lightning-textarea>
+                                                    </td>
+                                                    <td style="text-align: right;">
+                                                        <lightning-input
+                                                            class="personMonthSpecificActivities inputFieldCSS"
+                                                            type="number" step="0.01" value="0" data-rowno={i}
+                                                            name="person month"
+                                                            onfocusout={handlePersonMonthSpecificActivites}>
+                                                        </lightning-input>
+                                                    </td>
+                                                    <td style="text-align: right;">
+                                                        <lightning-formatted-number
+                                                            class="personWeeksSpecificActivities" name="person week"
+                                                            maximum-fraction-digits="1" value="0" data-rowno={i}>
+                                                        </lightning-formatted-number>
+                                                    </td>
+
+                                                    <td>
+                                                        <lightning-textarea class="textAreaCss commentsSpecific">
+                                                        </lightning-textarea>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                            <tr style="font-weight: 600;">
+                                                <td style="text-align:right !important;font-weight: 600;height: 30px;">
+                                                    Total</td>
+                                                <td style="text-align:right !important;">
+                                                    <lightning-formatted-number class="totalPersonMonthsProjectSpecific"
+                                                        maximum-fraction-digits="2"></lightning-formatted-number>
+                                                </td>
+                                                <td style="text-align:right !important;">
+                                                    <lightning-formatted-number class="totalPersonWeeksProjectSpecific"
+                                                        maximum-fraction-digits="1"></lightning-formatted-number>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </div>
+        <!---  <div class="pull-right"><br>
+            <lightning-button class="slds-m-top_small cancelButton" variant="brand" label="Cancel"
+                onclick={handleReset}></lightning-button>&nbsp;
+            <lightning-button class="slds-m-top_small submitButton" type="submit" label="Submit"
+                onclick={handleForInsertEffort}>
+            </lightning-button>
+        </div>-->
+    </div>
+    <div class="floating-actions">
+        <ul>
+            <template if:true={enableForDeliveryRole}>
+                <template if:false={ObsoleteStatus}>
+
+                    <template if:true={approvedButton}>
+                        <li><a href="#" onclick={handleForApproveButton} title="Approve"><img
+                                    src={approveButtonIcon}></img></a>
+                        </li>
+                    </template>
+
+                    <template if:true={enableEditButton}>
+                        <li><a href="#" onclick={handleForEditButton} title="Edit"><img src={editButtonIcon}></img></a>
+                        </li>
+                    </template>
+                    <template if:true={exportToInitiative}>
+                        <li><a href="#" onclick={exportToInitiativeMethod} title="Export To Initiative"><img
+                                    src={exportToInitiativeButton}></img></a>
+                        </li>
+                    </template>
+                    <template if:true={enableButtonSection}>
+                        <template if:true={isApproved}>
+                            <li><a href="#" onclick={exportExcel} title="Download"><img src={exportButton}></img></a>
+                            </li>
+                        </template>
+                        <template if:false={isApproved}>
+                            <li><a href="#" class="actionButton" onclick={handleReset} title="Cancel"><img
+                                        src={cancelButton}></img></a>
+                            </li>
+                            <li><a href="#" class="actionButton" onclick={handleForSaveEffortCalculation}
+                                    title="Submit"><img src={saveButton}></img></a></li>
+                        </template>
+                    </template>
+                </template>
+            </template>
+        </ul>
+    </div>
+</template>

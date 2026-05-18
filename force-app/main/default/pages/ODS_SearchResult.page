@@ -1,0 +1,425 @@
+<!--*******************************************************************************************
+* @author           Gireesh and Prasanna
+* @version          1.0 
+* @Status           Development Completed
+* @Class Name       ODS_SearchResultController
+* @description      This page is written to show the search results
+*********************************************************************************************
+Version     Date        	Team        	Comments
+*********************************************************************************************
+* 1        	10 AUG 2020    	DemandBlue 		Initial Development
+*********************************************************************************************-->
+<apex:page controller="ODS_SearchResultController" showHeader="false" sidebar="false" standardStyleSheets="false" id="resultPage">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />       
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'online_files/jquery-dev.js')}"/>
+        <!-------- Bootstrap ----->
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/bootstrap.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'online_files/bootstrap.js')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'online_files/font-dev.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'online_files/recaptcha-dev.api')}"/>        
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/style.css')}"/>
+        <link href="{!URLFOR($Resource.ODS_Assets,'css/style_dev.css')}" rel="stylesheet" type="text/css"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/jquery-ui.css')}"/>         
+        <link href="{!URLFOR($Resource.ODS_Assets,'css/bootstrap.css')}" rel="stylesheet" type="text/css" />
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/bootstrap.js')}"/>        
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet"/> 
+        <apex:includeScript value="https://www.google.com/recaptcha/api.js"/>        
+        <link href="{!URLFOR($Resource.ODS_Assets,'css/style.css')}" rel="stylesheet" type="text/css"  />
+        <script>
+        function reDirecttoviewTimesheet(AccountId){
+            reDirecttoviewTimesheet(AccountId);
+        }
+        function reDirecttoViewInitiative(AccountId){
+            reDirecttoViewInitiative(AccountId);
+        }
+        function reDirecttoStatusReport(AccountId){
+            reDirecttoStatusReport(AccountId);
+        }
+        
+        </script>
+    </head>
+    <body>       
+        <apex:form id="searchForm">
+            <c:ODS_HeaderComponent />
+            <div class="shadow-show"></div>
+            <apex:pageMessages />           
+            
+            <!-- Actionfunction Needs to add -->            
+             <apex:actionFunction name="reDirecttoviewTimesheet" action="{!reDirecttoviewTimesheet}" rerender="StatusReportOutputPlaneId,TimesheetOutputPlaneId,TaskOutputPlaneId,InitiOutputPlaneId,AccOutputPlaneId,ConOutputPlaneId" immediate="true">
+                <apex:param name="ViewTimesheetId" value="" assignTo="{!CurrenTimesheetId}"/>
+            </apex:actionFunction>
+            
+            <apex:actionFunction name="reDirecttoViewInitiative" action="{!reDirecttoViewInitiative}"  rerender="StatusReportOutputPlaneId,TimesheetOutputPlaneId,TaskOutputPlaneId,InitiOutputPlaneId,AccOutputPlaneId,ConOutputPlaneId" immediate="true">
+               <apex:param name="CurrenInitiativeId" value="" assignTo="{!CurrenInitiativeId}"/>
+            </apex:actionFunction>         
+            
+            <!------------ Account Block start ----------------->
+            <div class="clr"></div>
+            <div class="sub-warp">
+                <div class="mid-white">
+                    <div class="mid-user-sec"> 
+                    </div>
+                    <apex:outputPanel id="AccOutputPlaneId" rendered="{!(accountList.size !=0 && accountList !='' && accountList !=null ) }">                
+                        <apex:pageBlock id="BlockId">
+                            <apex:outputPanel >  
+                                <strong><left>Account</left></strong>
+                            </apex:outputPanel> 
+                            <apex:pageBlockTable StyleClass="timeline" Style="cellpadding:0; cellspacing:0; width:100%;"  first="{!CurrentPage }" rows="{!PageSize}"  value="{!accountList}" var="accValue" title="Account">
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">NAME</apex:facet>   
+                                    <apex:outputField label="NAME" value="{!accValue.Name}" style="text-align:left;" />
+                                </apex:column>
+                                 <apex:column style="width: 194px;">
+                                    <apex:facet name="header">ACCOUNT STATUS</apex:facet>   
+                                    <apex:outputField label="NAME" value="{!accValue.Account_Status__c}" style="text-align:left;" />
+                                </apex:column>
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">BACKUP CUSTOMER SUCCESS MANAGER</apex:facet>   
+                                    <apex:outputField label="BACKUP CUSTOMER SUCCESS MANAGER" value="{!accValue.Backup_CSM__r.Name}" style="text-align:left;"/>
+                                </apex:column> 
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">BACKUP CSM Email</apex:facet>   
+                                    <apex:outputField label="ParentID" value="{!accValue.Backup_CSM__r.Email}" style="text-align:left;"/>
+                                </apex:column> 
+                              <!--    <apex:column style="width: 194px;">
+                                    <apex:facet name="header">BACKUP CSM Phone</apex:facet>   
+                                    <apex:outputField label="ParentID" value="{!accValue.Backup_CSM__r.Phone}" style="text-align:left;"/>
+                                </apex:column> -->
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Force.com Account Status</apex:facet>   
+                                    <apex:outputField label="Force.com Account Status" value="{!accValue.Force_com_Account_Status__c}" style="text-align:left;"/>
+                                </apex:column>
+                          <!--      <apex:column style="width: 194px;">
+                                    <apex:facet name="header">AWS</apex:facet>   
+                                    <apex:outputField label="AWS" value="{!accValue.ODS_AWS__c}" style="text-align:left;"/>
+                                </apex:column> -->
+                                <apex:column style="text-align:left; width: 100px;" >
+                                    <apex:facet name="header">Action</apex:facet> 
+                                    <apex:commandLink styleClass="time_view" title="View" action="{!reDirecttoCustomer}" >
+                                        <strong><i class="fa fa-eye" aria-hidden="true"></i></strong>
+                                        <apex:param name="CustomerId" value="{!accValue.Id}" />
+                                    </apex:commandLink> 
+                                </apex:column>
+                            </apex:pageBlockTable>
+                            <apex:outputPanel styleClass="page-nav-bg" rendered="{!(accountList.size !=0 && accountList !='' && accountList !=null ) }"> 
+                                <apex:commandButton value="First" action="{!showFirst}" disabled="{!!ShowPrevious}" rerender="AccOutputPlaneId" styleClass="save-submit page-nav-btn first-nav-btn"/>
+                                <apex:commandButton value="Previous" action="{!showPrevious}" disabled="{!!ShowPrevious}" rerender="AccOutputPlaneId" styleClass="save-submit page-nav-btn previous-nav-btn"/>
+                                <apex:outputText value="{!CurrentPageInfo}" />
+                                <apex:commandButton value="Next" action="{!showNext}" disabled="{!!ShowNext}" rerender="AccOutputPlaneId" styleClass="save-submit page-nav-btn next-nav-btn"/>
+                                <apex:commandButton value="Last" action="{!showLast}" disabled="{!!ShowNext}" rerender="AccOutputPlaneId" styleClass="save-submit page-nav-btn last-nav-btn"/>       
+                            </apex:outputPanel> 
+                            
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!(accountList.size == 0) }">  
+                        <strong><left>Account</left></strong>
+                        <strong><center>There is no related Account records</center></strong>
+                    </apex:outputPanel> 
+                </div>
+            </div>
+            
+            
+            <!------------ Account Block Ends -----------------> 
+            
+            
+            <!------------ Contact Block start ----------------->
+            <div class="clr"></div>
+            <div class="sub-warp">
+                <div class="mid-white"> 
+                    <div class="mid-user-sec"> 
+                    </div> 
+                    <apex:outputPanel id="ConOutputPlaneId" rendered="{!(contactList.size !=0 && contactList !='' && contactList !=null ) }">
+                        <apex:pageBlock id="ConBlockId">
+                            <apex:outputPanel >  
+                                <strong><left>Contact</left></strong>
+                            </apex:outputPanel> 
+                            <apex:pageBlockTable StyleClass="timeline" Style="cellpadding:0; cellspacing:0; width:100%;" first="{!ConCurrentPage }" rows="{!PageSize}" value="{!contactList}" var="ConValue" title="Contact">
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">NAME</apex:facet>   
+                                    <apex:outputField label="NAME" value="{!ConValue.Name}" style="text-align:left;"/>
+                                </apex:column>
+                                 <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Account</apex:facet>   
+                                    <apex:outputField label="Account" value="{!ConValue.AccountID_formula__c}" style="text-align:left;"/>
+                                </apex:column>
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Phone</apex:facet>   
+                                    <apex:outputField label="Phone" value="{!ConValue.Phone}" style="text-align:left;"/>
+                                </apex:column>
+                                <apex:column style="width: 200px;">
+                                    <apex:facet name="header">email</apex:facet>   
+                                    <apex:outputField label="email" value="{!ConValue.email}" />
+                                </apex:column>
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Status</apex:facet>   
+                                    <apex:outputField label="Status" value="{!ConValue.Status__c}" style="text-align:left;"/>
+                                </apex:column>
+                            <!--    <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Lead Generation</apex:facet>   
+                                    <apex:outputField label="Lead Generation" value="{!ConValue.Lead_Gen_Name__c}" style="text-align:left;"/>
+                                </apex:column> -->
+                            </apex:pageBlockTable>
+                            <apex:outputPanel styleClass="page-nav-bg" rendered="{!(contactList.size !=0 && contactList !='' && contactList !=null ) }">  
+                                <apex:commandButton value="First" action="{!conShowFirst}" disabled="{!!ConShowPrevious}" rerender="ConOutputPlaneId" styleClass="save-submit page-nav-btn first-nav-btn"/>
+                                <apex:commandButton value="Previous" action="{!conshowPrevious}" disabled="{!!ConShowPrevious}" rerender="ConOutputPlaneId" styleClass="save-submit page-nav-btn previous-nav-btn"/>
+                                <apex:outputText value="{!ConCurrentPageInfo}" />
+                                <apex:commandButton value="Next" action="{!conShowNext}" disabled="{!!ConShowNext}" rerender="ConOutputPlaneId" styleClass="save-submit page-nav-btn next-nav-btn"/>
+                                <apex:commandButton value="Last" action="{!conShowLast}" disabled="{!!ConShowNext}" rerender="ConOutputPlaneId" styleClass="save-submit page-nav-btn last-nav-btn"/>       
+                            </apex:outputPanel> 
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!(contactList.size == 0) }">  
+                        <strong><left>Contact</left></strong>
+                        <strong><center>There is no related Contact records</center></strong>
+                    </apex:outputPanel>
+                </div>    
+            </div>
+            
+            <!------ Contact Block Ends---------->  
+            
+            <!-------- Initiative Block start---------->
+            <div class="clr"></div>
+            <div class="sub-warp">
+                <div class="mid-white">   
+                    <div class="mid-user-sec"> 
+                    </div> 
+                    <apex:outputPanel id="InitiOutputPlaneId" rendered="{!(initiativeList.size !=0 && initiativeList !='' && initiativeList !=null ) }">
+                        <apex:pageBlock id="InitBlockId">
+                            <apex:outputPanel >  
+                                <strong><left>Initiative</left></strong>
+                            </apex:outputPanel> 
+                            <apex:pageBlockTable StyleClass="timeline" Style="cellpadding:0; cellspacing:0; width:100%;" first="{!InitCurrentPage }" rows="{!PageSize}" value="{!initiativeList}" var="Init" title="Initiative">
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">NAME</apex:facet>   
+                                    <apex:outputField label="NAME" value="{!Init.Name}" />
+                                </apex:column>
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Account Name</apex:facet>   
+                                    <apex:outputField label="Account Name" value="{!Init.Account_Name__c}" />
+                                </apex:column>
+                                 <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Status</apex:facet>   
+                                    <apex:outputField label="Status" value="{!Init.Status__c}" />
+                                </apex:column>
+                                <apex:column style="text-align:left; width: 100px;">
+                                    <apex:facet name="header">Action</apex:facet> 
+                                    <apex:commandLink styleClass="time_view" title="View" onClick="reDirecttoViewInitiative('{!Init.Id}'); return false;">
+                                        <strong><i class="fa fa-eye" aria-hidden="true"></i></strong>
+                                    </apex:commandLink> 
+                                </apex:column>  
+                            </apex:pageBlockTable>
+                            <apex:outputPanel styleClass="page-nav-bg" rendered="{!(initiativeList.size !=0 && initiativeList !='' && initiativeList !=null ) }">  
+                                <apex:commandButton value="First" action="{!InitShowFirst}" disabled="{!!InitShowPrevious}" rerender="InitiOutputPlaneId" styleClass="save-submit page-nav-btn first-nav-btn"/>
+                                <apex:commandButton value="Previous" action="{!InitshowPrevious}" disabled="{!!InitShowPrevious}" rerender="InitiOutputPlaneId" styleClass="save-submit page-nav-btn previous-nav-btn"/>
+                                <apex:outputText value="{!InitCurrentPageInfo}" />
+                                <apex:commandButton value="Next" action="{!InitShowNext}" disabled="{!!InitShowNext}" rerender="InitiOutputPlaneId" styleClass="save-submit page-nav-btn next-nav-btn"/>
+                                <apex:commandButton value="Last" action="{!InitShowLast}" disabled="{!!InitShowNext}" rerender="InitiOutputPlaneId" styleClass="save-submit page-nav-btn last-nav-btn"/>       
+                            </apex:outputPanel>  
+                            
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!(initiativeList.size == 0) }">  
+                        <strong><left>Initiative</left></strong>
+                        <strong><center>There is no related Initiative records</center></strong>
+                    </apex:outputPanel> 
+                </div>
+            </div>
+            
+            <!----------- Initiative Block End---------->
+            
+            <!---------- Timesheet Block Start------------> 
+            <div class="clr"></div>
+            <div class="sub-warp">
+                <div class="mid-white">    
+                    <div class="mid-user-sec"> 
+                    </div> 
+                    <apex:outputPanel id="TimesheetOutputPlaneId" rendered="{!(TimeSheetList.size !=0 && TimeSheetList !='' && TimeSheetList !=null ) }">
+                        <apex:pageBlock id="TimesheetBlockId">
+                            <apex:outputPanel id="noSearchRes" >  
+                                <strong><left>Time sheet</left></strong>
+                            </apex:outputPanel> 
+                            <apex:pageBlockTable StyleClass="timeline" Style="cellpadding:0; cellspacing:0; width:100%;" first="{!TsCurrentPage }" rows="{!PageSize}"  value="{!TimeSheetList}" var="TSheet" title="TimeSheet">
+                         <!--       <apex:column style="width: 194px;">
+                                    <apex:facet name="header">NAME</apex:facet>   
+                                    <apex:outputField label="NAME" value="{!TSheet.Name}" style="text-align:left;"/>
+                                </apex:column> -->
+                                 <apex:column style="width: 194px;" >
+                                    <apex:facet name="header">Initiative Name</apex:facet>   
+                                    <apex:outputField label="Initiative Name" value="{!TSheet.Initiative_Name__c}" style="text-align:left;"/>
+                                </apex:column> 
+                                <apex:column style="width: 194px;" >
+                                    <apex:facet name="header">User Story / Task</apex:facet>   
+                                    <apex:outputField label="User Story Task" value="{!TSheet.Task_Name__c}" style="text-align:left;"/>
+                                </apex:column> 
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Status</apex:facet>   
+                                    <apex:outputField label="Status" value="{!TSheet.Timesheet__r.Status__c}" style="text-align:left;"/>
+                                </apex:column>
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Week Start Date</apex:facet>   
+                                    <apex:outputField label="Week Start Date" value="{!TSheet.Timesheet__r.Week_Start_Date__c}" style="text-align:left;"/>
+                                </apex:column>
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Week End Date</apex:facet>   
+                                    <apex:outputField label="Week End Date" value="{!TSheet.Timesheet__r.Week_End_Date__c}" style="text-align:left;"/>
+                                </apex:column>                                
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Total Hours</apex:facet>   
+                                    <apex:outputField label="Total Hours" value="{!TSheet.Timesheet__r.Total_Hours__c}" style="text-align:left;"/>
+                                </apex:column>
+                                <apex:column style="text-align:left; width: 100px;">
+                                    <apex:facet name="header">Action</apex:facet> 
+                                    <apex:commandLink styleClass="time_view" title="View" onClick="reDirecttoviewTimesheet('{!TSheet.Timesheet__c}'); return false;">
+                                        <strong><i class="fa fa-eye" aria-hidden="true"></i></strong>
+                                    </apex:commandLink> 
+                                </apex:column> 
+                            </apex:pageBlockTable>
+                            <apex:outputPanel styleClass="page-nav-bg" rendered="{!(TimeSheetList.size !=0 && TimeSheetList !='' && TimeSheetList !=null ) }">  
+                                <apex:commandButton value="First" action="{!TsShowFirst}" disabled="{!!TsShowPrevious}" rerender="TimesheetOutputPlaneId" styleClass="save-submit page-nav-btn first-nav-btn"/>
+                                <apex:commandButton value="Previous" action="{!TsshowPrevious}" disabled="{!!TsShowPrevious}" rerender="TimesheetOutputPlaneId" styleClass="save-submit page-nav-btn previous-nav-btn"/>
+                                <apex:outputText value="{!TsCurrentPageInfo}" />
+                                <apex:commandButton value="Next" action="{!TsShowNext}" disabled="{!!TsShowNext}" rerender="TimesheetOutputPlaneId" styleClass="save-submit page-nav-btn next-nav-btn"/>
+                                <apex:commandButton value="Last" action="{!TsShowLast}" disabled="{!!TsShowNext}" rerender="TimesheetOutputPlaneId" styleClass="save-submit page-nav-btn last-nav-btn"/>       
+                            </apex:outputPanel>  
+                            
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!(TimeSheetList.size == 0) }">  
+                        <strong><left>Time sheet</left></strong>
+                        <strong><center>There is no related Time Sheet records</center></strong>
+                    </apex:outputPanel> 
+                </div>
+            </div>
+            
+            <!------------ Timesheet Block End---------------> 
+            
+            <!------------- Status Report Block Start-------------> 
+            <div class="clr"></div>
+            <div class="sub-warp">
+                <div class="mid-white">  
+                    <div class="mid-user-sec"> 
+                    </div> 
+                    <apex:outputPanel id="StatusReportOutputPlaneId" rendered="{!(StatusReportList.size !=0 && StatusReportList !='' && StatusReportList !=null ) }" > <!-- rendered="{!TableOutputPlanel}" -->
+                        
+                        <apex:pageBlock id="StatusReportBlockId">
+                            <apex:outputPanel >  
+                                <strong><left>Status Report</left></strong>
+                            </apex:outputPanel> 
+                            
+                            <apex:pageBlockTable StyleClass="timeline" first="{!SrCurrentPage }" rows="{!PageSize}"  Style="cellpadding:0; cellspacing:0; width:100%;" value="{!StatusReportList}" var="SReport" title="Status Report">
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">NAME</apex:facet>   
+                                    <apex:outputField label="NAME" value="{!SReport.Name}" style="text-align:left;"/>
+                                </apex:column>
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Issues and Concerns</apex:facet>   
+                                    <apex:outputText label="Issues and Concerns" value="{!SReport.Issues_and_Concerns__c}" style="text-align:left;" escape="false"/>
+                                </apex:column>
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Status</apex:facet>   
+                                    <apex:outputField label="Status" value="{!SReport.Status__c}" style="text-align:left;"/>
+                                </apex:column>
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Work for the day</apex:facet>   
+                                    <apex:outputText label="Work for the day" value="{!SReport.Work_For_The_Day__c}" style="text-align:left;" escape="false"/>
+                                </apex:column>
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Work For The Next Day</apex:facet>   
+                                    <apex:outputText label="Work For The Next Day" value="{!SReport.Work_For_The_Next_Day__c}" style="text-align:left;" escape="false"/>
+                                </apex:column>
+                                <apex:column style="text-align:left; width: 100px;">
+                                    <apex:facet name="header">Action</apex:facet> 
+                                    <apex:commandLink styleClass="time_view" title="View" action="{!reDirecttoStatusReport}">
+                                        <strong><i class="fa fa-eye" aria-hidden="true"></i></strong>
+                                        <apex:param name="editSRId" value="{!SReport.id}" />
+                                    </apex:commandLink> 
+                                </apex:column> 
+                               
+                         <!--       <apex:commandLink action="{!editStatusReport}" value="" styleclass="status_edit" style="" rendered="{!IF((isCustomer) || sr.Status__c == 'Submitted' || PortalUserRole == 'Partner',False, True)}"> 
+                                                    <i class="fa fa-pencil" aria-hidden="true"></i>                                     
+                                                    <apex:param name="editSRId" value="{!sr.id}" />  
+                                                </apex:commandLink>   -->
+                                
+                                
+                            </apex:pageBlockTable>
+                            <apex:outputPanel styleClass="page-nav-bg" rendered="{!(StatusReportList.size !=0 && StatusReportList !='' && StatusReportList !=null ) }">  
+                                <apex:commandButton value="First" action="{!SrShowFirst}" disabled="{!!SrShowPrevious}" rerender="StatusReportOutputPlaneId" styleClass="save-submit page-nav-btn first-nav-btn"/>
+                                <apex:commandButton value="Previous" action="{!SrshowPrevious}" disabled="{!!SrShowPrevious}" rerender="StatusReportOutputPlaneId" styleClass="save-submit page-nav-btn previous-nav-btn"/>
+                                <apex:outputText value="{!SrCurrentPageInfo}" />
+                                <apex:commandButton value="Next" action="{!SrShowNext}" disabled="{!!SrShowNext}" rerender="StatusReportOutputPlaneId" styleClass="save-submit page-nav-btn next-nav-btn"/>
+                                <apex:commandButton value="Last" action="{!SrShowLast}" disabled="{!!SrShowNext}" rerender="StatusReportOutputPlaneId" styleClass="save-submit page-nav-btn last-nav-btn"/>       
+                            </apex:outputPanel>
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!(StatusReportList.size == 0) }" title="Status Report">
+                        <strong><left>Status Report</left></strong>
+                        <strong><center>There is no related Status report records</center></strong>
+                    </apex:outputPanel>
+                </div>
+            </div>
+            
+            
+            <!-- Status report Block End--> 
+            
+            <!------------- Task Block Start-------------> 
+            <div class="clr"></div>
+            <div class="sub-warp">
+                <div class="mid-white">
+                    <div class="mid-user-sec"> 
+                    </div> 
+                    <apex:outputPanel id="TaskOutputPlaneId" rendered="{!(taskList.size !=0 && taskList !='' && taskList !=null ) }" > <!-- rendered="{!TableOutputPlanel}" -->
+                        
+                        <apex:pageBlock id="TaskBlockId">
+                            <apex:outputPanel >  
+                                <strong><left>Task</left></strong>
+                            </apex:outputPanel> 
+                            
+                            <apex:pageBlockTable StyleClass="timeline customer-width" first="{!TaskCurrentPage }" rows="{!PageSize}"  Style="cellpadding:0; cellspacing:0; width:100%;" value="{!taskList}" var="taskReport" title="Task">
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Account</apex:facet>   
+                                    <apex:outputField label="Account" value="{!taskReport.Account.name}" style="text-align:left;"/>
+                                </apex:column> 
+                                <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Subject</apex:facet>   
+                                    <apex:outputField label="Subject" value="{!taskReport.Subject}" style="text-align:left;"/>
+                                </apex:column>  
+                                 <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Owner</apex:facet>   
+                                    <apex:outputField label="Owner" value="{!taskReport.Owner.name}" style="text-align:left;"/>
+                                </apex:column> 
+                                  <apex:column style="width: 194px;">
+                                    <apex:facet name="header">Status</apex:facet>   
+                                    <apex:outputField label="Status" value="{!taskReport.Status}" style="text-align:left;"/>
+                                </apex:column> 
+                            </apex:pageBlockTable>
+                            <apex:outputPanel styleClass="page-nav-bg" rendered="{!(taskList.size !=0 && taskList !='' && taskList !=null ) }">  
+                                <apex:commandButton value="First" action="{!TaskShowFirst}" disabled="{!!TaskShowPrevious}" rerender="TaskOutputPlaneId" styleClass="save-submit page-nav-btn first-nav-btn"/>
+                                <apex:commandButton value="Previous" action="{!TaskshowPrevious}" disabled="{!!TaskShowPrevious}" rerender="TaskOutputPlaneId" styleClass="save-submit page-nav-btn previous-nav-btn"/>
+                                <apex:outputText value="{!TaskCurrentPageInfo}" />
+                                <apex:commandButton value="Next" action="{!TaskShowNext}" disabled="{!!TaskShowNext}" rerender="TaskOutputPlaneId" styleClass="save-submit page-nav-btn next-nav-btn"/>
+                                <apex:commandButton value="Last" action="{!TaskShowLast}" disabled="{!!TaskShowNext}" rerender="TaskOutputPlaneId" styleClass="save-submit page-nav-btn last-nav-btn"/>       
+                            </apex:outputPanel>
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!(taskList.size == 0) }" title="Task">
+                        <strong><left>Task</left></strong>
+                        <strong><center>There is no related Task records</center></strong>
+                    </apex:outputPanel>
+                </div>
+            </div>
+            
+            
+            <!-- Task Block End--> 
+            <c:ODS_FooterComponent /> 
+        </apex:form>  	
+    </body>
+</apex:page>

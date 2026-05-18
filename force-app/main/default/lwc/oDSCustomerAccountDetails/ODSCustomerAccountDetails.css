@@ -1,0 +1,84 @@
+.mid-bg {
+    background: #FFFFFF;
+    width: 100%;
+    padding: 0 2% 15px 2%;
+    float: left;
+}
+.sub-warp {
+    max-width: 1380px;
+    margin: 0 auto;
+}
+.timeline-scroll {
+    overflow: auto;
+    float: left;
+    width: 100%;
+}
+.cust-box h4 {
+    float: left;
+    width: 100%;
+}
+.slds-scope .slds-table {
+    /* background-color: var(--lwc-colorBackgroundAlt,rgb(209, 209, 209)); */
+    font-size: inherit;
+}
+.cust-box h4 {
+    text-transform: uppercase;
+    font-size: 16px;
+    color: #333333;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+.timeline td {
+    color: #000;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+    border: 1px solid #d7d7d7;
+    padding: 5px 10px;
+}
+.page-nav-bg {
+    color: #4ECAF4;
+    font-weight: bold;
+    float: left;
+}
+.navButton button{
+    background: transparent !important;
+}
+.ListTable th{
+    color: #fff;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    font-weight: normal;
+    text-align: center;
+    background: #4bc9f4;
+    padding: 4px 10px;
+    text-transform: uppercase;
+}
+.cust-form {
+    margin: 0;
+    padding: 0;
+}
+.cust-form li {
+    list-style: none;
+    float: left;
+    margin-bottom: 15px;
+    width: 50%;
+}
+.cust-form li label {
+    float: left;
+    width: 200px;
+    color: #666666;
+    font-size: 14px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.cust-form li span {
+    color: #333333;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    float: left;
+    width: 100%;
+}

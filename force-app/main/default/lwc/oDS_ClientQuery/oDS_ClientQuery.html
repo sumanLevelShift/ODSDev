@@ -1,0 +1,147 @@
+<template>
+  <div class="mid-bg">
+    
+      <div class="top_srch">
+
+        <lightning-button style="color:#4ECAF4;" onclick={handleOnSearch} variant="brand" label="Search"
+          icon-name="utility:search"
+          class="slds-m-right_small slds-float_right slds-m-top_x-small slds-m-bottom_x-small tsearchButton"
+          aria-hidden="true">
+
+        </lightning-button>
+
+        <div class="advnc_search1"  >
+
+          <div class="SearchDiv slds-grid slds-gutters "
+            style="display:none;color: rgb(153, 106, 106);font-size: 12px;height: 74px;margin-top: -16px;">
+
+            <div class="slds-m-top_x-large slds-m-around_medium" style="margin: 37px;margin-top: 8px;">
+
+              <div class="slds-grid slds-gutters">
+                <div class="slds-col">
+                  <lightning-input type="date" date-style="short" name="txt_from" class="startdate"
+                    style="color: #000;font-size: 12px; " placeholder="From Date"></lightning-input>
+                </div>
+                <div class="slds-col">
+                  <lightning-input type="date" date-style="short" name="txt_to" style="color: #000;font-size: 12px;"
+                    class="enddate" placeholder="To Date">
+                  </lightning-input>
+                </div>
+                <div class="slds-col">
+                  <lightning-button variant="brand" onclick={handleFetchQuery} label="Search"
+                    class="slds-m-right_x-small tsearchv2">
+                  </lightning-button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="mid-white">
+        
+          <div class="slds-m-around_medium mid-white">
+
+            <div class="slds-align_absolute-center norecords"
+            style="display:none;font-weight: bold;font-size: 14px;margin-left: 45%;">
+            <br />
+            No records found.
+        </div>
+        <div class="timeline-scroll tableListEST verticalScrollBar">
+
+            <table class="apply_dataTable slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered"
+              style="width:100%;background:transparent;">
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th class="" scope="col"
+                    style="background-color: #4ECAF4; font-weight:normal; color:#fff; font-size:13px; padding: 4px 10px; text-align:center; ">
+                    <div class="slds-truncate" title="Customer Name">CUSTOMER NAME</div>
+                  </th>
+                  <th class="" scope="col"
+                    style="background-color: #4ECAF4; font-weight:normal; color:#fff; font-size:13px; padding: 4px 10px; text-align:center; ">
+                    <div class="slds-truncate" style="text-align:left;" title="Service Opted">SERVICE OPTED</div>
+                  </th>
+                  <th class="" scope="col"
+                    style="background-color: #4ECAF4; font-weight:normal; color:#fff; font-size:13px; padding: 4px 10px; text-align:center; ">
+                    <div class="slds-truncate" style="text-align:left;" title="Query">QUERY</div>
+                  </th>
+                  <th class="" scope="col"
+                    style="background-color: #4ECAF4; font-weight:normal; color:#fff; font-size:13px; padding: 4px 10px; text-align:center; ">
+                    <div class="slds-truncate" style="text-align:left;" title="Query Date">QUERY DATE</div>
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <template if:true={data}>
+                  <template for:each={data} for:item="resData">
+                    <tr
+                      style="font-weight:normal;text-align:left; margin: left 10px; color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;"
+                      key={resData.id}>
+                      <td>
+                        <div class="slds-truncate">
+                          {resData.Account_Name__r.Name}
+                        </div>
+                      </td>
+                      <td>
+                        <div class="slds-truncate">
+                          {resData.Service_Name__r.Name__c}
+                        </div>
+                      </td>
+                      <td class="slds-cell-wrap" data-label="Wrapped, Client Querry">
+                        <div class="slds-line-clamp"> {resData.Queries__c}</div>
+                      </td>
+                     
+                      <td>
+                        <div class="slds-truncate">
+                          <lightning-formatted-date-time value={resData.Query_Date__c} year="numeric" month="numeric"
+                            day="numeric"></lightning-formatted-date-time>
+                        </div>
+                      </td>
+                    </tr>
+                  </template>
+                </template>
+              </tbody>
+            </table>
+            
+
+
+            </br>
+            <div class="slds-align_absolute-center" style=" font-weight: bold;float: left;">
+              <div class="slds-grid slds-gutters" style="place-content:baseline;">
+                <div class="slds-col" style="color: #000; font-weight: bold;font-size: 12px;">
+
+                  <lightning-button label="First" disabled={isPrev} icon-name="utility:jump_to_left"
+                    onclick={firstHandler}>
+                  </lightning-button>
+                </div>
+                <div class="slds-col" style="color: #000; font-weight: bold;font-size: 12px;">
+                  <lightning-button label="Previous" icon-name="utility:chevronleft" disabled={isPrev}
+                    onclick={previousHandler}>
+                  </lightning-button>
+                </div>
+                <div class="slds-col" style="color: #4ECAF4; font-weight: bold;font-size: 12px;">
+                  Showing Page {page} of {totalPage}
+                </div>
+                <div class="slds-col" style="color: #000; font-weight: bold;font-size: 12px;">
+                  <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right"
+                    disabled={isNext} onclick={nextHandler}>
+                  </lightning-button>
+                </div>
+                <div class="slds-col" style="color: #000; font-weight: bold;font-size: 12px;">
+                  <lightning-button label="Last" icon-name="utility:jump_to_right" icon-position="right"
+                    disabled={isNext} onclick={lastHandler}>
+                  </lightning-button>
+                </div>
+              </div>
+
+            </div>
+</div>
+
+          </div>
+        
+      </div>
+    
+  </div>
+</template>

@@ -1,0 +1,70 @@
+.record-type-section {
+    background-color: #f4f6f9;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.child-component-section {
+    border-top: 2px solid #e5e5e5;
+    padding-top: 1rem;
+}
+
+.back-button-container {
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.placeholder-component {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+    text-align: center;
+    padding: 2rem;
+}
+
+.placeholder-component lightning-icon {
+    color: white;
+}
+
+.slds-radio_button-group .slds-radio_button {
+    margin-right: 1rem;
+}
+
+/* Custom radio button styling */
+.record-type-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.record-type-options .slds-radio {
+    margin-bottom: 0.5rem;
+}
+
+/* Loading state styles */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+}
+
+/* Success message styling */
+.success-message {
+    background-color: #04844b;
+    color: white;
+    border-radius: 4px;
+    padding: 1rem;
+    text-align: center;
+}
+
+/* Error message styling */
+.error-message {
+    background-color: #c23934;
+    color: white;
+    border-radius: 4px;
+    padding: 1rem;
+    text-align: center;
+}

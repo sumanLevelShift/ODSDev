@@ -1,0 +1,46 @@
+<apex:page standardController="WorkOrder_Line_Item__c" lightningStylesheets="true" showHeader="false"
+           sidebar="false"
+           standardStylesheets="false">
+    <apex:slds />
+    
+    <apex:includeLightning />
+    
+    <div id="lightning">
+    </div>
+    
+    <script>
+    /* function getWorkOrderId() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var retURL = urlParams.get('retURL');
+        
+        console.log('retURL:', retURL);
+        
+        if (retURL) {
+            var idMatch = retURL.match(/(a0[\w]{12,18})/);
+            if (idMatch && idMatch[0]) {
+                console.log('Extracted ID from retURL:', idMatch[0]);
+                return idMatch[0];
+            }
+        }
+        
+        
+        console.error('No WorkOrder ID found in URL parameters');
+        return null;
+    }
+    
+    var workOrderId = getWorkOrderId();
+    
+    // alert('WorkOrder ID:', workOrderId);*/
+    $Lightning.use("c:NewWorkOrderLineItemApp", function() {
+        $Lightning.createComponent("c:NewWorkOrderLineItemAura",
+                                   { 
+                                       
+                                   },
+                                   "lightning",
+                                   function(cmp) {
+                                       console.log("LWC component was created");
+                                   }
+                                  );
+    });
+    </script>
+</apex:page>

@@ -1,0 +1,50 @@
+<template>
+    <!-- Loading Spinner -->
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+    </template>
+
+    <template if:false={isLoading}>
+        <!-- Header Row -->
+        <div class="slds-grid slds-gutters slds-border_bottom slds-p-bottom_x-small slds-m-bottom_medium">
+            <div class="slds-col slds-size_3-of-12">
+                <strong>Service Name</strong>
+            </div>
+
+            <div class="slds-col slds-size_2-of-12">
+                <strong>Quantity</strong>
+            </div>
+            <div class="slds-col slds-size_2-of-12">
+                <strong>Rate</strong>
+            </div>
+        </div>
+
+        <!-- Data Row -->
+        <div class="slds-grid slds-gutters slds-p-vertical_small">
+            <!-- Description Column (Readonly) -->
+            <div class="slds-col slds-size_3-of-12">
+                <lightning-input type="text" value={lineItemData.description} variant="label-hidden" readonly>
+                </lightning-input>
+            </div>
+
+            <div class="slds-col slds-size_2-of-12">
+                <lightning-input type="number" value={lineItemData.quantity} step="0.00001" min="0.5" variant="label-hidden"
+                    onchange={handleQuantityChange} required>
+                </lightning-input>
+            </div>
+            <div class="slds-col slds-size_2-of-12">
+                <lightning-input type="number" value={lineItemData.rate} step="0.00001" min="0" formatter="currency"
+                    onchange={handleRateChange} variant="label-hidden" required>
+                </lightning-input>
+            </div>
+        </div>
+        <!-- Action Buttons -->
+        <div class="slds-m-top_large slds-float_right">
+            <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_small">
+            </lightning-button>
+            <lightning-button label="Save" variant="brand" onclick={handleSave}>
+            </lightning-button>
+        </div>
+    </template>
+    <br/><br/>
+</template>

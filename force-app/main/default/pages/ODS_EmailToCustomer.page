@@ -1,0 +1,268 @@
+<!--*******************************************************************************************
+* @author           Gireesh
+* @version          1.0 
+* @Status           Development Completed
+* @Class Name       ODS_EmailToCustomerController
+* @description      This page is written to send Email to customers
+*********************************************************************************************
+Version     Date            Team            Comments
+*********************************************************************************************
+* 1         25 SEP 2020     DemandBlue      Initial Development
+* 2        	07 DEC 2020    	DemandBlue 		After sending draft email, that draft email should be deleted - functionality added
+*********************************************************************************************-->
+<apex:page controller="ODS_EmailToCustomerController" showHeader="false" sidebar="false" standardStyleSheets="false" id="CustomerEmailPage">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" /> 
+        <apex:includeScript value="https://code.jquery.com/jquery-latest.min.js"/>        
+        <!-------- Bootstrap ----->
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/bootstrap.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/bootstrap.js')}"/> 
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/style.css')}"/>
+        <link href="{!URLFOR($Resource.ODS_Assets,'css/style_dev.css')}" rel="stylesheet" type="text/css"/>       
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/jquery-ui.css')}"/>          
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'ckeditor/ckeditor.js')}"/>
+        <style> 
+            .cust-box h4{
+            float:none;
+            text-align:center;
+            }
+        </style>        
+        
+        <script type="text/javascript">
+        $(document).ready(function(){
+            $("#emails").addClass("active");
+            $('.tsearch').click(function(){
+                resetFields();
+                document.getElementById('divComposeEmail').style.display = 'block';
+                //$('.advnc_search').slideToggle('fast');                     
+            });
+            var AccountID = $(".ddlstAccount").val();
+            var ServiceID = $(".ddlstService").val();
+            
+            AddAccountIDAction(AccountID,ServiceID);
+        });
+        
+        function ApplySearch(){
+            var AccountID = $(".ddlstAccount").val();
+            var ServiceID = $(".ddlstService").val();
+            
+            AddAccountIDAction(AccountID,ServiceID);
+        }
+        
+        window.onload = function(){
+            CKEDITOR.replace( 'CustomerEmailPage:searchForm:editor1', { language: 'EN', toolbar: 'CustomerEmailPage:searchForm:editor1',scayt_autoStartup: true,disableNativeSpellChecker: true,});
+            CKEDITOR.on("instanceReady", function (ev){
+                var bodyelement = ev.editor.document.$.body;
+                bodyelement.setAttribute("contenteditable", true);
+            });                 
+        }
+        
+        function clickOnDraftEmail(DraftEmailId,DocumentIds,EmailSubject,EmailBody,CustomerIds){
+            //resetFields();
+            document.getElementById('divComposeEmail').style.display = 'block';
+            document.getElementById('CustomerEmailPage:searchForm:emailSubject').value = EmailSubject;
+            CKEDITOR.instances['CustomerEmailPage:searchForm:editor1'].setData(EmailBody);
+            document.getElementById('CustomerEmailPage:searchForm:DraftMailId').value = DraftEmailId;
+            //document.getElementById('email_addattachments').style.display = 'none';
+            //document.getElementById('email_attachments').style.display = 'block';
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.ODS_EmailToCustomerController.getCustomerNames}', 
+                CustomerIds,
+                function(result, event){
+                    if(result != null){ 
+                        var customersArray = result.split("|");
+                        document.getElementById('CustomerEmailPage:searchForm:CustomerNames').style.display = 'block';
+                        document.getElementById('CustomerEmailPage:searchForm:CustomerNames').innerHTML = "<b>Recipients: </b>" + customersArray[0];
+                        document.getElementById('CustomerEmailPage:searchForm:SavedCustomers').value = customersArray[1];                           
+                    }
+                });
+        }
+        
+        var lastRow;
+        function highlightRow(elem){    
+            if(lastRow != undefined)
+                lastRow.style.backgroundColor = '';
+            
+            elem.style.backgroundColor = 'yellow';
+            lastRow = elem;
+        }
+        function deleteEmail(deleteEmailId){ 
+            deleteEmail(deleteEmailId);
+        }
+        function validateSendEmail(buttonElement,buttonName){        
+            var emailSubjectVar = document.getElementById('CustomerEmailPage:searchForm:emailSubject').value;
+            if(emailSubjectVar === "undefined" || emailSubjectVar == null || emailSubjectVar.trim() == "" || emailSubjectVar.length <= 0) {
+                alert("Email subject should not be empty!!");
+                return false;
+            }
+            var emailBodyVar = CKEDITOR.instances['CustomerEmailPage:searchForm:editor1'].getData();
+            if(emailBodyVar === "undefined" || emailBodyVar == null || emailBodyVar.trim() == "" || emailBodyVar.length <= 0) {
+                alert("Email body should not be empty!!");
+                return false;
+            }
+            var selectList = document.getElementById('CustomerEmailPage:searchForm:j_id36:j_id38:j_id39:multiselectPanel:rightList').options.length;
+            var selectDraftId = document.getElementById('CustomerEmailPage:searchForm:DraftMailId').value;
+            if(selectList <= 0) {
+                if(buttonName === 'draft'){
+                    alert("Selected Customers should not be empty!!");
+                    return false; 
+                }
+                if(buttonName === 'send' && (selectDraftId === undefined || selectDraftId == null || selectDraftId.length <= 0)){
+                    alert("Selected Customers should not be empty!!");
+                    return false; 
+                }
+            }         
+            //buttonElement.click();
+            //document.getElementById('CustomerEmailPage:searchForm:btnSend').disabled = true;
+            //document.getElementById('CustomerEmailPage:searchForm:btnDraft').disabled = true;
+            var savedCustomersValue = document.getElementById('CustomerEmailPage:searchForm:SavedCustomers').value; 
+            if(buttonName === 'draft' && !(savedCustomersValue === undefined || savedCustomersValue == null || savedCustomersValue.length <= 0)){                    
+                if(!confirm('A new draft email will be created for the Customers listed in the selected Customers field. Do you want to proceed?'))
+                    return false;
+            }
+            document.getElementById('CustomerEmailPage:searchForm:btnSend').style.backgroundColor = '#999999';
+            document.getElementById('CustomerEmailPage:searchForm:btnDraft').style.backgroundColor = '#999999';
+            return true;
+        }
+        function resetFields(){
+            document.getElementById('CustomerEmailPage:searchForm:emailSubject').value = '';
+            CKEDITOR.instances['CustomerEmailPage:searchForm:editor1'].setData(''); 
+            document.getElementById('CustomerEmailPage:searchForm:CustomerNames').style.display = 'none';
+            document.getElementById('CustomerEmailPage:searchForm:CustomerNames').innerHTML = '';
+            document.getElementById('CustomerEmailPage:searchForm:SavedCustomers').value = '';
+            document.getElementById('CustomerEmailPage:searchForm:DraftMailId').value = '';
+            if(lastRow != undefined)
+                lastRow.style.backgroundColor = '';
+        }
+        </script>
+    </head>
+    <body>
+        <apex:form id="searchForm">
+            <div class="shadow-show"></div>
+            <c:ODS_HeaderComponent />  
+            <apex:actionStatus id="statusSaveTrip" stopText="">
+                <apex:facet name="start">
+                    <div>
+                        <div class="popupBackground" />
+                        <div class="PopupPanel">
+                            <table border="0" width="100%" height="100%">
+                                <tr>
+                                    <td align="center"><b>Please Wait</b></td>
+                                </tr>
+                                <tr>
+                                    <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionStatus>
+            <!-- Action functions -->
+            <apex:actionFunction name="AddAccountIDAction" action="{!GetTimesheetByAccountServiceID}" status="statusSaveTrip" reRender="divDraftEmails" immediate="True" >
+                <apex:param name="SelectedAccountId" value="" assignTo="{!AccountId}"/>
+                <apex:param name="SelectedServiceID" value="" assignTo="{!ServiceId}"/>
+            </apex:actionFunction>            
+            <div class="clr"></div>
+            <div class="sub-warp">                                
+                <div class="cust-box" style="margin-top: 20px;">                    
+                    <apex:outputPanel id="searchPanelId" style="text-align: -webkit-center;">     
+                        <apex:pageBlock >
+                            <h4>Customer Names</h4>
+                            <c:ODS_MultiSelectComponent leftLabel="Available Customers" leftOption="{!allCustomers}" 
+                                                        rightLabel="Selected Customers" rightOption="{!selectedCustomers}"
+                                                        size="14" width="250px"/>                           
+                        </apex:pageBlock>
+                    </apex:outputPanel>                    
+                </div>
+                <div id="divDraftEmails" class="cust-box" style="{!IF(draftEmailList.size == 0, 'display:none', 'display:block')};margin-top: 20px;">                    
+                    
+                    <div class="mid-white">
+                        <!--<div class="mid-user-sec"></div>-->
+                        <apex:outputPanel id="emailPanelId" rendered="{!(draftEmailList.size !=0 && draftEmailList !='' && draftEmailList !=null)}">     
+                            <apex:pageBlock id="pgblckEmailGrid">
+                                <apex:outputPanel >  
+                                    <strong><left>Available Draft Emails</left></strong>
+                                </apex:outputPanel> 
+                                <apex:pageBlockTable id="pgblckDraftEmail" StyleClass="timeline customer-width" Style="cellpadding:0; cellspacing:0; width:100%;" value="{!draftEmailList}" var="rec" first="{!CurrentPage }" rows="{!PageSize}"
+                                                     onRowClick="highlightRow(this);return false;">                                               
+                                    <apex:column headerValue="SUBJECT" value="{!rec.EmailSubject__c}" style="text-align:left;" onclick="clickOnDraftEmail('{!rec.Id}','{!rec.DocumentIds__c}','{!rec.EmailSubject__c}','{!rec.EmailBody__c}','{!rec.CustomerIds__c}');return false;" /> 
+                                    <apex:column headerValue="CREATED DATE" value="{!rec.CreatedDate}" style="text-align:center;" onclick="clickOnDraftEmail('{!rec.Id}','{!rec.DocumentIds__c}','{!rec.EmailSubject__c}','{!rec.EmailBody__c}','{!rec.CustomerIds__c}');return false;" />
+                                    <apex:column headerValue="LAST MODIFIED DATE" value="{!rec.LastModifiedDate}" style="text-align:center;" onclick="clickOnDraftEmail('{!rec.Id}','{!rec.DocumentIds__c}','{!rec.EmailSubject__c}','{!rec.EmailBody__c}','{!rec.CustomerIds__c}');return false;" />
+                                    <apex:column headerValue="STATUS" value="{!rec.EmailStatus__c}" style="text-align:center;" onclick="clickOnDraftEmail('{!rec.Id}','{!rec.DocumentIds__c}','{!rec.EmailSubject__c}','{!rec.EmailBody__c}','{!rec.CustomerIds__c}');return false;" />
+                                    <apex:column style="text-align:center; width: 100px;">
+                                        <apex:facet name="header">Action</apex:facet> 
+                                        <apex:commandLink styleClass="time_view" title="Delete" onclick="return confirm('Are you sure you want to delete?');" action="{!deleteDraftEmail}">
+                                            <strong><i class="fa fa-trash" aria-hidden="true"></i></strong>
+                                            <apex:param name="DraftEmailId" value="{!rec.Id}" />
+                                        </apex:commandLink>
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                                <apex:outputPanel styleClass="page-nav-bg" rendered="{!(draftEmailList.size != 0 && draftEmailList != '' && draftEmailList != null)}" > 
+                                    <apex:commandButton value="First" action="{!showFirst}" disabled="{!!ShowPrevious}" rerender="emailPanelId" styleClass="save-submit page-nav-btn first-nav-btn"/>
+                                    <apex:commandButton value="Previous" action="{!showPrevious}" disabled="{!!ShowPrevious}" rerender="emailPanelId" styleClass="save-submit page-nav-btn previous-nav-btn"/>
+                                    <apex:outputText value="{!CurrentPageInfo}" />
+                                    <apex:commandButton value="Next" action="{!showNext}" disabled="{!!ShowNext}" rerender="emailPanelId" styleClass="save-submit page-nav-btn next-nav-btn"/>
+                                    <apex:commandButton value="Last" action="{!showLast}" disabled="{!!ShowNext}" rerender="emailPanelId" styleClass="save-submit page-nav-btn last-nav-btn"/>       
+                                </apex:outputPanel>
+                            </apex:pageBlock>
+                        </apex:outputPanel>  
+                        <apex:outputPanel rendered="{!(draftEmailList.size == 0) }">  
+                            <strong><left>Available Draft Emails</left></strong>
+                            <strong><center>There is no Available Draft Emails</center></strong>
+                        </apex:outputPanel> 
+                    </div>
+                    
+                </div>
+                <div class="tsearch">New Email</div>
+                <apex:pageMessages escape="false" />
+                <div id="divComposeEmail" class="advnc_search cust-box" style="margin-top: 20px;display:none;"> 
+                    <h4>Compose New Email</h4>
+                    <br/><br/>
+                    <apex:outputText id="CustomerNames" value="{!selectedCustomerNames}" style="display:none;"></apex:outputText>
+                    <apex:inputText id="SavedCustomers" value="{!savedCustomerIds}" style="display:none;"/>
+                    <apex:inputText id="DraftMailId" value="{!draftMailId}" style="display:none;"/>
+                    <div class="mid-user-sec"></div>
+                    <br/><br/>                 
+                    
+                    <apex:outputLabel value="Subject" for="Subject"/>: <br/> 
+                    <apex:inputText value="{!draftEmail.EmailSubject__c}" id="emailSubject" />
+                    
+                    <br/><br/>
+                    <!-- <input class="form-control" id="emailSubject" name="Subject" type="text" value="" />
+<apex:outputLabel value="Body" for="Body"/>: <br/>   
+<apex:inputTextarea value="{!draftEmail.EmailBody__c}" id="Body" rows="10" cols="80"/> -->
+                    <div id="email_body">
+                        <p id = "body_content"><b>Body: </b><br />
+                            <apex:inputTextArea id="editor1" value="{!draftEmail.EmailBody__c}" label="Email Body" />
+                        </p>
+                    </div>   
+                    <br/><br/> 
+                    <!--<div id="email_addattachments" style="display:none;">  
+<apex:outputLabel value="Attachment1" for="Attachment1"/>                    
+<apex:inputFile id="attachmentOne" value="{!attachment1.body}" filename="{!attachment1.name}" />
+<apex:outputLabel value="Attachment2" for="Attachment2"/>
+<apex:inputFile id="attachmentTwo" value="{!attachment2.body}" filename="{!attachment2.name}" />
+</div>
+<div id="email_attachments" style="display:none;">                         
+<div class="cust-box">
+<h4>Attachments </h4>
+<ul class="cust-form">                                            
+<li><label>Attachment1 : </label><apex:outputText id="attach1Id" value="{!attachment1.name}" />
+<label>Attachment2 : </label><apex:outputText id="attach2Id" value="{!attachment2.name}" /> </li>
+<li><apex:inputText id="setAttachmentIds" value="{!AttachmentIds}" styleClass="attachmentIdsToSetVariable" style="display:none;"/></li>
+</ul>
+</div> 
+</div>-->                    
+                    <div id ="divButtons" class="pull-right">                       
+                        <apex:commandButton id="btnSend" value="Send" action="{!sendEmails}" onclick="return validateSendEmail(this,'send');" /> 
+                        <apex:commandButton id="btnDraft" value="Save as Draft" action="{!saveDraftEmail}" onclick="return validateSendEmail(this,'draft');" />
+                        <!--<apex:commandbutton style="display:none;" id="btnFetchAttachmentDisabled" action="{!FetchDocuments}"  /> -->
+                    </div>
+                </div>
+            </div>
+            <c:ODS_FooterComponent /> 
+        </apex:form>    
+    </body>
+</apex:page>

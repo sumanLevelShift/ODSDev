@@ -1,0 +1,437 @@
+/* Container */
+.initiative-container {
+    background: #ffffff;
+}
+
+/* Page Header */
+.page-header {
+    background-color: #4ECAF4;
+    color: #ffffff;
+}
+
+.page-header h1 {
+    margin: 0;
+    color: #ffffff;
+}
+
+/* Accordion styling to match VF page */
+.slds-accordion__section {
+    border-top: 1px solid #dddbda;
+}
+
+/* Estimate Table Container */
+.estimate-table-container {
+    overflow-x: auto;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.estimate-table-container table {
+    width: 100%;
+    min-width: 800px;
+}
+
+.estimate-table-container thead {
+    background-color: #4ECAF4;
+    color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.estimate-table-container thead th {
+    background-color: #4ECAF4;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 0.75rem;
+}
+
+.estimate-table-container tbody td {
+    padding: 0.5rem;
+    vertical-align: top;
+}
+
+.estimate-table-container tfoot {
+    background-color: #f3f3f3;
+    font-weight: bold;
+}
+
+.estimate-table-container tfoot td {
+    padding: 0.75rem;
+}
+
+/* Action Buttons */
+.action-buttons {
+    background-color: #f3f3f3;
+    border-top: 1px solid #dddbda;
+}
+
+.action-buttons lightning-button {
+    margin-left: 0.5rem;
+}
+
+/* Status Badge Custom Colors */
+.slds-badge.slds-theme_success {
+    background-color: #4bca81;
+    color: #ffffff;
+}
+
+.slds-badge.slds-theme_warning {
+    background-color: #ffb75d;
+    color: #ffffff;
+}
+
+.slds-badge.slds-theme_error {
+    background-color: #ea001e;
+    color: #ffffff;
+}
+
+.slds-badge.slds-theme_info {
+    background-color: #1589ee;
+    color: #ffffff;
+}
+
+/* Gauge Container */
+.gauge-container {
+    height: 300px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Form Styling */
+lightning-input,
+lightning-textarea,
+lightning-combobox,
+lightning-dual-listbox,
+lightning-input-rich-text {
+    margin-bottom: 1rem;
+}
+
+/* Rich Text Editor */
+lightning-input-rich-text {
+    min-height: 200px;
+}
+
+/* Panel Titles - match VF styling */
+.slds-accordion__summary-heading {
+    background-color: #4ECAF4;
+    color: #ffffff;
+}
+
+/* Disabled field styling */
+lightning-input[disabled],
+lightning-textarea[disabled],
+lightning-combobox[disabled] {
+    opacity: 0.6;
+}
+
+/* Custom scrollbar for estimate table */
+.estimate-table-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.estimate-table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.estimate-table-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.estimate-table-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Modal Styling */
+.slds-modal__container {
+    max-width: 600px;
+}
+
+.slds-modal__header {
+    background-color: #4ECAF4;
+    color: #ffffff;
+}
+
+.slds-modal__header h2 {
+    color: #ffffff;
+}
+
+/* Attachment Table */
+lightning-datatable {
+    margin-top: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .slds-col {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    
+    .action-buttons {
+        text-align: center;
+    }
+    
+    .action-buttons lightning-button {
+        margin: 0.25rem;
+    }
+    
+    .estimate-table-container {
+        max-height: 400px;
+    }
+}
+
+/* Loading Spinner */
+lightning-spinner {
+    z-index: 9999;
+}
+
+/* Message Styling */
+.slds-notify_alert {
+    margin-bottom: 1rem;
+}
+
+/* Truncate long text */
+.slds-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Float utilities */
+.slds-float_right {
+    float: right;
+}
+
+/* Section spacing */
+.slds-accordion__section {
+    margin-bottom: 0;
+}
+
+/* Button hover effects */
+lightning-button:hover {
+    opacity: 0.9;
+}
+
+/* Total hours display */
+.slds-text-heading_small {
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+/* Estimate table inputs */
+.estimate-table-container lightning-input,
+.estimate-table-container lightning-textarea,
+.estimate-table-container lightning-combobox {
+    margin-bottom: 0;
+}
+
+/* Delete icon button */
+lightning-button-icon {
+    color: #ea001e;
+}
+
+lightning-button-icon:hover {
+    background-color: #f3f3f3;
+}
+
+/* Panel actions (Account/Service display) */
+.slds-accordion__section div[slot="actions"] {
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+}
+
+/* Optional message for JIRA ID */
+.slds-text-body_small.slds-text-color_weak {
+    font-style: italic;
+    margin-top: -0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Burndown chart container */
+.burndown-chart-container {
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+/* Product textarea readonly */
+lightning-textarea[readonly] {
+    background-color: #f3f3f3;
+}
+
+/* Grid gutters */
+.slds-gutters {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+
+.slds-gutters > .slds-col {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* Form element spacing */
+.slds-form-element {
+    margin-bottom: 1rem;
+}
+
+/* Help text icon */
+.slds-form-element__icon {
+    color: #706e6b;
+}
+
+/* Progress section */
+.progress-section {
+    padding: 1rem;
+}
+
+/* Escalation table */
+.escalation-table {
+    width: 100%;
+}
+
+/* Warning message styling */
+.slds-alert_warning {
+    border-left: 4px solid #ffb75d;
+}
+
+/* Error message styling */
+.slds-alert_error {
+    border-left: 4px solid #ea001e;
+}
+
+/* Success message styling */
+.slds-alert_success {
+    border-left: 4px solid #4bca81;
+}
+
+/* Accordion summary action text */
+.slds-text-body_regular strong {
+    font-weight: 700;
+    margin-right: 0.5rem;
+}
+
+/* File upload */
+lightning-file-upload {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+/* Back button spacing */
+.action-buttons lightning-button:first-child {
+    margin-left: 0;
+}
+
+/* Ensure proper text alignment */
+.slds-text-align_right {
+    text-align: right;
+}
+
+.slds-text-align_center {
+    text-align: center;
+}
+
+.slds-text-align_left {
+    text-align: left;
+}
+
+/* Margin utilities */
+.slds-m-top_medium {
+    margin-top: 1rem;
+}
+
+.slds-m-top_small {
+    margin-top: 0.5rem;
+}
+
+.slds-m-top_x-small {
+    margin-top: 0.25rem;
+}
+
+.slds-m-bottom_medium {
+    margin-bottom: 1rem;
+}
+
+.slds-m-bottom_small {
+    margin-bottom: 0.5rem;
+}
+
+.slds-m-right_small {
+    margin-right: 0.5rem;
+}
+
+/* Padding utilities */
+.slds-p-around_medium {
+    padding: 1rem;
+}
+
+.slds-p-around_small {
+    padding: 0.5rem;
+}
+
+/* Box styling for panels */
+lightning-card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Accordion section open/closed icon */
+.slds-accordion__summary-action-icon {
+    transition: transform 0.3s ease;
+}
+
+/* Hide checkbox column in datatables */
+.slds-table thead .slds-checkbox {
+    display: none;
+}
+
+/* Ensure proper spacing in modals */
+.slds-modal__content {
+    min-height: 150px;
+}
+
+/* Footer button spacing */
+.slds-modal__footer lightning-button {
+    margin-left: 0.5rem;
+}
+
+.slds-modal__footer lightning-button:first-child {
+    margin-left: 0;
+}
+
+/* Ensure form labels are properly aligned */
+.slds-form-element__label {
+    font-weight: 700;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Required field indicator */
+.slds-required {
+    color: #ea001e;
+}
+
+/* Dual listbox styling */
+lightning-dual-listbox {
+    display: block;
+}
+
+/* Ensure buttons don't wrap */
+.action-buttons {
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+/* Print styles */
+@media print {
+    .action-buttons,
+    .page-header,
+    lightning-button,
+    lightning-button-icon {
+        display: none !important;
+    }
+}

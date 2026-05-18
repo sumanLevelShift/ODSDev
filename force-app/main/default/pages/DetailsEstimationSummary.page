@@ -1,0 +1,157 @@
+<apex:page controller="EstimationSummaryDetailsPageContrl" showHeader="false" sidebar="false" title="ON DEMAND SERVICES">
+    
+    <style>
+        #auraErrorMessage{
+        display:none;
+        }
+        #popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+        
+        /* Dimensions */
+        width: 100%;
+        height: 500%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        font-family: sans-serif;
+        /* Mouse */
+        cursor:wait;
+        }
+        
+        /* This is for the message DIV */
+        #PopupPanel {
+        /* Background color */
+        border: solid 2px skyblue;
+        background-color: white;
+        font-family: sans-serif;
+        /* Dimensions */
+        left: 50%;
+        width: 100px;
+        margin-left: -100px;
+        top: 50%;
+        height: 100px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+        }
+
+        .chatgptdocked .slds-button_brand{
+            background: rgb(10, 98, 178) !important;;
+        }        
+    </style>
+    
+    <apex:stylesheet value="{!$Resource.chatgptstyle}" />
+    
+    <apex:form id="apexForm">
+        <c:ODS_HeaderComponent />
+        
+        <apex:includeLightning />
+        <div id="lightning" style="clear: both;"/>
+        
+        <!-- <div style="float: left;margin-top: 10px;padding: 0;clear: both;">
+<apex:commandButton id="downloadReport" value="Export" styleClass="save-submit" onclick="exportAsExcel();return false;"/>
+</div>-->
+        <c:ODS_FooterComponent /> 
+    </apex:form>
+    
+    <apex:actionStatus id="statusSaveTrip" stopText="">
+        <apex:facet name="start">
+            <div>
+                <div id="popupBackground" />
+                <div id="PopupPanel">
+                    <table border="0" width="100%" height="100%">
+                        <tr>
+                            <td align="center"><b>Please Wait</b></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionStatus>
+    <script>
+    
+    var AccountID;
+    var ServiceID;
+    $(document).ready(function(){
+        var accId='{!AccountId}';
+        var serId='{!ServiceId}';
+        if(accId){
+            AccountID ='{!AccountId}';
+        }else{
+            AccountID = $(".ddlstAccount").val();
+        }
+        if(serId){
+            ServiceID ='{!ServiceId}';
+        }else{
+            ServiceID = $(".ddlstService").val();
+        }
+        
+    });
+    /*function exportAsExcel(){
+        ExportAsExcelActionCall();
+    }*/
+    function ApplySearch(){
+        var elem = document.getElementById("lightning");
+        elem.innerHTML = ""; 
+        AccountID = $(".ddlstAccount").val();
+        ServiceID = $(".ddlstService").val();
+        ApplySearchAction(AccountID, ServiceID);
+        
+        $Lightning.createComponent("c:oDSEstimationSummaryDetailsPageAura",{
+            accID: AccountID,servId:ServiceID,estimateId:'{!EstimationId}'},
+                                   "lightning",
+                                   function(cmp) {
+                                       // do some stuff
+                                   });
+        /*$Lightning.createComponent("c:chatGPTCMP",
+                                   { 
+                                   },
+                                   "lightning",
+                                   function(cmp) {
+                                       console.log('LWC Component added in VF page');
+                                   });*/
+    }
+    
+    $Lightning.use("c:oDSEstimationSummaryDetailsPageApp", function() {
+        $Lightning.createComponent("c:oDSEstimationSummaryDetailsPageAura", {
+            accID: AccountID,servId:ServiceID,estimateId:'{!EstimationId}'
+        },
+                                   "lightning",
+                                   function(cmp) {
+                                       var loadingDivElt = document.getElementById("PopupPanel");
+                                       loadingDivElt.style.display = 'none' ;  
+                                       var loadingDivElt = document.getElementById("popupBackground");
+                                       loadingDivElt.style.display = 'none' ;  
+                                   }
+                                  );
+    });
+    /*$Lightning.use("c:oDSEstimationSummaryDetailsPageApp", function() {
+        $Lightning.createComponent("c:chatGPTCMP",
+                                   { 
+                                   },
+                                   "lightning",
+                                   function(cmp) {
+                                       console.log('LWC Component added in VF page');
+                                   });
+    });*/
+    </script>
+    <apex:form >
+        <apex:actionFunction name="ApplySearchAction" action="{!updateSessionData}" status="statusSaveTrip" reRender="none" immediate="true">
+            <apex:param name="SelectedAccountId" value="" assignTo="{!AccountId}" />
+            <apex:param name="SelectedServiceID" value="" assignTo="{!ServiceId}" />
+        </apex:actionFunction>
+        <!--    <apex:actionFunction name="ExportAsExcelActionCall" action="{!exportAsExcel}" rerender="SearchResultsPanel,CustomerPanel" immediate="true" >
+</apex:actionFunction>-->
+    </apex:form>
+    
+</apex:page>

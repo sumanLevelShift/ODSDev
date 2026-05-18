@@ -1,0 +1,23 @@
+<apex:page standardcontroller="Contact">
+
+<!-- JS Section -->
+<script>
+window.document.onload = new function(e)
+    {
+    <!-- Commented by Indhu as part of OSM-120 on 11-Jan-2022 
+      if({!Contact.Status__c == '5: Outcome - Opportunity'} && {!Contact.ISActivityCreated5AB__c == false})
+      {
+        alert("Status Changed to '5: Outcome - Opportunity', Please Create open activity with due date");
+      }
+      if({!Contact.Status__c == '5a: Outcome - Opportunity'} && {!Contact.ISActivityCreated5AB__c == false})
+      {
+        alert("Status Changed to '5a: Outcome - Opportunity', Please Create open activity with due date");
+      }
+      if({!Contact.Status__c == '5b: Outcome - Not Now'} && {!Contact.ISActivityCreated5AB__c == false})
+      {
+        alert("Status Changed to '5b: Outcome - Not Now', Please Create open activity with due date");
+      }-->
+     
+    }
+</script>
+</apex:page>

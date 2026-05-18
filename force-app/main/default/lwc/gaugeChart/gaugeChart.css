@@ -1,0 +1,12 @@
+.gauge-chart {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gauge-chart svg {
+    max-width: 250px;
+    max-height: 200px;
+}

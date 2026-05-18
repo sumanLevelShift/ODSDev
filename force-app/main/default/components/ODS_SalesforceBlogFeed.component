@@ -1,0 +1,24 @@
+<apex:component >
+    <apex:attribute name="elementId" description="Id of the DIV element" type="String" required="true"/>
+    <apex:attribute name="URL" description="Feed URL" type="String" required="true"/>
+    <apex:attribute name="numberOfEntries" description="Number of feeds to show" type="String" default="5" required="false"/>
+
+    <div id="{!elementId}" class="sfBlogsView"/>    
+    <script>
+    $Lightning.use("c:NewsAlertsRssApp", function() {
+        $Lightning.createComponent("LC_Rss:RSSViewer",
+          { 
+              'URL': '{!URL}',
+              'includeDate': true,
+              'includeDesc': true,
+              'includeImage': true,
+              'includeTitle': true,
+              'numberOfEntries' : {!numberOfEntries}
+          },
+          "{!elementId}",
+          function(cmp) {
+             
+          });
+    });
+    </script>
+</apex:component>

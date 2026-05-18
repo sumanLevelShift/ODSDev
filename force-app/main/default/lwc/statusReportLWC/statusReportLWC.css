@@ -1,0 +1,1200 @@
+/* Status Report LWC - Matching Image Design */
+
+/* Main Container - Fit to Page */
+:host {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Page Header Styling */
+.slds-page-header {
+    background: #f3f2f2;
+    border-bottom: 1px solid #dddbda;
+    padding: 0.75rem 1rem;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.slds-page-header__row {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.slds-page-header__col-actions {
+    flex-shrink: 0;
+}
+
+.add-status-btn {
+    font-weight: bold;
+}
+
+/* Search Input Styling */
+.slds-input-has-icon .slds-input__icon {
+    pointer-events: auto;
+}
+
+/* Card Container - Fit to Page */
+.slds-card {
+    margin: 0.75rem;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.slds-card__body {
+    padding: 0.75rem;
+    overflow-x: auto;
+}
+
+.slds-card__body_inner {
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+/* Data Table Styling - Matching Image */
+.status-report-table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.status-report-table th {
+    background-color: #0070d2;
+    color: #ffffff;
+    border: 1px solid #dee2e6;
+    padding: 10px 8px;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    text-align: left;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.status-report-table td {
+    border: 1px solid #dee2e6;
+    padding: 8px;
+    font-size: 13px;
+    vertical-align: top;
+    background-color: #ffffff;
+    word-wrap: break-word;
+    max-width: 300px;
+}
+
+.status-report-table tbody tr:nth-child(even) td {
+    background-color: #f8f9fa;
+}
+
+.status-report-table tbody tr:hover td {
+    background-color: #e3f2fd;
+}
+
+/* Action Column Styling - Matching Image */
+.action-cell {
+    text-align: center;
+    padding: 8px 4px;
+}
+
+.action-icons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-icon {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.action-icon:hover {
+    transform: scale(1.1);
+}
+
+/* View Icon - Light Blue (matching image) */
+.view-icon {
+    display: inline-block;
+    padding: 4px;
+    text-decoration: none;
+}
+
+.view-icon-svg {
+    --slds-c-icon-color-foreground-default: #4ecaf4;
+    width: 20px;
+    height: 20px;
+}
+
+.view-icon:hover .view-icon-svg {
+    --slds-c-icon-color-foreground-default: #3bb8e0;
+}
+
+/* Edit Icon - Orange (matching image) */
+.edit-icon {
+    display: inline-block;
+    padding: 4px;
+    text-decoration: none;
+}
+
+.edit-icon-svg {
+    --slds-c-icon-color-foreground-default: #ff9500;
+    width: 20px;
+    height: 20px;
+}
+
+.edit-icon:hover .edit-icon-svg {
+    --slds-c-icon-color-foreground-default: #e68500;
+}
+
+/* Delete Icon - Red (matching image) */
+.delete-icon {
+    display: inline-block;
+    padding: 4px;
+    text-decoration: none;
+}
+
+.delete-icon-svg {
+    --slds-c-icon-color-foreground-default: #c23934;
+    width: 20px;
+    height: 20px;
+}
+
+.delete-icon:hover .delete-icon-svg {
+    --slds-c-icon-color-foreground-default: #a01a1a;
+}
+
+/* Work Performed Cell Styling */
+.work-performed-cell,
+.work-next-day-cell,
+.issues-cell {
+    max-width: 250px;
+    min-width: 150px;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+/* Account Cell */
+.status-report-table td:nth-child(2) {
+    max-width: 200px;
+    min-width: 150px;
+}
+
+/* Date Cell */
+.status-report-table td:first-child {
+    min-width: 100px;
+    max-width: 120px;
+}
+
+/* Status Cell */
+.status-report-table td:nth-last-child(2) {
+    min-width: 100px;
+    max-width: 120px;
+}
+
+/* Action Cell */
+.status-report-table td:last-child {
+    min-width: 120px;
+    max-width: 150px;
+    text-align: center;
+}
+
+/* Pagination Styling - Matching Image */
+.slds-button-group {
+    display: inline-flex;
+}
+
+.slds-button-group .slds-button {
+    min-width: 40px;
+    margin-right: 5px;
+}
+
+.slds-button-group .slds-button_brand {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* Page Size Selector */
+.slds-select {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+/* Status Badge Styling */
+lightning-badge {
+    font-weight: bold;
+}
+
+/* Modal Styling */
+.slds-modal__container {
+    max-width: 50rem;
+}
+
+.slds-text-longform {
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 0.5rem;
+    border: 1px solid #dddbda;
+    border-radius: 0.25rem;
+    background-color: #ffffff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .slds-page-header {
+        padding: 0.5rem;
+    }
+    
+    .slds-page-header__col-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+    
+    .slds-page-header__controls {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .add-status-btn {
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+    
+    .slds-card {
+        margin: 0.5rem;
+    }
+    
+    .status-report-table {
+        font-size: 11px;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .status-report-table th,
+    .status-report-table td {
+        padding: 6px 4px;
+        min-width: 80px;
+    }
+    
+    .work-performed-cell,
+    .work-next-day-cell,
+    .issues-cell {
+        max-width: 150px;
+        min-width: 100px;
+    }
+}
+
+/* Ensure table container fits page */
+.status-report-table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Grid alignment improvements */
+.slds-grid {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.slds-grid_align-spread {
+    align-items: center;
+}
+
+/* Pagination alignment */
+.slds-grid_align-spread .slds-col {
+    display: flex;
+    align-items: center;
+}
+
+/* Top Search Section */
+.top_srch {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.top_srch h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    line-height: 0;
+}
+
+.tsearch {
+    background: #4ECAF4;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.tsearch:hover {
+    background: #3bb8e0;
+}
+
+.fa-search:before {
+    content: "\f002";
+    margin-left: 5px;
+}
+
+/* Advanced Search Panel */
+.advnc_search {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.advnc_search.slds-hide {
+    display: none;
+}
+
+.advnc_search > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.tfrom_date, .tto_date {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+    width: 150px;
+}
+
+.status-select {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+    width: 150px;
+}
+
+.search-button {
+    background: #4ECAF4;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 5px;
+    border: none;
+    padding: 5px 20px;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background: #3bb8e0;
+}
+
+/* Mid White Section */
+.mid-white {
+    background: #fff;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mid-user-sec {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.mid-usertxt {
+    font-size: 14px;
+    color: #333;
+}
+
+.mid-usertxt strong {
+    font-weight: bold;
+}
+
+.mid-usertxt a {
+    color: #4ECAF4;
+    text-decoration: none;
+}
+
+/* Timeline Scroll Section */
+.timeline-scroll {
+    background: #fff;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Add Status Report Button */
+.time-submit {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.save-submit {
+    background: #4ECAF4;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.save-submit:hover {
+    background: #3bb8e0;
+}
+
+.save-submit:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* No Records Message */
+.no-records {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-size: 16px;
+}
+
+/* Status Reports Table */
+.timeline {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 20px 0;
+}
+
+.timeline th {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 12px 8px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 12px;
+    color: #495057;
+    cursor: pointer;
+}
+
+.timeline th:hover {
+    background: #e9ecef;
+}
+
+.timeline td {
+    border: 1px solid #dee2e6;
+    padding: 8px;
+    vertical-align: top;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.timeline tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.timeline tr:hover {
+    background: #e3f2fd;
+}
+
+/* Table Cell Specific Styles */
+.date-cell {
+    white-space: nowrap;
+    width: 120px;
+}
+
+.account-cell {
+    width: 200px;
+    word-wrap: break-word;
+}
+
+.work-cell, .next-work-cell, .issues-cell {
+    max-width: 200px;
+    word-wrap: break-word;
+}
+
+.status-cell {
+    width: 100px;
+    text-align: center;
+}
+
+.action-cell {
+    width: 80px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Action Icons */
+.time_view, .status_edit, .status_delete {
+    display: inline-block;
+    margin: 0 3px;
+    padding: 5px;
+    color: #666;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.time_view:hover {
+    color: #4ECAF4;
+    background: #f0f8ff;
+}
+
+.status_edit:hover {
+    color: #28a745;
+    background: #f0fff0;
+}
+
+.status_delete:hover {
+    color: #dc3545;
+    background: #fff0f0;
+}
+
+.fa-eye:before {
+    content: "\f06e";
+}
+
+.fa-pencil:before {
+    content: "\f040";
+}
+
+.fa-trash:before {
+    content: "\f1f8";
+}
+
+/* Disclaimer Note */
+.note-text {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+/* Modal Styles - Exact VF Match */
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    overflow: hidden;
+    outline: 0;
+}
+
+.modal.fade.in {
+    opacity: 1;
+}
+
+.modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 10px;
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #999;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 6px;
+    box-shadow: 0 3px 9px rgba(0,0,0,.5);
+    background-clip: padding-box;
+    outline: 0;
+}
+
+.modal-content.status-report {
+    padding: 20px;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    background-color: #000;
+}
+
+.modal-backdrop.fade.in {
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+/* Modal Navigation */
+.modal-content a {
+    position: absolute;
+    top: 15px;
+    color: #4ECAF4;
+    font-size: 24px;
+    text-decoration: none;
+    z-index: 10;
+}
+
+.modal-content a:first-child {
+    left: 15px;
+}
+
+.modal-content a:nth-child(3) {
+    right: 15px;
+}
+
+.modal-content a.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.fa-caret-left:before {
+    content: "\f0d9";
+}
+
+.fa-caret-right:before {
+    content: "\f0da";
+}
+
+/* Modal Header */
+.modal-content center h4 {
+    margin: 0;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.clr {
+    clear: both;
+}
+
+/* Modal Body */
+.popup-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+    margin: 20px 0;
+}
+
+.popuptext-width {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background: #f9f9f9;
+}
+
+.popuptext-width.status-bg {
+    background: #f0f8ff;
+}
+
+.popuptext-width strong {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.daily-sr-popup {
+    /* Shown when isDaily is true */
+}
+
+.weekly-sr-popup {
+    /* Shown when isDaily is false */
+}
+
+/* Modal Footer */
+.popup-btn {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.btn-default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.btn-default:hover {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+
+/* Status Styling */
+.status-submitted {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.status-draft {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.status-approved {
+    color: #17a2b8;
+    font-weight: bold;
+}
+
+/* Toast Notifications */
+.slds-notify_toast {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 10000;
+    min-width: 20rem;
+    max-width: 30rem;
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Loading Popup - Exact VF Match */
+.popupBackground {
+    background-color: black;
+    opacity: 0.20;
+    filter: alpha(opacity = 20);
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 998;
+    position: fixed;
+    font-family: sans-serif;
+    cursor: wait;
+}
+
+.PopupPanel {
+    border: solid 2px skyblue;
+    background-color: white;
+    font-family: sans-serif;
+    left: 50%;
+    width: 100px;
+    margin-left: -50px;
+    top: 50%;
+    height: 100px;
+    margin-top: -50px;
+    z-index: 999;
+    position: fixed;
+    cursor: pointer;
+    text-align: center;
+}
+
+.PopupPanel table {
+    width: 100%;
+    height: 100%;
+}
+
+.PopupPanel td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.PopupPanel b {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.PopupPanel img {
+    max-width: 32px;
+    max-height: 32px;
+}
+
+/* Page Messages */
+.page-messages {
+    margin: 10px 0;
+}
+
+.message-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+
+.message-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+
+.message-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+
+.message-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+
+/* No Records Illustration */
+.slds-illustration {
+    text-align: center;
+    padding: 2rem;
+}
+
+.slds-illustration h3 {
+    margin-bottom: 0.5rem;
+    color: var(--slds-g-color-neutral-base-30, #706e6b);
+}
+
+.slds-illustration p {
+    color: var(--slds-g-color-neutral-base-50, #514f4d);
+}
+
+/* Responsive Design - Exact VF Match */
+@media (max-width: 768px) {
+    .sub-warp {
+        padding: 0 10px;
+    }
+    
+    .advnc_search > div {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .tfrom_date, .tto_date, .status-select {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .search-button {
+        width: 100%;
+        margin-left: 0;
+    }
+    
+    .timeline {
+        font-size: 12px;
+    }
+    
+    .timeline th, .timeline td {
+        padding: 6px 4px;
+    }
+    
+    .modal-dialog {
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+    
+    .modal-content {
+        padding: 15px;
+    }
+    
+    .popup-scroll {
+        max-height: 300px;
+    }
+    
+    .popuptext-width {
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .timeline th, .timeline td {
+        font-size: 11px;
+        padding: 4px 2px;
+    }
+    
+    .work-cell, .next-work-cell, .issues-cell {
+        max-width: 150px;
+    }
+    
+    .modal-content a {
+        font-size: 20px;
+        top: 10px;
+    }
+    
+    .modal-content a:first-child {
+        left: 10px;
+    }
+    
+    .modal-content a:nth-child(3) {
+        right: 10px;
+    }
+}
+
+/* Accessibility Enhancements */
+.slds-assistive-text {
+    position: absolute !important;
+    margin: -1px !important;
+    border: 0 !important;
+    padding: 0 !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    text-transform: none !important;
+    white-space: nowrap !important;
+}
+
+/* Focus States */
+.slds-button:focus,
+.slds-button_reset:focus,
+lightning-button-icon:focus,
+lightning-input:focus,
+lightning-combobox:focus {
+    outline: 2px solid var(--slds-g-color-brand-base-60, #0176d3);
+    outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .slds-card {
+        border: 2px solid var(--slds-g-color-neutral-base-10, #181818);
+    }
+    
+    .slds-button_brand {
+        border: 2px solid var(--slds-g-color-neutral-base-10, #181818);
+    }
+    
+    .slds-modal__container {
+        border: 3px solid var(--slds-g-color-neutral-base-10, #181818);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .slds-page-header__col-actions,
+    .slds-card__header .slds-no-flex,
+    .slds-modal__footer,
+    .slds-notify_toast {
+        display: none !important;
+    }
+    
+    .slds-modal__container {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+    
+    .slds-card {
+        box-shadow: none;
+        border: 1px solid #000;
+        page-break-inside: avoid;
+    }
+}
+
+/* Dark Mode Support (Future Enhancement) */
+@media (prefers-color-scheme: dark) {
+    :host {
+        --slds-g-color-neutral-base-100: #16181d;
+        --slds-g-color-neutral-base-95: #1b1d22;
+        --slds-g-color-neutral-base-10: #f3f2f2;
+        --slds-g-color-neutral-base-30: #c9c7c5;
+        --slds-g-color-border-base-4: #444851;
+    }
+}
+
+/* Animation for Modal Navigation */
+.modal-content-enter {
+    animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom Scrollbar for Modal Content */
+.slds-modal__content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.slds-modal__content::-webkit-scrollbar-track {
+    background: var(--slds-g-color-neutral-base-95, #f3f2f2);
+}
+
+.slds-modal__content::-webkit-scrollbar-thumb {
+    background: var(--slds-g-color-neutral-base-50, #514f4d);
+    border-radius: 3px;
+}
+
+.slds-modal__content::-webkit-scrollbar-thumb:hover {
+    background: var(--slds-g-color-neutral-base-30, #706e6b);
+}
+
+/* Loading Animation */
+.loading-fade {
+    animation: loadingFade 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingFade {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* Status Report Specific Styles */
+.status-report-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.status-report-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Data Table Row Hover Effect */
+lightning-datatable tbody tr:hover {
+    background-color: var(--slds-g-color-neutral-base-95, #f3f2f2);
+}
+
+/* Enhanced Button Styles */
+.slds-button_brand {
+    transition: all 0.2s ease-in-out;
+}
+
+.slds-button_brand:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(1, 118, 211, 0.3);
+}
+
+/* Form Validation States */
+.slds-has-error .slds-form-element__control {
+    border-color: var(--slds-g-color-error-base-50, #ea001e);
+}
+
+.slds-has-error .slds-form-element__help {
+    color: var(--slds-g-color-error-base-50, #ea001e);
+}
+
+/* Success States */
+.slds-has-success .slds-form-element__control {
+    border-color: var(--slds-g-color-success-base-50, #45c65a);
+}
+
+/* Header Fixed States - VF Responsive Behavior */
+.header-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.navbar-toggle.nav-btn-fixed {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1001;
+}
+
+.mid-bg-fixed {
+    margin-top: 60px;
+}
+
+/* Font Awesome Base */
+@font-face {
+    font-family: 'FontAwesome';
+    src: url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Utility Classes */
+.clr {
+    clear: both;
+}
+
+.slds-hide {
+    display: none !important;
+}
+
+/* Table Sorting Indicators */
+.timeline th.sorted-asc::after {
+    content: " ↑";
+    color: #4ECAF4;
+}
+
+.timeline th.sorted-desc::after {
+    content: " ↓";
+    color: #4ECAF4;
+}
+
+/* Print Styles */
+@media print {
+    .navbar-toggle,
+    .tsearch,
+    .advnc_search,
+    .time-submit,
+    .action-cell {
+        display: none !important;
+    }
+    
+    .timeline {
+        border-collapse: collapse;
+    }
+    
+    .timeline th,
+    .timeline td {
+        border: 1px solid #000;
+        padding: 4px;
+    }
+    
+    .modal {
+        position: static;
+        display: block;
+    }
+    
+    .modal-backdrop {
+        display: none;
+    }
+}

@@ -1,0 +1,48 @@
+<apex:page controller="HoursConsumedPDFController" renderAs="pdf"  showHeader="false" cache="true" >
+    <html>
+        <head>
+            <style>
+               @page
+              {   
+                  size:landscape;
+              }                             
+            </style>
+        </head>
+        <body style="font-family: 'Open Sans', sans-serif; font-size:14px;">
+            <div class="mid-bg">
+                <div class="sub-warp">
+                    
+                    <div class="mid-white">
+                        <div class="logo">
+                            <a href=""><img src="{!URLFOR($Resource.ODS_Assets,'images/logo.png')}" alt="logo"  /></a>
+                        </div>
+                        <h1 style="float:left; font-size:18px;"> Hours Consumed by Calendar Year For - {!accountName} - {!serviceName}</h1>
+                        <div style="clear:both"></div>          
+                        
+                        <table border='1 px solid #d7d7d7'    cellpadding='0' cellspacing='0' width='50%'>
+                            <tr>
+                                <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; font-size: 16px;  padding:5px; text-align: center;" ><strong>YEAR</strong></th>
+                                <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; font-size: 16px;  padding:5px; text-align: center;" ><strong>TOTAL NUMBER OF HOURS</strong></th>
+                            </tr>  
+                            <apex:repeat value="{!generateTimesheetDetails}" var="a" >
+                                
+                                <tr>
+                                    <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none; text-align: right ">
+                                        {!a.timesheetYears}
+                                    </td>
+                                    <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none; text-align: right  ">
+                                       
+                                        <apex:outputText value="{0, number,###,###,##0.00}">
+                                            <apex:param value="{!a.timesheetTotalHours}" ></apex:param>
+                                        </apex:outputText>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </table>
+                        <div class="clr"></div>
+                    </div>
+                </div>
+            </div>
+        </body> 
+    </html>
+</apex:page>

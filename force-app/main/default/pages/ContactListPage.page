@@ -1,0 +1,154 @@
+<!--*******************************************************************************************
+* @author           Gireesh
+* @version          1.0 
+* @Status           Development Completed
+* @Class Name       ODS_ContactController
+* @description      This page is written to show the List of contact for an Account
+*********************************************************************************************
+Version     Date        	Team        	Comments
+*********************************************************************************************
+* 1        	11-MAR-2021    	DemandBlue 		Initial Development
+*********************************************************************************************-->
+<apex:page controller="ODS_ContactController" showHeader="false" sidebar="false" standardStyleSheets="false" id="ContactPageId">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+        
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'online_files/jquery-dev.js')}"/>
+        <!-------- Bootstrap ----->
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/bootstrap.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'online_files/bootstrap.js')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'online_files/font-dev.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'online_files/recaptcha-dev.api')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/style.css')}"/>
+        <link href="{!URLFOR($Resource.ODS_Assets,'css/style_dev.css')}" rel="stylesheet" type="text/css"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/jquery-ui.css')}"/>
+        <script>
+        $(document).ready(function(){                    
+            $('.ddlstAccount').change(function(event) {
+                var AccountID = $(".ddlstAccount").val();
+                if(AccountID === "All") { 
+                    alert("Please select an account.");
+                    event.preventDefault();
+                }
+            });    
+            var AccountID = $(".ddlstAccount").val();
+            var ServiceID = $(".ddlstService").val();            
+            
+            AddAccountIDAction(AccountID,ServiceID)             
+        });  
+        function ApplySearch(){
+            var AccountID = $(".ddlstAccount").val();
+            var ServiceID = $(".ddlstService").val();
+            
+            AddAccountIDAction(AccountID,ServiceID)
+        }
+        function validateAccount(InputValue){        
+            var AccountID = $(".ddlstAccount").val();
+            if(AccountID === "All") {
+                if(InputValue == "Button")                    
+                    alert("Please select an account.");
+                else 
+                    $('#errorSpan').text("Please select an account.");
+                return false;
+            }
+            else {
+                $('#errorSpan').text("");
+            }
+        }
+        </script>
+    </head>
+    <body>
+        
+        <apex:form id="formId" onsubmit="return validateAccount('Form')">
+            <div class="shadow-show"></div>
+            <c:ODS_HeaderComponent />
+            <apex:pageMessages />
+            <apex:actionStatus id="statusSaveTrip" stopText="">
+                <apex:facet name="start">
+                    <div>
+                        <div class="popupBackground" />
+                        <div class="PopupPanel">
+                            <table border="0" width="100%" height="100%">
+                                <tr>
+                                    <td align="center"><b>Please Wait</b></td>
+                                </tr>
+                                <tr>
+                                    <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionStatus>
+            
+            <!-- Action functions -->
+            <apex:actionFunction name="AddAccountIDAction" action="{!GetTimesheetByAccountServiceID}" status="statusSaveTrip" reRender="PanelId" immediate="True" >
+                <apex:param name="SelectedAccountId" value="" assignTo="{!AccountId}"/>
+                <apex:param name="SelectedServiceID" value="" assignTo="{!ServiceId}"/>
+            </apex:actionFunction>
+            <apex:actionFunction name="ViewContactAction" action="{!ViewContact}"  rerender="CustomerPanel" immediate="true">
+                <apex:param name="CurrentContactId" value="" assignTo="{!CurrentContactId}"/>
+            </apex:actionFunction>
+            <div class="mid-bg">
+                <div class="sub-warp"> 
+                    <div class="mid-white">
+                        <div class="mid-user-sec">
+                        </div>
+                        <div class="timeline-scroll" id ="divID">
+                            &nbsp;
+                            <apex:outputPanel id="listPanel">
+                                <apex:pageBlock id="SearchResultsPanel">
+                                    <div class="time-submit"> 
+                                        <apex:outputPanel id="AddContactPanel">                                                              
+                                            <apex:commandButton value="Add Contact" action="{!AddContact}" styleClass="save-submit" onclick="return validateAccount('Button');"/> 
+                                        </apex:outputPanel>
+                                    </div>
+                                    <span id = "errorSpan" style="color:red; font-size:15px; cursor:default;"></span>
+                                    <apex:outputPanel id="noSearchRes" rendered="{!(contactList.size==0 && contactList!=null ) }">
+                                        <strong><center>No Records Found.</center></strong>
+                                    </apex:outputPanel>   
+                                    <apex:outputPanel id="PanelId">
+                                        <apex:pageBlockTable StyleClass="datatable timeline" id="pgTable" Style="cellpadding:0; cellspacing:0; width:100%;color:#4ECAF4;"  value="{!contactList}" var="contact"
+                                                             html-cid="accountsTable">                        
+                                            <apex:column style="width: 194px;">
+                                                <apex:facet name="header">NAME</apex:facet>   
+                                                <apex:outputField label="NAME" value="{!contact.Name}" style="text-align:left;" />
+                                            </apex:column>
+                                            <apex:column style="width: 194px;">
+                                                <apex:facet name="header">Account Name</apex:facet>   
+                                                <apex:outputField label="Account Name" value="{!contact.Account.Name}" style="text-align:left;"/>
+                                            </apex:column>
+                                            <apex:column style="width: 194px;">
+                                                <apex:facet name="header">Phone</apex:facet>   
+                                                <apex:outputField label="Phone" value="{!contact.Phone}" style="text-align:left;" />
+                                            </apex:column>
+                                            <apex:column style="width: 194px;">
+                                                <apex:facet name="header">Mobile</apex:facet>   
+                                                <apex:outputField label="Mobile" value="{!contact.MobilePhone}" style="text-align:left;" />
+                                            </apex:column>
+                                            <apex:column style="width: 194px;">
+                                                <apex:facet name="header">Email</apex:facet>   
+                                                <apex:outputText label="Email" value="{!contact.Email}" style="text-align:left;" escape="true" />
+                                            </apex:column>
+                                            <apex:column style="text-align:left;">
+                                                <apex:facet name="header">Action</apex:facet>                                                                                               
+                                                <apex:outputPanel id="View" styleClass="actionbutton">
+                                                    <apex:commandLink styleClass="time_view" title="View" onClick="ViewContactAction('{!contact.Id}');return false;">
+                                                        <strong><i class="fa fa-eye" aria-hidden="true"></i></strong>
+                                                    </apex:commandLink>                                         
+                                                </apex:outputPanel>
+                                            </apex:column>                        
+                                        </apex:pageBlockTable>  
+                                    </apex:outputPanel>
+                                </apex:pageBlock>
+                            </apex:outputPanel>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <c:ODS_FooterComponent />
+        </apex:form>
+    </body>
+</apex:page>

@@ -1,0 +1,24 @@
+<apex:component >
+    <apex:attribute name="elementId" description="Id of the DIV element" type="String" required="true"/>
+    <apex:attribute name="URL" description="Feed URL" type="String" required="true"/>
+    <apex:attribute name="titleHeader" description="Alert Title" type="String" required="true"/>
+    <apex:attribute name="numberOfEntries" description="Number of feeds to show" type="String" default="5" required="false"/>    
+    
+    <div id="{!elementId}" />
+    <script>
+    $Lightning.use("c:NewsAlertsRssApp", function() {
+        $Lightning.createComponent("goog_alert:GoogleAlert_RSSFeed",
+          { 
+              'theHeader': '{!titleHeader}',
+              'theUrl': '{!URL}',
+              'displayFormat': 'List',
+              'maxNewsStories': {!numberOfEntries},
+              'theUrlField': 'Google_Alert_URL__c'
+          },
+          "{!elementId}",
+          function(cmp) {
+             
+          });
+    });
+    </script>
+</apex:component>

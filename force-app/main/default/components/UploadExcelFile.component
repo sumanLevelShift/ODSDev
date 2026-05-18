@@ -1,0 +1,121 @@
+<apex:component controller="UploadExcelFileController" allowDML="true" >
+    <apex:includeScript value="{!$Resource.jszip}"/>
+    <apex:includeScript value="{!$Resource.xlsx}"/>
+    <apex:attribute name="initiative" description="It stores id of the initiative." type="String" required="true"/>
+    <style>
+    .savebutton{
+        color: #fff; 
+        background: #4ECAF4;
+        font-family: 'Open Sans',sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        text-align: center;
+        border: none;
+        padding: 7px 15px!important;
+        text-transform: uppercase;
+        border-radius: 5px;
+        margin-right: 10px;
+        }
+    </style>
+    <script type="text/javascript">
+    var JSONData;
+    var ExcelToJSON = function() {
+        this.parseExcel = function(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var data = e.target.result;
+                var workbook = XLSX.read(data, {
+                    type: 'binary'
+                });
+                var estimateData = XLSX.utils.sheet_to_row_object_array(workbook.Sheets["ODS Estimate"]);
+                var scopeData = XLSX.utils.sheet_to_row_object_array(workbook.Sheets["Scope Details"]);
+
+                //clean inventory worksheet data for csv processing
+                Object.keys(workbook.Sheets["Inventory"]).forEach(function(key) {
+                    if(typeof(workbook.Sheets["Inventory"][key].w) !== "undefined" && typeof(workbook.Sheets["Inventory"][key].w) === "string"){
+                        workbook.Sheets["Inventory"][key].w = workbook.Sheets["Inventory"][key].w.replace(/,/g, '&#044;').replace(/\r\n/g, ' ');
+                    }
+                });
+                var inventoryData = XLSX.utils.sheet_to_csv(workbook.Sheets["Inventory"]);
+                
+                var estimateDataJSON = JSON.stringify(estimateData);
+                var scopeDataJSON = JSON.stringify(scopeData);
+                var inventoryDataJSON= csvJSON(inventoryData);
+                                
+                var xl_data='{"ODS Estimate":'+estimateDataJSON+',"Scope Details":'+scopeDataJSON+',"Inventory":'+inventoryDataJSON+'}';
+                //console.log(xl_data);
+                JSONData=xl_data;
+            };
+            reader.onerror = function(ex) {
+                console.log(ex);
+                alert(ex);
+            };
+            reader.readAsBinaryString(file);
+        };
+    };
+    function save() {
+        if (confirm("The existing estimate & initiative description, if any, will be overwritten.") == true) {
+           document.getElementById('status1').style.visibility = 'visible';
+           saveDataIntoRecord(JSONData,'{!initiative}'); 
+           setTimeout(function() {window.top.location.href = window.top.location.href;}, 2500);
+        }
+        else
+        {
+           window.top.location.href = window.top.location.href;     
+        }
+        
+    }
+    function handleFileSelect(evt) { 
+        var files = evt.target.files; // FileList object
+        var xl2json = new ExcelToJSON();
+        xl2json.parseExcel(files[0]);
+    }
+
+    function csvJSON(csv){    
+        var lines=csv.split("\n");
+        
+        var result = [];
+        var headers= [];
+        
+        var tmpHeaders=lines[0].split(",");
+        
+        for(var i=0;i<tmpHeaders.length;i++){
+            headers.push("ColHeader"+i);        
+        }
+        
+        for(var i=1;i<lines.length;i++){        
+            var obj = {};
+            var currentline=lines[i].split(",");
+            
+            for(var j=0;j<headers.length;j++){
+                if(typeof(currentline[j]) !== "undefined" && typeof(currentline[j]) === "string"){
+                    obj[headers[j]] = currentline[j].replace(/&#044;/g, ',');
+                }else{
+                    obj[headers[j]] = currentline[j];
+                }
+            }
+            
+            result.push(obj);
+        }
+        
+        return JSON.stringify(result);
+    } 
+    </script> 
+   
+    <div style="float:left; ">
+       <input id="upload" type="file"  name="files"/> 
+    </div>
+    <div style="float:right;">
+       <input class="savebutton" type="button" value="UPLOAD" onclick="save()"/>  
+        <apex:outputPanel >
+            <img src="/img/loading32.gif" width="25" height="25" id="status1" style="visibility:hidden;"/>
+        </apex:outputPanel>
+    </div>  
+    <apex:actionFunction name="saveDataIntoRecord" action="{!saveData}" reRender="">
+        <apex:param name="json_object" value=""/>
+        <apex:param name="intiativeId" value="{!initiative}"/>
+    </apex:actionFunction>  
+    <script>
+    document.getElementById('upload').addEventListener('change', handleFileSelect, false);
+    </script>
+</apex:component>

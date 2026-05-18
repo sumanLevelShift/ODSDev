@@ -1,0 +1,73 @@
+<template>
+    <!-- Loading Spinner -->
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+    </template>
+
+    <template if:false={isLoading}>
+        <!-- Header Row -->
+        <div class="slds-grid slds-gutters slds-border_bottom slds-p-bottom_x-small slds-m-bottom_medium">
+            <div class="slds-col slds-size_3-of-12">
+                <strong>Description</strong>
+            </div>
+            <div class="slds-col slds-size_2-of-12">
+                <strong>Rate</strong>
+            </div>
+            <div class="slds-col slds-size_2-of-12">
+                <strong>Quantity</strong>
+            </div>
+            <div class="slds-col slds-size_2-of-12">
+                <strong>Tax Rate %</strong>
+            </div>
+            <template if:true={isDeactivationDateEditable}>
+                <div class="slds-col slds-size_3-of-12">
+                    <strong>Deactivation Date</strong>
+                </div>
+            </template>
+        </div>
+
+        <!-- Data Row -->
+        <div class="slds-grid slds-gutters slds-p-vertical_small">
+            <!-- Description Column (Readonly) -->
+            <div class="slds-col slds-size_3-of-12">
+                <lightning-input type="text" value={lineItemData.description} variant="label-hidden" readonly>
+                </lightning-input>
+            </div>
+
+            <!-- Rate Column (Readonly) -->
+            <div class="slds-col slds-size_2-of-12">
+                <lightning-input type="text" value={formattedRate} variant="label-hidden" readonly>
+                </lightning-input>
+            </div>
+
+            <!-- Quantity Column (Readonly) -->
+            <div class="slds-col slds-size_2-of-12">
+                <lightning-input type="number" value={lineItemData.quantity} variant="label-hidden" readonly>
+                </lightning-input>
+            </div>
+
+            <!-- Tax Rate Column (Readonly) -->
+            <div class="slds-col slds-size_2-of-12">
+                <lightning-input type="text" value={formattedTaxRate} variant="label-hidden" readonly>
+                </lightning-input>
+            </div>
+
+            <!-- Deactivation Date Column (Conditional Editable) -->
+            <template if:true={isDeactivationDateEditable}>
+                <div class="slds-col slds-size_3-of-12">
+                    <lightning-input type="date" value={deactivationDate} onchange={handleDeactivationDateChange}
+                        variant="label-hidden" required>
+                    </lightning-input>
+                </div>
+            </template>
+        </div>
+        <!-- Action Buttons -->
+        <div class="slds-m-top_large slds-float_right">
+            <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_small">
+            </lightning-button>
+            <lightning-button label="Save" variant="brand" onclick={handleSave} disabled={isSaveButtonDisabled}>
+            </lightning-button>
+        </div>
+    </template>
+    <br/><br/>
+</template>

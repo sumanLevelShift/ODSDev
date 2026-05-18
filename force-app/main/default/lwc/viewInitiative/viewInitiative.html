@@ -1,0 +1,132 @@
+<template>
+    <c-ods-header-component></c-ods-header-component>
+
+    <div class="shadow-show"></div>
+    
+    <div class="mid-bg">
+        <div class="sub-warp">          
+            <div class="top_srch">
+                <h1><!--Timesheet--></h1>                  
+                <div class="tsearch" onclick={toggleSearch}>Search <lightning-icon icon-name="utility:search" size="x-small" alternative-text="Search"></lightning-icon></div>                    
+                <div class="advnc_search" style={searchStyle}>
+                    <div>                                
+                        <lightning-input type="text" name="txt_search" class="initiative_search" label="Search" id="searchtext" placeholder="Enter search term (minimum 3 characters)" onkeyup={handleSearchKeyup}></lightning-input>
+                        <lightning-combobox id="statsDrop" value={statusFilter} options={statusOptions} onchange={handleStatusChange} label="Status"></lightning-combobox>  
+                        <lightning-button label="Search" class="save-submit" onclick={handleSearch}></lightning-button>
+                        <lightning-button label="Reset" variant="neutral" onclick={handleReset}></lightning-button>
+                    </div>
+                </div>
+            </div>
+            <div class="mid-white">
+                <div class="mid-user-sec">
+                    
+                </div>
+                <div class="timeline-scroll" id ="divID">
+                    &nbsp;
+                    <div class="time-submit"> 
+                        <template if:true={showAddInitiative}>
+                            <lightning-button label="Add Initiative" variant="brand" onclick={handleAddInitiative}></lightning-button>
+                        </template>
+                    </div>
+                    
+                    <template if:true={isLoading}>
+                        <lightning-spinner size="medium"></lightning-spinner>
+                    </template>
+
+                    <template if:true={hasRecords}>
+                        <table class="datatable timeline">
+                            <thead>
+                                <tr>
+                                    <th>Initiative</th>
+                                    <th>Jira Id</th>
+                                    <th>Account - Service</th>
+                                    <th>Status</th>
+                                    <th>Estimated Hours</th>
+                                    <th>Consumed Hours</th>
+                                    <th>Remaining Hours</th>
+                                    <th>Submitted % Utilization</th>
+                                    <th>Approved % Utilization</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={rows} for:item="initiative">
+                                    <tr key={initiative.id} class={initiative.rowClass} data-initiative-id={initiative.id}>
+                                        <td>{initiative.name}</td>
+                                        <td>{initiative.jiraId}</td>
+                                        <td>{initiative.accountServiceName}</td>
+                                        <td>{initiative.status}</td>
+                                        <td>{initiative.estimatedHours}</td>
+                                        <td>{initiative.submittedHours}</td>
+                                        <td>{initiative.remainingHours}</td>
+                                        <td>{initiative.submittedUtilization}</td>
+                                        <td>{initiative.approvedUtilization}</td>
+                                        <td>
+                                            <template if:true={initiative.showView}>
+                                                <a href="#" class="time_view" title="View" onclick={handleViewClick}>
+                                                    <lightning-icon icon-name="utility:preview" size="small" alternative-text="View"></lightning-icon>
+                                                </a>
+                                            </template>
+                                            <template if:true={initiative.showDelete}>
+                                                <a href="#" class="time_view" title="Delete" onclick={handleDeleteClick}>
+                                                    <lightning-icon icon-name="utility:delete" size="small" alternative-text="Delete"></lightning-icon>
+                                                </a>
+                                            </template>
+                                            <template if:true={initiative.showApprove}>
+                                                <a href="#" class="time_view" title="Approve" onclick={handleApproveClick}>
+                                                    <lightning-icon icon-name="utility:check" size="small" alternative-text="Approve"></lightning-icon>
+                                                </a>
+                                            </template>
+                                            <template if:true={initiative.showReject}>
+                                                <a href="#" class="time_view" title="Reject" onclick={handleRejectClick}>
+                                                    <lightning-icon icon-name="utility:clear" size="small" alternative-text="Reject"></lightning-icon>
+                                                </a>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </template>
+                    
+                    <template if:false={hasRecords}>
+                        <div class="no-records"><strong>No Records Found.</strong></div>
+                    </template>
+                    
+                    <template if:true={totals}>
+                        <table class="table-style">
+                            <tr>
+                                <td class="label-cell">OVERALL ESTIMATED HOURS</td>
+                                <td class="value-cell">{totals.totalEstimatedHours}</td>
+                                <td class="label-cell">TOTAL CONSUMED HOURS</td>
+                                <td class="value-cell">{totals.totalConsumedHours}</td>
+                                <td class="label-cell">TOTAL REMAINING HOURS</td>
+                                <td class="value-cell">{totals.totalRemainingHours}</td>
+                            </tr>
+                        </table>
+                    </template>
+                </div>  
+            </div>
+        </div>
+    </div>
+
+    <template if:true={showModal}>
+        <div class="modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">                
+                    <h1><span id="hideApprove" style={approveStyle}>Approve </span> <span id="hideReject" style={rejectStyle}>Reject </span></h1>
+                    <lightning-textarea class="Comments" id="Comments" value={modalComments} onchange={handleModalComments} label="Comments"></lightning-textarea>                
+                    <div class="clr"></div>
+                    <div class="popup-btn">  
+                        <lightning-button label="Approve Initiative" variant="brand" onclick={confirmApprove}></lightning-button>
+                        <lightning-button label="Re-evaluate" variant="destructive" onclick={confirmReject}></lightning-button>                               
+                        <lightning-button label="CLOSE" variant="neutral" onclick={closeModal}></lightning-button>
+                    </div>                
+                </div>
+            </div>
+        </div>
+        <div class="popupBackground"></div>
+    </template>
+
+    <c-ods-footer-component></c-ods-footer-component>
+</template>

@@ -1,0 +1,195 @@
+<template>
+    <div class="mid-bg" style="background: #FFFFFF;width: 100%;padding: 0 2% 15px 2%;float: left;">
+        <div class="spinnerDiv" style="display: None;">
+            <div class="popupBackground"></div>
+            <div class="PopupPanel">
+                <table border="0" width="100%">
+                    <tr>
+                        <td style="text-align: center;font-size: 13px;"><b>Please Wait</b></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;"><img src={spinner} /></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="sub-warp">
+            <div class="top_srch">
+                <div class="mid-user-sec">
+                </div>
+                <h1 style="font-size: 22px;
+                font-weight: 600;
+                color: #4bc9f4;
+                padding-top: 20px;
+                padding-bottom: 4px;text-align: center;width: 100%">Initiatives Report</h1>
+                <div class="tsearch" onclick={searchOnClick}>Search<i aria-hidden="true" class="fa fa-search"></i></div>
+                <div class="mid-white searchDiv" style="display: none;">
+                    <div class="slds-m-top_x-large slds-m-around_medium">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-p-around_xx-small">
+                                <label class="statusLabel">Initiative Status</label>
+                                <lightning-combobox style=" width: 300px;padding-top: 2px;font-size: 14px;" name="progress"
+                                    value={SelectedStatusValue} options={options} onchange={handleChange}
+                                    class="statusClass" placeholder="Select the status">
+                                </lightning-combobox>
+                                <div class="slds-p-around_xx-small" style="width: 300px;">
+                                    <template for:each={allValues} for:item="val">
+                                        <lightning-pill style="font-size : 14px;" key={val} label={val} name={val}
+                                            onremove={handleRemove}></lightning-pill>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="slds-col" style="width: 0px;">
+                                <label class="ApprovedDateLabel">Approved Date</label>
+
+                                <lightning-input type="date" date-style="short" name="txt_from" class="startdate"
+                                    style="color: #000;font-size: 14px; " placeholder="From Date"></lightning-input>
+                            </div>
+                            <div class="slds-col" style="position: absolute;left: 42%;">
+                                <label style="padding-top: 22px;"> </label>
+                                <lightning-input type="date" date-style="short" name="txt_to"
+                                    style="color: #000;font-size: 14px;" class="enddate" placeholder="To Date">
+                                </lightning-input>
+                            </div>
+                            <div class="slds-col" style="padding-top: 24px;position: absolute;left: 57%;">
+                                <button onclick={handleFetchQuery}
+                                    class="slds-m-right_x-small tsearch searchButton">Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="mid-white">
+                <div class="mid-user-sec">
+                </div>
+                <div class="slds-align_absolute-center norecords"
+                    style="display:none;font-weight: bold;font-size: 14px;margin-left: 45%;">
+                    <br />
+                    No records found.
+                </div>
+                <div class="timeline-scroll tableListEST verticalScrollBar">
+                    <table class="list datatable timeline dataTable no-footer" style="width:100%;">
+                        <tbody>
+                            <tr>
+                                <th data-id="iniName" onclick={sortName} style="text-align: centre;cursor: pointer;">
+                                    <div class="slds-truncate" title="Name" style="float: centre;">Name</div>
+                                    <div if:true={isNameSort} style="float: right;margin-top: -20px;">
+                                        <div if:true={isAsc}>
+                                            &#9650;
+                                        </div>
+                                        <div if:true={isDsc}>
+                                            &#9660;
+                                        </div>
+                                    </div>
+                                </th>
+                                <th data-id="approvedDate" onclick={sortApproved}
+                                    style="text-align: centre;cursor: pointer;">
+                                    <div class="slds-truncate" title="Name" style="float: centre;">Approved Date</div>
+                                    <div if:true={isApprovedSort} style="float: right;margin-top: -20px;">
+                                        <div if:true={isAsc}>
+                                            &#9650;
+                                        </div>
+                                        <div if:true={isDsc}>
+                                            &#9660;
+                                        </div>
+                                    </div>
+                                </th>
+                                <th style="text-align: centre;">
+                                    Estimated Hours
+                                </th>
+                                <th style="text-align: centre;">
+                                    Submitted Hours
+                                </th>
+                                <th style="text-align: centre;">
+                                    Remaining Hours
+                                </th>
+                                <th data-id="status" onclick={sortStatus}
+                                    style="text-align: centre;cursor: pointer;">
+                                    <div class="slds-truncate" title="Name" style="float: centre;">Status</div>
+                                    <div if:true={isStatusSort} style="float: right;margin-top: -20px;">
+                                        <div if:true={isAsc}>
+                                            &#9650;
+                                        </div>
+                                        <div if:true={isDsc}>
+                                            &#9660;
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                            <template for:each={initiList} for:item="es">
+                                <tr key={es.ID}>
+                                    <td style="text-align: left !important;padding: 8px 10px;">
+                                        {es.iniName}
+                                    </td>
+                                    <td style="text-align: center !important;padding: 8px 10px;">
+                                        <p>
+                                            <lightning-formatted-date-time value={es.approvedDate}
+                                                month="2-digit" day="2-digit" year="numeric">
+                                            </lightning-formatted-date-time>
+                                        </p>
+                                       <!-- <template if:true={es.Initiative_Approved_Date__c}>
+
+                                            <p>
+                                                <lightning-formatted-date-time value={es.Initiative_Approved_Date__c}
+                                                    month="2-digit" day="2-digit" year="numeric">
+                                                </lightning-formatted-date-time>
+                                            </p>
+                                        </template>
+                                        <template if:false={es.Initiative_Approved_Date__c}>
+
+                                            <p>
+                                                <lightning-formatted-date-time value={es.Approved_Date__c}
+                                                    month="2-digit" day="2-digit" year="numeric">
+                                                </lightning-formatted-date-time>
+                                            </p>
+                                        </template>
+                                        -->
+                                    </td>
+                                    <td style="text-align: center !important;padding: 8px 10px;">
+
+                                        <lightning-formatted-number value={es.eHours} format-style="decimal"
+                                            minimum-fraction-digits="2" maximum-fraction-digits="2">
+                                        </lightning-formatted-number>
+                                    </td>
+                                    <td style="text-align: center !important;padding: 8px 10px;">
+                                        <lightning-formatted-number value={es.sHours} format-style="decimal"
+                                            minimum-fraction-digits="2" maximum-fraction-digits="2">
+                                        </lightning-formatted-number>
+                                    </td>
+                                    <td style="text-align: center !important;padding: 8px 10px;">
+                                        <lightning-formatted-number value={es.rHours} format-style="decimal"
+                                            minimum-fraction-digits="2" maximum-fraction-digits="2">
+                                        </lightning-formatted-number>
+                                    </td>
+                                    <td style="text-align: center !important;padding: 8px 10px;">
+                                        {es.status}
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                    <br>
+                </div>
+                <br />
+                <br />
+                <div class="bottomButtons">
+                    <div class="add-button">
+                        <button title="EXPORT TO PDF" class="addButton" onclick={generatePdf}>
+                            EXPORT TO PDF
+                        </button>
+
+                    </div>
+
+                    <div class="add-excelbutton">
+                        <button title="EXPORT TO Excel" class="addExcelButton" onclick={generateExcel}>
+                            EXPORT TO EXCEL
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</template>

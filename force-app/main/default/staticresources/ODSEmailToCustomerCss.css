@@ -1,0 +1,118 @@
+.dualBoxClass span.slds-form-element__label{
+    font-size: 14px !important;
+    display: inline-block !important;
+    max-width: 100% !important;
+    margin-bottom: 5px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    color: black !important;
+}
+.dualBoxClass div.slds-dueling-list{
+    
+    width: 80% !important;
+}
+.dualBoxClass button.slds-button_icon-container{
+   
+    width: 34px !important;
+    color: #337ab7 !important;
+    border: 3px solid #337ab7 !important;
+    padding: 12px !important;
+    cursor: pointer !important;
+}
+.dualBoxClass div.slds-dueling-list__options{
+	height:220px !important;
+	    overflow-y: scroll !important;
+
+}
+
+.dualBoxClass li.slds-listbox__item{
+	font-size:13px !important;
+}
+.dualBoxClass div.slds-dueling-list__column:nth-child(even) {
+	margin-top: 80px !important;
+	padding: 10px !important;
+}
+.new-email button{
+	background: #4ECAF4 !important;
+    font-size: 13px!important;
+    color: #fff !important;
+    padding: 4px 10px !important;
+    cursor: pointer !important;
+    border-radius: 3px !important;
+    width: 91px !important;
+    float: right !important;
+}
+.send button{
+background: #4ECAF4 !important;
+float: left !important;
+padding: 7px 20px !important;
+color: #fff !important;
+font-weight: bold !important;
+border-radius: 5px !important;
+border: navajowhite !important;
+margin-top: 8px !important;
+margin-left: 15px !important;
+font-size : 12px !important;
+}
+.save-draft button{
+background: #4ECAF4 !important;
+float: left !important;
+padding: 7px 20px !important;
+color: #fff !important;
+font-weight: bold !important;
+border-radius: 5px !important;
+border: navajowhite !important;
+margin-top: 8px !important;
+margin-left: 15px !important;
+font-size : 12px !important;
+}
+
+.navButton button{
+	background: transparent;
+    border: 0px;
+    font-size: 12px !important;
+    color: #333333;
+    cursor: pointer !important;
+}
+.navButton button:disabled{
+	background: transparent;
+    border: 0px;
+    font-size: 12px !important;
+}
+
+.slds-size_1-of-6 {
+    color: #fff  !important;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    font-weight: normal;
+    text-align: center;
+    border: 1px solid #d7d7d7;
+    background: #4bc9f4 !important;
+    padding: 4px 10px;
+    text-transform: uppercase;
+}
+
+.slds-scope b, .slds-scope strong{
+	font-size: 15px !important;
+    margin-left: 15px !important;
+    color: black !important;
+}
+
+.emailTemplate{
+	font-size: 14px !important;
+    color: black !important;
+	}
+	
+.slds-scope .recipient {
+	font-size: 14px !important;
+    margin-left: 16px !important;
+	color: black !important;
+}	
+	
+.slds-scope .slds-rich-text-editor__textarea p .bodyClass{
+	color: black !important;
+}	
+.slds-scope .slds-input{
+	    font-size: 14px !important;
+}
+	

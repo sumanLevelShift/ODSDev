@@ -1,0 +1,137 @@
+div.slds-listbox{
+font-size: 12px !important;
+color:black !important;
+}
+span.slds-checkbox_faux{
+width: 20px !important;
+height: 20px !important;
+}
+
+.slds-size_8-of-12{
+width: 320px !important;
+}
+
+.slds-button_neutral{
+color: #fff !important;
+font-family: 'Open Sans', sans-serif;
+font-size: 12px !important;
+font-weight: normal !important;
+text-align: center !important;
+border: none !important;
+padding: 7px 15px !important;
+background: #4ECAF4 !important;
+text-transform: uppercase !important;
+border-radius: 5px !important;
+margin-right: 10px !important;
+}
+.briefDescriptionValue textarea{
+width: 230px !important;
+}
+.searchButton button{
+background: #4ECAF4 !important;
+color: #fff !important;
+font-family: 'Open Sans', sans-serif !important;
+font-size: 12px !important;
+font-weight: normal !important;
+text-align: center !important;
+border: none !important;
+text-transform: uppercase !important;
+border-radius: 5px !important;
+height: 30px !important;
+}
+.projectDesTextArea textarea{
+/*width: 950px !important;*/
+height: 100px !important;
+border: 2px solid #668cff !important;
+background: #ecf9ec !important;
+border-radius: 15px !important;
+}
+.DateClass lightning-input{
+width: 175px !important;
+}
+.slds-slider-label__range{
+font-size:12px !important;
+}
+.createdByCSS input{
+border: 2px solid #668cff !important;
+background: #ecf9ec!important;
+border-radius: 6px !important;
+}
+.dropDownCSS button{
+border: 2px solid #668cff !important;
+background: #ecf9ec !important;
+border-radius: 6px !important;
+padding: 5px !important;
+height: 30px !important;
+}
+.DateClass input{
+border: 2px solid #668cff !important;
+background: #ecf9ec !important;
+border-radius: 6px !important;
+}
+.checkBoxCss span.slds-checkbox_faux{
+border: 2px solid #668cff !important;
+background: #eeffe6 !important;
+border-radius: 5px !important;
+height: 25px !important;
+width: 25px !important;
+}
+.checkBoxCss span.slds-checkbox_faux::after{
+width: 11px !important;
+}
+.slds-required{
+display:none;
+}
+
+span.slds-checkbox_faux::after{
+height: 5px !important;
+width: 14px !important;
+}
+lightning-datepicker > div > div > lightning-calendar > div.slds-dropdown{ 
+font-size:10px !important; 
+max-width:160% !important;
+}
+
+.slds-datepicker td{
+font-size:12px !important;
+}
+
+.textAreaScope textarea{
+/*width: 950px !important;*/
+height: 100px !important;
+border: 2px solid #668cff !important;
+background: #ecf9ec !important;
+border-radius: 15px !important;
+}
+.riskDescription textarea{
+border: 2px solid #668cff !important;
+background: #ecf9ec !important;
+border-radius: 5px !important;
+}
+.riskBoundary button{
+border: 2px solid #668cff !important;
+background: #ecf9ec !important;
+border-radius: 6px !important;
+padding: 5px !important;
+height: 30px !important;
+}
+.slds-form-element__help{
+font-size:12px !important;
+}
+.slds-slider{
+width: 100% !important;
+}
+.rationalIfDifferentValue textarea{
+border: 2px solid #668cff !important;
+background: #ecf9ec !important;
+border-radius: 5px !important;
+}
+.revisedEffortValue input.slds-input {
+border: 2px solid #668cff !important;
+background: #ecf9ec !important;
+border-radius: 6px !important;
+padding: 5px !important;
+}
+.closeIcon{
+	pointer-events: auto !important;
+}

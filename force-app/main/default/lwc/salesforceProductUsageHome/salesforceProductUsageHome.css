@@ -1,0 +1,50 @@
+.nav-bar{
+    border-bottom: 1px solid #b3b3b3;
+}
+.navlogo{
+    width: 210px;
+    height: auto;
+}
+.navtitle{
+    font-size: 24px;
+    font-weight: 600;
+    color: #4bc9f4;
+    margin: 14px 0 8px 0;
+}
+.border-right{
+    border-right: 1px solid #b3b3b3;
+    background: #efefef;
+}
+.headerclass{
+    background: #0000;
+    text-align: center;
+    padding: 20px;
+    font-size: initial;
+}
+.infotext{
+    font-size: 16px;
+    margin: 16px 0;
+    color: #000;
+}
+.infotext a{
+    color: #48bef1;
+    /*text-decoration: none;*/
+}
+.alert {
+    margin: auto;
+    width: 60%;
+    padding: 20px;
+    background-color: #feefb3;
+    color: #9f6000;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+  }
+  .closebtn {
+    margin-left: 15px;
+    color: #9f6000;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+  }

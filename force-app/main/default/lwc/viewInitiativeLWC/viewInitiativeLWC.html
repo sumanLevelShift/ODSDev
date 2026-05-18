@@ -1,0 +1,373 @@
+<!-- View Initiative LWC Template - Matching VF Page Design -->
+<template>
+    <!-- Page Header with Title and Add Button - Matching Image Design -->
+    <div class="slds-page-header slds-page-header_record-home">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__body">
+                        <h1 class="slds-page-header__title slds-truncate" title="INITIATIVE">
+                            INITIATIVE
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-page-header__col-actions">
+                <div class="slds-page-header__controls">
+                    <!-- Add Initiative Button - Matching Image -->
+                    <div class="slds-page-header__control">
+                        <lightning-button 
+                            variant="brand" 
+                            label="ADD INITIATIVE" 
+                            title="Add Initiative"
+                            onclick={handleAddInitiative}
+                            disabled={isAddButtonDisabled}
+                            class="add-initiative-btn">
+                        </lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Search Panel - Matching Image Design (Search input, Status dropdown, Search/Reset buttons) -->
+    <div class="slds-card slds-m-around_medium" if:true={showAdvancedSearch}>
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-grid slds-gutters slds-grid_align-center">
+                <!-- Search Input - Matching Image -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <input 
+                                type="text" 
+                                id="searchTextInput"
+                                class="slds-input" 
+                                placeholder="Test for Levelshift"
+                                value={searchText}
+                                oninput={handleSearchInput}
+                                onkeypress={handleSearchKeyPress}
+                                maxlength="255">
+                        </div>
+                    </div>
+                </div>
+                <!-- Status Dropdown - Matching Image -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" id="statusSelect" onchange={handleStatusChange}>
+                                    <template for:each={statusOptions} for:item="option">
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Search and Reset Buttons - Matching Image -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                    <div class="slds-grid slds-grid_align-end">
+                        <lightning-button 
+                            variant="brand" 
+                            label="Search" 
+                            title="Search"
+                            icon-name="utility:search"
+                            icon-position="right"
+                            onclick={handleSearch}
+                            class="slds-m-right_x-small">
+                        </lightning-button>
+                        <lightning-button 
+                            variant="neutral" 
+                            label="Reset" 
+                            title="Reset"
+                            onclick={handleReset}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account/Service Selection (Non-Customers) -->
+    <div class="slds-card slds-m-around_medium" if:false={isCustomer}>
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-combobox 
+                        name="account" 
+                        label="Account" 
+                        value={selectedAccountId} 
+                        placeholder="Select Account" 
+                        options={accountOptions}
+                        onchange={handleAccountChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-combobox 
+                        name="service" 
+                        label="Service" 
+                        value={selectedServiceId} 
+                        placeholder="Select Service" 
+                        options={serviceOptions}
+                        onchange={handleServiceChange}>
+                    </lightning-combobox>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer Message -->
+    <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-around_medium" 
+         if:true={showDisclaimer} 
+         role="alert">
+        <span class="slds-assistive-text">Warning</span>
+        <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small">
+            <lightning-icon icon-name="utility:warning" size="x-small" alternative-text="Warning"></lightning-icon>
+        </span>
+        <h2>Note: Please select Customer and Service to add Initiative.</h2>
+    </div>
+
+    <!-- Initiatives Data Table - Matching Image Design -->
+    <div class="slds-card slds-m-around_medium">
+        <div class="slds-card__header">
+            <div class="slds-grid slds-grid_align-spread">
+                <div class="slds-col">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-truncate">INITIATIVE</span>
+                    </h2>
+                </div>
+                <div class="slds-col">
+                    <!-- Page Size Selector - Matching Image (top right: "Show 25 entries") -->
+                    <div class="slds-form-element slds-float_right">
+                        <label class="slds-form-element__label slds-m-right_x-small" for="pageSizeSelect">Show</label>
+                        <div class="slds-form-element__control slds-inline-block">
+                            <div class="slds-select_container">
+                                <select class="slds-select" id="pageSizeSelect" onchange={handlePageSizeChange}>
+                                    <option value="10">10 entries</option>
+                                    <option value="25" selected>25 entries</option>
+                                    <option value="50">50 entries</option>
+                                    <option value="100">100 entries</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Add Initiative Button (Top) -->
+            <div class="slds-m-bottom_medium" if:true={showAddInitiative}>
+                <lightning-button 
+                    variant="brand" 
+                    label="Add Initiative" 
+                    title="Add Initiative"
+                    onclick={handleAddInitiative}>
+                </lightning-button>
+            </div>
+            
+            <!-- No Records Message -->
+            <div class="slds-illustration slds-illustration_small" if:true={showNoRecords}>
+                <div class="slds-text-color_weak">
+                    <h3 class="slds-text-heading_medium">No Records Found.</h3>
+                    <p class="slds-text-body_regular">Try adjusting your search criteria or create a new initiative.</p>
+                </div>
+            </div>
+            
+            <!-- Data Table -->
+            <div if:false={showNoRecords} class="initiative-table-container">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered initiative-table">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="slds-text-title_caps" scope="col">Initiative</th>
+                            <th class="slds-text-title_caps" scope="col">Jira Id</th>
+                            <th class="slds-text-title_caps" scope="col">Account</th>
+                            <th class="slds-text-title_caps" scope="col">Status</th>
+                            <th class="slds-text-title_caps" scope="col">Estimated Hours</th>
+                            <th class="slds-text-title_caps" scope="col">Consumed Hours</th>
+                            <th class="slds-text-title_caps" scope="col">Remaining Hours</th>
+                            <th class="slds-text-title_caps" scope="col">Submitted % Utilization</th>
+                            <th class="slds-text-title_caps" scope="col">Approved % Utilization</th>
+                            <th class="slds-text-title_caps" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={paginatedInitiatives} for:item="initiative">
+                            <tr key={initiative.Id} class={initiative.rowClass}>
+                                <td data-label="Initiative" class="slds-cell-wrap">
+                                    <div class="slds-truncate">{initiative.Name}</div>
+                                </td>
+                                <td data-label="Jira Id" class="slds-cell-wrap">
+                                    <div class="slds-truncate">{initiative.JIRA_ID__c}</div>
+                                </td>
+                                <td data-label="Account" class="slds-cell-wrap">
+                                    <div class="slds-truncate">{initiative.accountService}</div>
+                                </td>
+                                <td data-label="Status" class="slds-cell-wrap">
+                                    <div class="slds-truncate">{initiative.Status__c}</div>
+                                </td>
+                                <td data-label="Estimated Hours" class="slds-cell-wrap">
+                                    <div class="slds-truncate">{initiative.Estimated_hours__c}</div>
+                                </td>
+                                <td data-label="Consumed Hours" class="slds-cell-wrap">
+                                    <div class="slds-truncate">{initiative.consumedHours}</div>
+                                </td>
+                                <td data-label="Remaining Hours" class="slds-cell-wrap">
+                                    <div class="slds-truncate">{initiative.Remaining_Hours__c}</div>
+                                </td>
+                                <td data-label="Submitted % Utilization" class="slds-cell-wrap">
+                                    <div class="slds-truncate">{initiative.Submitted_Utilization__c}</div>
+                                </td>
+                                <td data-label="Approved % Utilization" class="slds-cell-wrap">
+                                    <div class="slds-truncate">{initiative.Utilization__c}</div>
+                                </td>
+                                <td data-label="Action" class="slds-cell-wrap action-cell">
+                                    <div class="action-icons-container">
+                                        <!-- View Icon - Always visible (light blue eye icon) -->
+                                        <a href="#" 
+                                           class="action-icon view-icon" 
+                                           data-id={initiative.Id}
+                                           onclick={handleViewClick}
+                                           title="View">
+                                            <lightning-icon icon-name="utility:preview" size="small" class="view-icon-svg"></lightning-icon>
+                                        </a>
+                                        
+                                        <!-- Approve/Reject Icons - Only for "Initiative Submitted" status -->
+                                        <!-- Green checkmark (Approve) and Red X (Reject) -->
+                                        <template if:true={initiative.showApproveReject}>
+                                            <a href="#" 
+                                               class="action-icon approve-icon" 
+                                               data-id={initiative.Id}
+                                               onclick={handleApproveClick}
+                                               title="Approve">
+                                                <lightning-icon icon-name="utility:check" size="small" class="approve-icon-svg"></lightning-icon>
+                                            </a>
+                                            <a href="#" 
+                                               class="action-icon reject-icon" 
+                                               data-id={initiative.Id}
+                                               onclick={handleRejectClick}
+                                               title="Reject">
+                                                <lightning-icon icon-name="utility:close" size="small" class="reject-icon-svg"></lightning-icon>
+                                            </a>
+                                        </template>
+                                        
+                                        <!-- Delete Icon - For "Initiative Recalled", "Initiative Cancelled", and other deletable statuses -->
+                                        <!-- Red trash can icon - NOT shown for "Initiative Submitted" -->
+                                        <template if:true={initiative.showDelete}>
+                                            <a href="#" 
+                                               class="action-icon delete-icon" 
+                                               data-id={initiative.Id}
+                                               onclick={handleDeleteClick}
+                                               title="Delete">
+                                                <lightning-icon icon-name="utility:delete" size="small" class="delete-icon-svg"></lightning-icon>
+                                            </a>
+                                        </template>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+                
+                <!-- Pagination Controls -->
+                <div class="slds-grid slds-grid_align-spread slds-m-top_medium slds-m-bottom_medium">
+                    <div class="slds-col">
+                        <span class="slds-text-body_small">{currentPageInfo}</span>
+                    </div>
+                    <div class="slds-col">
+                        <div class="slds-button-group" role="group">
+                            <lightning-button 
+                                variant="neutral" 
+                                label="Previous" 
+                                title="Previous"
+                                onclick={handlePreviousPage}
+                                disabled={isFirstPage}
+                                class="slds-m-right_x-small">
+                            </lightning-button>
+                            <template for:each={pageNumbers} for:item="pageNum">
+                                <lightning-button 
+                                    key={pageNum.number}
+                                    variant={pageNum.variant} 
+                                    label={pageNum.number} 
+                                    title={pageNum.number}
+                                    onclick={handlePageChange}
+                                    data-page={pageNum.pageIndex}
+                                    class="slds-m-right_x-small">
+                                </lightning-button>
+                            </template>
+                            <lightning-button 
+                                variant="neutral" 
+                                label="Next" 
+                                title="Next"
+                                onclick={handleNextPage}
+                                disabled={isLastPage}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approve/Reject Modal -->
+    <template if:true={showModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="modal-heading-01" aria-modal="true">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon 
+                        class="slds-modal__close"
+                        title="Close"
+                        icon-name="utility:close"
+                        icon-class="slds-button_icon-inverse"
+                        onclick={closeModal}>
+                    </lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                        {modalTitle}
+                    </h2>
+                </header>
+                
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label">
+                            <abbr class="slds-required" title="required">*</abbr>Comments
+                        </label>
+                        <div class="slds-form-element__control">
+                            <lightning-textarea 
+                                name="comments" 
+                                value={modalComments}
+                                onchange={handleModalCommentsChange}
+                                placeholder="Enter comments"
+                                max-length="32000"
+                                required>
+                            </lightning-textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <footer class="slds-modal__footer">
+                    <lightning-button 
+                        variant="brand" 
+                        label={modalButtonLabel} 
+                        title={modalButtonLabel}
+                        onclick={handleModalSubmit}
+                        class="slds-m-right_x-small">
+                    </lightning-button>
+                    <lightning-button 
+                        variant="neutral" 
+                        label="Close" 
+                        title="Close"
+                        onclick={closeModal}>
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- Loading Spinner -->
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+    </template>
+</template>

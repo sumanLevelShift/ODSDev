@@ -1,0 +1,266 @@
+<template>
+	<div class="mid-bg" style="background: #FFFFFF;width: 100%;padding: 0 2% 15px 2%;float: left;">
+
+		<div class="spinnerDiv" style="display: None;">
+			<div class="popupBackground"></div>
+			<div class="PopupPanel">
+				<table border="0" width="100%">
+					<tr>
+						<td style="text-align: center;font-size: 13px;"><b>Please Wait</b></td>
+					</tr>
+					<tr>
+						<td style="text-align: center;"><img src={spinner} /></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="sub-warp">
+			<div class="top_srch">
+				<div class="mid-user-sec">
+				</div>
+				<div class="slds-grid slds-gutters">
+					<div class="slds-col slds-size_4-of-12">
+						<div class="slds-grid slds-gutters slds-m-bottom_small">
+							<div class="slds-col slds-size_4-of-12 slds-text-align_right" style=" margin-top: 27px;font-family: 'Open Sans', sans-serif;
+							font-size: 13px;
+							font-weight: bold;
+							text-transform: uppercase;">
+								<label class="form-label">Select FY :</label>
+							</div>
+							<div class="col-md-8 col-sm-8 col-xs-12">
+								<lightning-combobox options={yearOptions} value={selectedYear}
+									onchange={handleTypeChange}>
+								</lightning-combobox>
+
+							</div>
+						</div>
+					</div>
+					<div class="slds-col slds-size_8-of-12">
+						<div class="slds-grid slds-gutters slds-m-bottom_small">
+							<div class="slds-col slds-size_10-of-12 slds-text-align_right" style=" margin-top: 27px;font-family: 'Open Sans', sans-serif;
+							font-size: 13px;
+							font-weight: bold;
+							text-transform: uppercase;">
+								<label class="form-label">Show Entries:
+								</label>
+							</div>
+							<div class="col-md-8 col-sm-8 col-xs-12">
+								<lightning-combobox value={pageSize} options={opt} onchange={handleChangeentries}
+									class="pageSize"></lightning-combobox>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<template if:false={isDisplayNoRecords}>
+
+			<div class="slds-scrollable" tabindex="0">
+				<div class="timeline-scroll">
+					<table class="ListTable">
+						<thead>
+							<tr class="slds-line-height_reset">
+								<th data-id="iniName" onclick={sortName} class="thcls"
+									style="min-width: 150px !important;">
+									<div class="labname" title="CUSTOMER ">CUSTOMER </div>
+									<div if:true={isAsc}>
+										&#9650;
+									</div>
+									<div if:true={isDsc}>
+										&#9660;
+									</div>
+								</th>
+								<th class="thcls" style="min-width: 150px !important;">
+									<div class="labname" title="Accounting ">Accounting #</div>
+								</th>
+								<th class="thcls" style="min-width: 150px !important;">
+									<div class="labname" title="CSM">CSM
+									</div>
+								</th>
+								<th class="thcls" style="min-width: 115px !important;">
+
+									<div class="labname" title="Total(F22-23)">
+										Total</br>
+										(FY {selectedYear})
+									</div>
+								</th>
+								<template for:each={tableLabelMonths} for:item="row">
+
+									<th class="thcls" key={row} id={row} style="min-width: 80px !important;">
+										<div class="labname" title="Month APR">
+											<label>{row}</label>
+										</div>
+									</th>
+								</template>
+								<th class="thcls">
+									<div class="labname" title="Subscription Fee Frequency "> Frequency
+									</div>
+								</th>
+								<th class="thcls" style="min-width: 210px !important;">
+									<div class="labname" title="Subscription Fee Terms ">Subscription Fee
+										Terms</div>
+								</th>
+								<th class="thcls" style="min-width: 210px !important;">
+									<div class="labname" title="Subscription Fee Exceptions">Subscription Fee
+										Exceptions
+									</div>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<template for:each={Workorderdetails} for:item="c">
+								<tr key={c.Id} id={c.Id}>
+									<td class="tdcls">
+										<p>
+											<lightning-formatted-text value={c.customerName}></lightning-formatted-text>
+										</p>
+									</td>
+									<td class="tdcls">
+										<p>
+											<lightning-formatted-text value={c.Accounting}></lightning-formatted-text>
+										</p>
+									</td>
+									<td class="tdcls">
+										<p>
+											<lightning-formatted-text value={c.CSM}></lightning-formatted-text>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.sumOfFees} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.April} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.May} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.June} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.July} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.August} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.September} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.October} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.November} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.December} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.January} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.February} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls" style="text-align: right;">
+										<p>
+											<lightning-formatted-number value={c.March} format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</p>
+									</td>
+									<td class="tdcls">
+										<p>
+											<lightning-formatted-text
+												value={c.subscriptionFF}></lightning-formatted-text>
+										</p>
+
+									</td>
+									<td class="tdcls">
+										<p>
+											<lightning-formatted-text
+												value={c.subscriptionFT}></lightning-formatted-text>
+										</p>
+									</td>
+									<td class="tdcls">
+										<p>
+											<lightning-formatted-text
+												value={c.subscriptionFE}></lightning-formatted-text>
+										</p>
+									</td>
+								</tr>
+							</template>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</template>
+		<template if:true={isDisplayNoRecords}>
+			<div class="slds-align_absolute-center">
+				<br />
+				No records found
+			</div>
+		</template>
+		</br>
+		<div class="slds-align_absolute-center">
+			<div class="slds-p-right_xx-small">
+
+				<lightning-button label="Prev" disabled={isPrev} onclick={handlePagePrevAction} variant="brand"
+					icon-name="utility:back" name="prev"></lightning-button>
+			</div>
+			<span class="slds-badge slds-badge_lightest">
+				{recordStart}-{recordEnd} of {totalRecords} | Page {pageNumber} of {totalPages}
+			</span>
+			<div class="slds-p-left_xx-small">
+				<lightning-button label="Next" disabled={isNext} onclick={handlePageNextAction} variant="brand"
+					icon-name="utility:forward" icon-position="right" name="next"></lightning-button>
+			</div>
+		</div>
+		<div class="add-excelbutton">
+			<button title="EXPORT TO Excel" class="addExcelButton"
+				style="background: #4ECAF4;color: #fff;font-family: 'Open Sans', sans-serif;font-size: 14px;border-radius: 5px;font-weight: normal;text-align: center;border: none;padding: 7px 15px !important;text-transform: uppercase;"
+				onclick={exportExcel}>
+				EXPORT TO EXCEL
+			</button>
+		</div>
+	</div>
+
+
+
+</template>

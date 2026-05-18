@@ -1,0 +1,405 @@
+<!-- Status Report LWC Template - Matching Image Design -->
+<template>
+    <!-- Page Header with Search and Add Button -->
+    <div class="slds-page-header slds-page-header_record-home">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__body">
+                        <h1 class="slds-page-header__title slds-truncate" title="Status Reports">
+                            Status Reports
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-page-header__col-actions">
+                <div class="slds-page-header__controls">
+                    <!-- Search Input -->
+                    <div class="slds-form-element slds-m-right_medium">
+                        <div class="slds-form-element__control">
+                            <div class="slds-input-has-icon slds-input-has-icon_left-right">
+                                <lightning-icon icon-name="utility:search" size="x-small" class="slds-input__icon slds-input__icon_left"></lightning-icon>
+                                <input type="text" 
+                                       class="slds-input" 
+                                       placeholder="Search" 
+                                       oninput={handleSearchInput}
+                                       value={searchText}/>
+                                <lightning-icon icon-name="utility:close" size="x-small" class="slds-input__icon slds-input__icon_right" if:true={searchText} onclick={clearSearch}></lightning-icon>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add Status Report Button -->
+                    <div class="slds-page-header__control">
+                        <lightning-button 
+                            variant="brand" 
+                            label="ADD STATUS REPORT" 
+                            title="Add Status Report"
+                            onclick={handleAddStatusReport}
+                            disabled={isAddButtonDisabled}
+                            class="add-status-btn">
+                        </lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Search Panel -->
+    <div class="slds-card slds-m-around_medium" if:true={showAdvancedSearch}>
+        <div class="slds-card__header">
+            <h2 class="slds-card__header-title">
+                <span class="slds-truncate">Advanced Search</span>
+            </h2>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-grid slds-gutters slds-wrap">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                    <lightning-input 
+                        type="date" 
+                        name="fromDate" 
+                        label="From Date" 
+                        value={fromDate}
+                        onchange={handleFromDateChange}
+                        max={todayDate}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                    <lightning-input 
+                        type="date" 
+                        name="toDate" 
+                        label="To Date" 
+                        value={toDate}
+                        onchange={handleToDateChange}
+                        max={todayDate}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4" if:false={isCustomer}>
+                    <lightning-combobox 
+                        name="status" 
+                        label="Status" 
+                        value={selectedStatus} 
+                        placeholder="Select Status" 
+                        options={statusOptions}
+                        onchange={handleStatusChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4">
+                    <lightning-button 
+                        variant="brand" 
+                        label="Search" 
+                        title="Search"
+                        onclick={handleSearch}
+                        class="slds-m-top_large">
+                    </lightning-button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account/Service Selection (Non-Customer) -->
+    <div class="slds-card slds-m-around_medium" if:false={isCustomer}>
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-combobox 
+                        name="account" 
+                        label="Account" 
+                        value={selectedAccountId} 
+                        placeholder="Select Account" 
+                        options={accountOptions}
+                        onchange={handleAccountChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-combobox 
+                        name="service" 
+                        label="Service" 
+                        value={selectedServiceId} 
+                        placeholder="Select Service" 
+                        options={serviceOptions}
+                        onchange={handleServiceChange}>
+                    </lightning-combobox>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer Message -->
+    <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-around_medium" 
+         if:true={showDisclaimer} 
+         role="alert">
+        <span class="slds-assistive-text">Warning</span>
+        <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small">
+            <lightning-icon icon-name="utility:warning" size="x-small" alternative-text="Warning"></lightning-icon>
+        </span>
+        <h2>Note: Please select Customer and Service to add Status Report.</h2>
+    </div>
+
+    <!-- Status Reports Data Table -->
+    <div class="slds-card slds-m-around_medium">
+        <div class="slds-card__header">
+            <div class="slds-grid slds-grid_align-spread">
+                <div class="slds-col">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-truncate">Status Reports</span>
+                    </h2>
+                </div>
+                <div class="slds-col">
+                    <div class="slds-form-element slds-float_right">
+                        <label class="slds-form-element__label" for="pageSizeSelect">Show</label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <select class="slds-select" id="pageSizeSelect" onchange={handlePageSizeChange}>
+                                    <option value="10">10 entries</option>
+                                    <option value="25" selected>25 entries</option>
+                                    <option value="50">50 entries</option>
+                                    <option value="100">100 entries</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- No Records Message -->
+            <div class="slds-illustration slds-illustration_small" if:true={showNoRecords}>
+                <div class="slds-text-color_weak">
+                    <h3 class="slds-text-heading_medium">No Status Reports Found</h3>
+                    <p class="slds-text-body_regular">Try adjusting your search criteria or create a new status report.</p>
+                </div>
+            </div>
+            
+            <!-- Data Table -->
+            <div if:false={showNoRecords} class="status-report-table-container">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered status-report-table">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <template for:each={columns} for:item="col">
+                                <th key={col.fieldName} class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title={col.label}>{col.label}</div>
+                                </th>
+                            </template>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={paginatedReports} for:item="record">
+                            <tr key={record.Id} class="slds-hint-parent">
+                                <td data-label="DATE" class="slds-cell-wrap">
+                                    <div class="slds-truncate">{record.formattedDate}</div>
+                                </td>
+                                <td data-label="ACCOUNT" class="slds-cell-wrap">
+                                    <div class="slds-truncate">{record.accountService}</div>
+                                </td>
+                                <td data-label={workPerformedLabel} class="slds-cell-wrap work-performed-cell">
+                                    <div class="slds-truncate">{record.Work_For_The_Day__c}</div>
+                                </td>
+                                <td data-label={workToBePerformedLabel} class="slds-cell-wrap work-next-day-cell">
+                                    <div class="slds-truncate">{record.Work_For_The_Next_Day__c}</div>
+                                </td>
+                                <td data-label="ISSUES / CONCERNS / ROAD BLOCKS / QUESTIONS" class="slds-cell-wrap issues-cell">
+                                    <div class="slds-truncate">{record.Issues_and_Concerns__c}</div>
+                                </td>
+                                <td data-label="STATUS" class="slds-cell-wrap" if:false={isCustomer}>
+                                    <div class="slds-truncate">{record.Status__c}</div>
+                                </td>
+                                <td data-label="ACTION" class="slds-cell-wrap action-cell">
+                                    <div class="action-icons-container">
+                                        <a href="#" 
+                                           class="action-icon view-icon" 
+                                           data-id={record.Id}
+                                           onclick={handleViewClick}
+                                           title="View">
+                                            <lightning-icon icon-name="utility:preview" size="small" class="view-icon-svg"></lightning-icon>
+                                        </a>
+                                        <template if:true={record.canEdit}>
+                                            <a href="#" 
+                                               class="action-icon edit-icon" 
+                                               data-id={record.Id}
+                                               onclick={handleEditClick}
+                                               title="Edit">
+                                                <lightning-icon icon-name="utility:edit" size="small" class="edit-icon-svg"></lightning-icon>
+                                            </a>
+                                        </template>
+                                        <template if:true={record.canDelete}>
+                                            <a href="#" 
+                                               class="action-icon delete-icon" 
+                                               data-id={record.Id}
+                                               onclick={handleDeleteClick}
+                                               title="Delete">
+                                                <lightning-icon icon-name="utility:delete" size="small" class="delete-icon-svg"></lightning-icon>
+                                            </a>
+                                        </template>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+                
+                <!-- Pagination Controls -->
+                <div class="slds-grid slds-grid_align-spread slds-m-top_medium slds-m-bottom_medium">
+                    <div class="slds-col">
+                        <span class="slds-text-body_small">{currentPageInfo}</span>
+                    </div>
+                    <div class="slds-col">
+                        <div class="slds-button-group" role="group">
+                            <lightning-button 
+                                variant="neutral" 
+                                label="Previous" 
+                                title="Previous"
+                                onclick={handlePreviousPage}
+                                disabled={isFirstPage}
+                                class="slds-m-right_x-small">
+                            </lightning-button>
+                            <template for:each={pageNumbers} for:item="pageNum">
+                                <lightning-button 
+                                    key={pageNum.number}
+                                    variant={pageNum.variant} 
+                                    label={pageNum.number} 
+                                    title={pageNum.number}
+                                    onclick={handlePageChange}
+                                    data-page={pageNum.pageIndex}
+                                    class="slds-m-right_x-small">
+                                </lightning-button>
+                            </template>
+                            <lightning-button 
+                                variant="neutral" 
+                                label="Next" 
+                                title="Next"
+                                onclick={handleNextPage}
+                                disabled={isLastPage}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Add Status Report Button -->
+    <div class="slds-m-around_medium" if:true={showAddSR}>
+        <div class="slds-text-align_center">
+            <lightning-button 
+                variant="brand" 
+                label="ADD STATUS REPORT" 
+                title="Add Status Report"
+                onclick={handleAddStatusReport}>
+            </lightning-button>
+        </div>
+    </div>
+
+    <!-- Status Report Detail Modal -->
+    <template if:true={showModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon 
+                        class="slds-modal__close"
+                        title="Close"
+                        icon-name="utility:close"
+                        icon-class="slds-button_icon-inverse"
+                        onclick={closeModal}>
+                    </lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                        Status Report - {selectedRecord.formattedDate}
+                    </h2>
+                </header>
+                
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-grid slds-gutters slds-wrap">
+                        <div class="slds-col slds-size_1-of-1">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label slds-text-heading_small">Account - Service</label>
+                                <div class="slds-form-element__control">
+                                    <span class="slds-text-body_regular">{selectedRecord.accountService}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-1 slds-m-top_medium">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label slds-text-heading_small">
+                                    {workPerformedLabel}
+                                </label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-text-longform" lwc:dom="manual" data-field="workPerformed"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-1 slds-m-top_medium">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label slds-text-heading_small">
+                                    {workToBePerformedLabel}
+                                </label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-text-longform" lwc:dom="manual" data-field="workToBePerformed"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-1 slds-m-top_medium">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label slds-text-heading_small">
+                                    Issues / Concerns / Road Blocks / Questions
+                                </label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-text-longform" lwc:dom="manual" data-field="issuesConcerns"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="slds-col slds-size_1-of-1 slds-m-top_medium" if:false={isCustomer}>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label slds-text-heading_small">Status</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-badge label={selectedRecord.Status__c} variant={statusVariant}></lightning-badge>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <footer class="slds-modal__footer">
+                    <div class="slds-grid slds-grid_align-spread">
+                        <div class="slds-col">
+                            <lightning-button-icon 
+                                icon-name="utility:chevronleft" 
+                                variant="border-filled" 
+                                alternative-text="Previous Record" 
+                                title="Previous Record"
+                                onclick={showPreviousRecord}
+                                disabled={isFirstRecord}>
+                            </lightning-button-icon>
+                            <lightning-button-icon 
+                                icon-name="utility:chevronright" 
+                                variant="border-filled" 
+                                alternative-text="Next Record" 
+                                title="Next Record"
+                                onclick={showNextRecord}
+                                disabled={isLastRecord}
+                                class="slds-m-left_x-small">
+                            </lightning-button-icon>
+                        </div>
+                        <div class="slds-col slds-no-flex">
+                            <lightning-button 
+                                variant="neutral" 
+                                label="Close" 
+                                title="Close"
+                                onclick={closeModal}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- Loading Spinner -->
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+    </template>
+</template>

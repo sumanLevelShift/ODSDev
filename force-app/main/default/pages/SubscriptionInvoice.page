@@ -1,0 +1,223 @@
+<apex:page controller="SubscriptionInvoiceController" sidebar="false" showHeader="false" standardStylesheets="false" id="SubscriptionInvoice" docType="html-5.0">   
+    <head>
+        
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+        <meta http-equiv="content-type" content="text/html;charset=Windows-1252"/>
+        <apex:includeScript value="https://code.jquery.com/jquery-latest.min.js" />
+        <!-------- Bootstrap ----->
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/bootstrap.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/bootstrap.js')}" />
+        <!--<link href="{!URLFOR($Resource.ODS_Assets,'css/bootstrap.css')}" rel="stylesheet" type="text/css" />
+<script src="{!URLFOR($Resource.ODS_Assets,'js/bootstrap.js')}" type="text/javascript"></script>-->
+
+
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet"/>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+
+
+<!--<script src="https://mottie.github.io/tablesorter/docs/js/jquery-latest.min.js" type="text/javascript"></script>-->
+<!-- <script src="https://mottie.github.io/tablesorter/js/jquery.tablesorter.js" type="text/javascript"> </script>  -->
+        <!--  <link class="user" href="https://mottie.github.io/tablesorter/css/theme.blue.css" rel="stylesheet" type="text/css" />  --> 
+        <script type="text/javascript">
+        $(document).ready(function(){ 
+            
+            var Accountid = $(".ddlstAccount").val();
+            var Serviceid = $(".ddlstService").val(); 
+            
+            ApplySearchAction(Accountid,Serviceid);
+        });
+        
+        function ApplySearch() {
+            //  debugger;
+            var Accountid = $(".ddlstAccount").val();
+            var Serviceid = $(".ddlstService").val(); 
+            // debugger;
+            
+            ApplySearchAction(Accountid,Serviceid)
+            
+        }  
+       
+        
+        function UpdateInvoiceStatus(InvoiceId){
+            debugger;
+            UpdateInvoiceStatus(InvoiceId);
+        }
+        
+        function UpdateInvoiceStatusAsFalse(InvoiceId){
+            debugger;
+            UpdateInvoiceStatusAsFalse(InvoiceId);
+        }
+        function downloadAttachment(attachmentId, type)
+        {
+            debugger;
+            //  alert('download Attachment id4 '+attachmentId);
+            var base_url = window.location.origin;
+            var win = window.open(base_url +'/sfc/servlet.shepherd/version/download/'+attachmentId, '_blank');	                
+            
+            if (!window.location.origin) {
+                
+                base_url  = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+            }           
+            win.focus();
+        }
+        </script>
+        <style>
+            .hideClass{
+            display:none;
+            }
+            .mandatoryClass{
+            border-color:red !important;
+            }
+            .clickable {
+            cursor: pointer;
+            }
+            
+            .mid-bg {
+            background: #FFFFFF;
+            width: 100%;
+            padding: 30px 2% 15px 2%;
+            float: left;
+            }
+            #cke_1_contents
+            {
+            height: 350px !important;
+            }
+            
+            .panel-body{
+            width: 77%;
+            margin-left: 118px;
+            }
+        </style>
+        <link href="{!URLFOR($Resource.ODS_Assets,'font-awesome/css/font-awesome.css')}" rel="stylesheet" type="text/css"  />
+        <title>ON DEMAND SERVICES </title> 
+        
+    </head>
+    <body>
+        
+        <apex:form id="formId">
+            <div class="shadow-show"></div>   
+            <div id="divLoader" style="display:none;">
+                <div class="popupBackground" />
+                <div class="PopupPanel">
+                    <table border="0" width="100%" height="100%">
+                        <tr>
+                            <td align="center"><b>Please Wait</b></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <c:ODS_HeaderComponent />
+            
+            <apex:actionFunction name="ApplySearchAction" action="{!GetCustomerByAccountServiceID}" status="statusSaveTrip" reRender="pgTable,Account_Name,Service_Name,searchPanelId,noSearchRec" immediate="True" >
+                <apex:param name="SelectedAccountId" value="" assignTo="{!AccountId}"/>
+                <apex:param name="SelectedServiceID" value="" assignTo="{!ServiceId}"/>
+            </apex:actionFunction>
+            <apex:actionFunction name="UpdateInvoiceStatus" action="{!UpdateInvoiceStatus}"  oncomplete="window.top.location.reload()" immediate="true" reRender="SearchResultsPanel,outPnlCustGrid, searchPanelId, noSearchRec , pgblckCustGrid" status="statusSaveTrip">
+                <apex:param name="InvoiceId" value="" assignTo="{!UniqueInvoiceId}"/>              
+            </apex:actionFunction>  
+            
+            <apex:actionFunction name="UpdateInvoiceStatusAsFalse" action="{!UpdateInvoiceStatusAsFalse}"  oncomplete="window.top.location.reload()" immediate="true" reRender="SearchResultsPanel,outPnlCustGrid, searchPanelId, noSearchRec , pgblckCustGrid" status="statusSaveTrip" >
+                <apex:param name="InvoiceId" value="" assignTo="{!UniqueInvoiceId}"/>              
+            </apex:actionFunction>
+            <div class="clr"></div>
+            
+            <div class="mid-bg">
+                <div class="sub-warp">
+                    
+                    <div id="documentSection" >
+                        
+                       <p style="font-size: 18px;font-size: 18px;color: rgb(75, 201, 244);font-weight: 600;padding-bottom: 4px;text-align: center;">
+                   <stong >SUBSCRIPTION INVOICE</stong>
+               </p>
+                        
+                        <div class="panel-body" >
+                              <apex:outputPanel id="noSearchRec" style="display: {!IF(norecord == true, 'block', 'none')};">
+                            <strong><center>No Records Found.</center></strong>
+                        </apex:outputPanel>
+                            <apex:outputPanel id="searchPanelId">
+                                
+                                <apex:pageBlock id="pgblckCustGrid" rendered="{!NOT(ISNULL(wrapAttachmentList))}">
+                                    <apex:pageBlockTable StyleClass="datatable timeline" id="pgTable" Style="cellpadding:0; cellspacing:0; width:50%;color:#4ECAF4;" Value="{!wrapAttachmentList}" var="Attachment"
+                                                         first="{!CurrentPage }" rows="{!PageSize}" rendered="{!(wrapAttachmentList.size !=0 && wrapAttachmentList  !='' && wrapAttachmentList  !=null ) }" >               
+                                        
+                                        <apex:column headerValue="INVOICE DATE"  value="{!Attachment.docuemtmonth}">
+                                            <apex:facet name="header">
+                                                <apex:commandLink styleClass="name" action="{!fetchInvoiceListCommnadLink}" immediate="true" reRender="pgblckCustGrid" value="INVOICE DATE{!IF(sortExpression=='Invoice_Date__c',IF(sortDirection='ASC','▼','▲'),'')}">
+                                                    <apex:param value="Invoice_Date__c" name="column" assignTo="{!sortExpression}" ></apex:param>
+                                                </apex:commandLink>
+                                                
+                                            </apex:facet>
+                                        </apex:column>
+                                        <apex:column headerValue="Attachment File Name"  value="{!Attachment.documentName}"  style="text-align:left; border-right-width: 1px;"/>
+                                        
+                                        <apex:column headerValue="BILLING START DATE"  value="{!Attachment.docstartDate}">
+                                          <apex:facet name="header">
+                                                <apex:commandLink action="{!fetchInvoiceListCommnadLink}" value="BILLING START DATE{!IF(sortExpression=='Billing_Start_Date__c',IF(sortDirection='ASC','▼','▲'),'')}" id="cmdSort">
+             <apex:param value="Billing_Start_Date__c" name="column" assignTo="{!sortExpression}" ></apex:param>
+           </apex:commandLink>
+
+                                        </apex:facet>
+                                        </apex:column>
+                                        <apex:column headerValue="BILLING END DATE" value="{!Attachment.docEndDate}" >
+                                            <apex:facet name="header">
+                                                
+                                            </apex:facet>
+                                        </apex:column>
+                                        
+                                        <apex:column headerValue="PAID" rendered="{!IF(AND(OR(PortalRole == 'Technical Account Manager' || PortalRole == 'Practice Head')),True,False)}">
+                                            <apex:inputCheckbox value="{!Attachment.documentpaid}"/>
+                                            <apex:facet name="header">
+                                                
+                                            </apex:facet>
+                                        </apex:column>
+                                        <apex:column headerValue="STATUS" value="{!Attachment.documentstatus}">
+                                            <apex:facet name="header">
+                                                
+                                            </apex:facet>
+                                        </apex:column>
+                                        <apex:column headerValue="Action" style="text-align:left; border-left-width: 1px;">
+                                            
+                                            <apex:commandLink styleClass="time_view" title="Download" html-data-toggle="#" html-data-target="#myModal" onClick="downloadAttachment('{!Attachment.documentId}','{!Attachment.docuemtType}'); return false">                                            
+                                                <apex:param name="AtachmentId" value="{!Attachment.documentId}"/>    
+                                                <strong><i class="fa fa-download" aria-hidden="true"></i></strong>
+                                            </apex:commandLink> 
+                                            
+                                            <apex:commandLink styleClass="time_view paymentStatusPaid" title="Paid" html-data-toggle="modal" html-data-target="#" onClick="UpdateInvoiceStatus('{!Attachment.Id}'); return false;" rendered="{!IF(AND(OR(PortalRole == 'Technical Account Manager' || PortalRole == 'Practice Head'),Attachment.documentpaid = False,Attachment.documentstatus=='Posted'),True,False)}">
+                                                <strong><i class="fa fa-check-square-o" aria-hidden="true"></i></strong>
+                                            </apex:commandLink> 
+                                            
+                                            <apex:commandLink styleClass="time_view paymentStatusUnpaid" title="Unpaid" html-data-toggle="modal" html-data-target="#" onClick="UpdateInvoiceStatusAsFalse('{!Attachment.Id}'); return false;" rendered="{!IF(AND(OR(PortalRole == 'Technical Account Manager' || PortalRole == 'Practice Head'),Attachment.documentpaid = True,Attachment.documentstatus=='Posted'),True,False)}" >
+                                                <strong><i class="fa fa-times" aria-hidden="true"></i></strong>
+                                            </apex:commandLink> 
+                                        </apex:column>
+                                        
+                                    </apex:pageBlockTable>
+                                    <apex:outputPanel styleClass="page-nav-bg" rendered="{!(wrapAttachmentList.size!=0 && wrapAttachmentList !='')}" > 
+                                        
+                                        <apex:commandButton value="First" action="{!showFirst}" disabled="{!!ShowPrevious}" rerender="searchPanelId" styleClass="save-submit page-nav-btn first-nav-btn" immediate="true"/>
+                                        <apex:commandButton value="Previous" action="{!showPrevious}" disabled="{!!ShowPrevious}" rerender="searchPanelId" styleClass="save-submit page-nav-btn previous-nav-btn" immediate="true"/>
+                                        <apex:outputText value="{!CurrentPageInfo}" />
+                                        <apex:commandButton value="Next" action="{!showNext}" disabled="{!!ShowNext}" rerender="searchPanelId" styleClass="save-submit page-nav-btn next-nav-btn" immediate="true"/>
+                                        <apex:commandButton value="Last" action="{!showLast}" disabled="{!!ShowNext}" rerender="searchPanelId" styleClass="save-submit page-nav-btn last-nav-btn" immediate="true"/>       
+                                    </apex:outputPanel>
+                                    
+                                    
+                                </apex:pageBlock>
+                            </apex:outputPanel>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <c:ODS_FooterComponent /> 
+        </apex:form>
+    </body>
+    
+</apex:page>

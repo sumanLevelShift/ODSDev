@@ -1,0 +1,72 @@
+<template>
+    <lightning-card title={pageTitle}>
+        <div class="slds-p-horizontal_medium slds-p-vertical_small">
+
+            <template if:false={showChildComponent}>
+                <div class="slds-m-bottom_large ">
+                    <h3 class="slds-text-heading_small slds-m-bottom_medium">Select Record Type:</h3>
+
+                    <lightning-radio-group name="recordType" label="Choose Work Order Line Item Type"
+                        options={recordTypeOptions} value={selectedRecordType} onchange={handleRecordTypeChange}
+                        type="radio" variant="label-hidden">
+                    </lightning-radio-group>
+                </div>
+
+                <div class="slds-m-top_medium">
+                    <lightning-button label="Continue" variant="brand" onclick={handleContinue}
+                        disabled={isNextDisabled}>
+                    </lightning-button>
+                </div>
+            </template>
+
+            <template if:true={showChildComponent}>
+
+                <!-- <div class="slds-m-bottom_medium">
+                    <lightning-button label="Back" variant="neutral" icon-name="utility:back" onclick={handleBack}>
+                    </lightning-button>
+                </div>-->
+
+                <template if:true={showLicenseComponent}>
+                    <c-add-s-k-u-l-w-c work-order-id={workOrderId} sku-result={childSkuResult}
+                        error-message-flow={childErrorMessage} onskuresultchange={handleChildResult}
+                        selected-record-type={selectedRecordType} is-aura={isAura} is-v-f-page={isVFPage}
+                        onbacktoparent={handleBackFromChild}>
+                    </c-add-s-k-u-l-w-c>
+                </template>
+
+                <template if:true={showSlabRateComponent}>
+
+                </template>
+                <template if:true={showPointsComponent}>
+                    <c-points-add-s-k-u-l-w-c work-order-id={workOrderId} sku-result={childSkuResult}
+                        error-message-flow={childErrorMessage} onskuresultchange={handleChildResult}
+                        selected-record-type={selectedRecordType} is-aura={isAura} is-v-f-page={isVFPage}
+                        onbacktoparent={handleBackFromChild}>
+                    </c-points-add-s-k-u-l-w-c>
+                </template>
+                <template if:true={showKPOComponent}>
+                    <c-k-p-o-consumption-add-s-k-u-l-w-c work-order-id={workOrderId} sku-result={childSkuResult}
+                        error-message-flow={childErrorMessage} onskuresultchange={handleChildResult}
+                        selected-record-type={selectedRecordType} is-aura={isAura} is-v-f-page={isVFPage}
+                        onbacktoparent={handleBackFromChild}>
+                    </c-k-p-o-consumption-add-s-k-u-l-w-c>
+                </template>
+                <template if:true={showFixedUnitPriceComponent}>
+                    <c-fixed-unit-price-add-s-k-u-l-w-c work-order-id={workOrderId} sku-result={childSkuResult}
+                        error-message-flow={childErrorMessage} onskuresultchange={handleChildResult}
+                        selected-record-type={selectedRecordType} is-aura={isAura} is-v-f-page={isVFPage}
+                        onbacktoparent={handleBackFromChild}>
+                    </c-fixed-unit-price-add-s-k-u-l-w-c>
+                </template>
+                <template if:true={showStaffingComponent}>
+                    <c-staffing-add-s-k-u-l-w-c work-order-id={workOrderId} sku-result={childSkuResult}
+                        error-message-flow={childErrorMessage} onskuresultchange={handleChildResult}
+                        selected-record-type={selectedRecordType} is-aura={isAura} is-v-f-page={isVFPage}
+                        onbacktoparent={handleBackFromChild}>
+                    </c-staffing-add-s-k-u-l-w-c>
+                </template>
+            </template>
+
+        </div>
+    </lightning-card>
+</template>

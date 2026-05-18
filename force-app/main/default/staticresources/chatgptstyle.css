@@ -1,0 +1,103 @@
+.chatgptdocked .slds-is-closed{
+	height: 34px !important;
+}
+
+.chatgptdocked .slds-input, .chatgptdocked .slds-rich-text-editor__output, .chatgptdocked .slds-docked-composer__footer{
+	font-size: 12px !important;
+}
+
+.chatgptdocked .slds-input{
+	height: 42px !important;
+}
+
+.chatgptdocked .slds-card__header-title{
+	font-size: 14px !important;
+}
+
+.chatgptdocked .slds-docked_container .slds-docked-composer.slds-is-open{
+	height: 435px;
+}
+
+.chatgptdocked .slds-docked-composer__footer .slds-button, .chatgptdocked .deploy-metadata .slds-button{
+	padding: 5px 10px !important;
+	/*background-color: #0176D3 !important;*/
+	text-transform: uppercase !important;
+	border-radius: 5px !important;
+}
+
+.chatgptdocked svg.slds-button__icon{
+	width: 18px !important;
+	height: 18px !important;
+	margin-bottom: calc(100% * 1/4);
+	margin-right: 5px;
+}
+
+/*
+.chatgptdocked .chat-gpt-text-area{
+	min-height: 380px !important;
+	max-height: 380px !important;
+}
+*/
+
+.chatgptdocked .slds-chat-message__text, .chatgptdocked .slds-form-element__help, .chatgptdocked .slds-combobox__input{
+	font-size: 12px !important;
+}
+
+.chatgptdocked .slds-docked-composer__footer .slds-form-element__label{
+	font-size: 14px !important;
+	font-weight: normal;
+}
+
+.chatgptdocked .slds-docked-composer__footer .slds-textarea{
+	height: 175px !important;
+	font-size: 13px !important;
+}
+
+.chatgptdocked .slds-docked-composer__footer .slds-modal__content{
+	height: 350px !important;
+}
+
+.chatgptdocked .box{
+	height: 100% !important;
+}
+
+.chatgptdocked .slds-checkbox_faux{
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.chatgptdocked .slds-checkbox_faux::after{
+  width: 10px !important;
+  height: .5rem !important;
+}
+
+.chatgptdocked .slds-modal__close{
+	background-color: transparent !important;
+}
+
+.chatgptdocked .deploy-metadata .slds-form-element__label{
+	font-size: 13px !important;
+	font-weight: normal;
+}
+
+.chatgptdocked .deploy-metadata .deploy-as{
+	margin-top: -3px !important;
+}
+
+
+.chatgptdocked .chat-prompt-area{
+  min-height: 100px !important;
+}
+
+.chatgptdocked .slds-listbox{
+	font-size: 12px !important;
+}
+
+.slds-modal__container{
+  font-size: 12px !important;
+}
+
+.slds-modal__container .slds-text-heading_medium{
+  padding: 0px;
+  color: white  ;
+}

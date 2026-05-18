@@ -1,0 +1,119 @@
+<template>
+
+    <!--<div class="mid-bg" style="background: #FFFFFF;width: 100%;padding: 0 2% 15px 2%;float: left;">
+        <div class="sub-warp">
+            <div class="mid-white">
+                <div class="mid-user-sec">
+                    </div>
+        <div class="slds-m-top_x-large slds-m-around_medium"  style = "margin: 37px;">
+            <div class="slds-grid slds-gutters">
+                <h2  style="font-weight: bold;font-size: 14px" class="slds-text-heading_medium slds-m-bottom_medium">
+                    Calendar Year:
+                </h2>
+                &nbsp;
+                &nbsp;
+                &nbsp;
+
+                <lightning-input type="text" maxlength="4" style=" font-size: 16px;"
+                
+                   value={searchValue}
+                   placeholder="Search"
+                   onchange={searchKeyword}
+                   ></lightning-input>
+                   &nbsp;&nbsp;
+                   &nbsp;
+                   &nbsp;
+                   &nbsp;
+                   &nbsp;
+                   &nbsp;
+             <lightning-button label="Search" 
+                onclick={handleSearchKeyword}
+                variant="brand"></lightning-button>
+          </div>
+             </div>
+   </div>
+   </div>
+   </div>!-->
+    <div class="mid-bg" style="background: #FFFFFF;width: 100%;padding: 0 2% 15px 2%;float: left;">
+        <div class="spinnerDiv" style="display: None;">
+            <div class="popupBackground"></div>
+            <div class="PopupPanel">
+                <table border="0" width="100%">
+                    <tr>
+                        <td style="text-align: center;font-size: 13px;"><b>Please Wait</b></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;"><img src={spinner} /></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="sub-warp">
+            <div class="mid-white">
+                <div class="mid-user-sec">
+                </div>
+                <h1 style="font-size: 22px;
+                font-weight: 600;
+                color: #4bc9f4;
+                padding-top: 20px;
+                padding-bottom: 4px;text-align: center;">Hours Consumed by Calendar Year</h1>
+                <br>
+                <br>
+                <div class="slds-align_absolute-center norecords"
+                    style="display:none;font-weight: bold;font-size: 14px;margin-left: 45%;">
+                    <br />
+                    No records found.
+                </div>
+                <div class="timeline-scroll tableListEST" style="padding-left: 32%;">
+
+                    <table class="list datatable timeline dataTable">
+                        <tbody>
+                            <tr>
+                                <th>
+                                    YEAR
+                                </th>
+                                <th>
+                                    Total Number of Hours
+                                </th>
+
+                            </tr>
+                            <template for:each={timesheetlist} for:item="ts">
+                                <tr key={ts.ID}>
+                                    <td style="text-align: right !important;padding: 8px 10px;">
+                                        {ts.timesheetYears}
+                                    </td>
+                                    <td style="text-align: right !important;padding: 8px 10px;">
+
+                                        <lightning-formatted-number value={ts.timesheetTotalHours}
+                                            format-style="decimal" minimum-fraction-digits="2"
+                                            maximum-fraction-digits="2"></lightning-formatted-number>
+
+                                    </td>
+
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="bottomButtons">
+                    <div class="add-button">
+                        <button title="EXPORT TO PDF" class="addButton" onclick={generatePdf}>
+                            EXPORT TO PDF
+                        </button>
+
+                    </div>
+
+                    <div class="add-excelbutton">
+                        <button title="EXPORT TO Excel" class="addExcelButton" onclick={generateExcel}>
+                            EXPORT TO EXCEL
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <br>
+    <br>
+
+</template>

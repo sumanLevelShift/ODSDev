@@ -1,0 +1,489 @@
+<template>
+	<template if:false={flag}>
+		<div class="myDIV slds-grid slds-gutters" style=" width: 100%;">
+			<div class="clr"></div>
+			<div class="mid-bg">
+				<div class="spinnerDiv" style="display: none;">
+					<div class="popupBackground"></div>
+					<div class="PopupPanel">
+						<table border="0" width="100%">
+							<tr>
+								<td style="text-align: center;font-size: 13px;"><b>Please Wait</b></td>
+							</tr>
+							<tr>
+								<td style="text-align: center;"><img src={spinner} /></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="sub-warp">
+					<h1 style="float:left;
+                       
+                        color: #4ECAF4;
+                        font-size: 18px;
+                        text-transform: uppercase;
+                        font-family: 'Open Sans', sans-serif;
+                        font-weight: bold;
+                        padding: 22px 0 10px 10px;
+                        display: block;
+                    ">
+						<!-- Customers List-->
+					</h1>
+
+					<div class="mid-white" style="background: #F4F4F4;
+                    width: 100%;
+                    padding: 10px 15px;
+                    float: left;">
+						<div class="timeline-scroll">
+							<table class="slds-table  slds-table_bordered ListTable" style="background: transparent;">
+
+								<!--Header of the table-->
+								<thead>
+									<tr class="slds-line-height_reset">
+										<th class="slds-size_1-of-6 " scope="col"
+											style="color: #fff;font-family: 'Open Sans', sans-serif;font-size: 14px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;background: #4bc9f4;padding: 4px 10px;text-transform: uppercase;">
+											<div class="slds-truncate " title="CUSTOMER NAME">CUSTOMER NAME</div>
+										</th>
+										<th class="slds-size_1-of-6 " scope="col"
+											style="color: #fff;font-family: 'Open Sans', sans-serif;font-size: 14px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;background: #4bc9f4;padding: 4px 10px;text-transform: uppercase;">
+											<div class="slds-truncate " title="SERVICE OPTED">SERVICE OPTED</div>
+										</th>
+										<th class="slds-size_1-of-6 " scope="col"
+											style="color: #fff;font-family: 'Open Sans', sans-serif;font-size: 14px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;background: #4bc9f4;padding: 4px 10px;text-transform: uppercase;">
+											<div class="slds-truncate " title="TECHNICAL ACCOUNT MANAGER">TECHNICAL
+												ACCOUNT
+												MANAGER</div>
+										</th>
+										<th class="slds-size_1-of-6" scope="col"
+											style="color: #fff;font-family: 'Open Sans', sans-serif;font-size: 14px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;background: #4bc9f4;padding: 4px 10px;text-transform: uppercase;">
+											<div class="slds-truncate " title="CONTRACT EXPIRY DATE">CONTRACT EXPIRY
+												DATE
+											</div>
+										</th>
+										<th class="slds-size_1-of-6" scope="col"
+											style="color: #fff;font-family: 'Open Sans', sans-serif;font-size: 14px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;background: #4bc9f4;padding: 4px 10px;text-transform: uppercase;">
+											<div class="slds-truncate " title="Action">Action
+											</div>
+										</th>
+
+									</tr>
+								</thead>
+								<template for:each={customerList} for:item="c">
+
+									<tr key={c.Account__c}>
+										<td
+											style="color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;font-weight: normal;border: 1px solid #d7d7d7;padding: 5px 10px;">
+											{c.Account__r.Name}
+										</td>
+										<td
+											style="color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;font-weight: normal;border: 1px solid #d7d7d7;padding: 5px 10px;">
+											{c.ODS_Services__r.Name__c}
+										</td>
+										<td
+											style="color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;font-weight: normal;border: 1px solid #d7d7d7;padding: 5px 10px;">
+											{c.Technical_Account_manager__r.Name}
+										</td>
+										<td
+											style="color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;font-weight: normal;border: 1px solid #d7d7d7;padding: 5px 10px;">
+
+											<lightning-formatted-date-time value={c.Contract_End_Date__c}
+												month="2-digit" day="2-digit" year="numeric">
+											</lightning-formatted-date-time>
+										</td>
+										<td
+											style="text-align: left;color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;font-weight: normal;text-align: center;border: 1px solid #d7d7d7;padding: 5px 10px;">
+											<lightning-icon data-item={c.ODS_Services__c} key={c.Account__c}
+												id={c.Account__c} icon-name="utility:preview" alternative-text="Preview"
+												title="Preview" onclick={handleGetAccDetail} class="slds-icon_medium"
+												aria-hidden="true" style="cursor: pointer;"></lightning-icon>
+
+										</td>
+									</tr>
+								</template>
+							</table>
+							<div>
+								</br>
+								<div class="slds-align_absolute-center" style=" font-weight: bold;float: left;">
+									<div class="slds-grid slds-gutters" style="place-content:baseline; padding : 14px">
+										<div class="slds-col" style="color: #000; font-weight: bold;font-size: 12px;">
+
+											<lightning-button label="First" disabled={isPrev}
+												icon-name="utility:jump_to_left" onclick={firstHandler}
+												class="navButton">
+											</lightning-button>
+										</div>
+										<div class="slds-col" style="color: #000; font-weight: bold;font-size: 12px;">
+											<lightning-button label="Previous" icon-name="utility:chevronleft"
+												disabled={isPrev} onclick={previousHandler} class="navButton">
+											</lightning-button>
+										</div>
+										<div class="slds-col"
+											style="color: #4ECAF4; font-weight: bold;font-size: 12px;">
+											Showing Page {page} of {totalPage}
+										</div>
+										<div class="slds-col" style="color: #000; font-weight: bold;font-size: 12px;">
+											<lightning-button label="Next" icon-name="utility:chevronright"
+												icon-position="right" disabled={isNext} onclick={nextHandler}
+												class="navButton">
+											</lightning-button>
+										</div>
+										<div class="slds-col" style="color: #000; font-weight: bold;font-size: 12px;">
+											<lightning-button label="Last" icon-name="utility:jump_to_right"
+												icon-position="right" disabled={isNext} onclick={lastHandler}
+												class="navButton">
+											</lightning-button>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="SearchDiv slds-grid slds-gutters"
+			style="display:none;color: #000;font-size: 12px;width: 100%;background: #F4F4F4">
+			<div class="mid-bg" style="background: #FFFFFF; width: 100%; padding: 0 6% 15px 6%; float: left;">
+				<div class="sub-warp">
+					<div class="head-right customer-search"
+						style="margin-top: 0px;float: right;margin-top: 8px;position: relative;">
+						<select class="slds-select" id="select-02"
+                            style="height: 33px;width:125px;background: #4bc9f4;color: #fff;font-size: 14px;font-family: 'Open Sans', sans-serif;border: 1px solid #4bc9f4;-webkit-box-shadow: 4px 4px 12px -3px rgb(122 122 122);-moz-box-shadow: 4px 4px 12px -3px rgba(122,122,122,1);box-shadow: 4px 4px 12px -3px rgb(122 122 122);border-radius: 10px;float: left;margin: 5px 20px;">
+                            <template for:each={Accoutser} for:item="listViewItem">
+                                <option key={listViewItem.key} value={listViewItem.key}>{listViewItem.value}</option>
+                            </template>
+                        </select>
+					</div>
+
+					<div class="cust-Top" style="width: 100%;">
+						<div class="slds-m-around_medium">
+							<div class="slds-box" style="    border-top: 5px solid #4ECAF4;
+                            background: #F4F4F4;
+                            width: 100%;
+                            -webkit-box-shadow: 0px 0px 22px -3px rgb(120 120 120);
+                            -moz-box-shadow: 0px 0px 22px -3px rgba(120,120,120,1);
+                            box-shadow: 0px 0px 22px -3px rgb(120 120 120);
+                            padding: 15px;
+                            float: left;
+                            margin-bottom: 30px;height: 185px; margin-top: 20px;">
+								<h4 class="panel-title" style="float: left;width: 100%; text-transform: uppercase;
+                            font-size: 16px;
+                            color: #333333;
+                            font-weight: bold;
+                            margin-bottom: 25px;">COMPANY INFORMATION
+								</h4>
+
+								<div class="row">
+									<div class="column"
+										style="float: left;width: 48%;padding: 10px;padding-left: 30px;">
+										<ul class="list-type" style="margin: 0;padding: 0;">
+											<li style="list-style: none;
+                                        float: left;
+                                        width: 100%;
+                                        margin: 0;
+                                        margin-bottom: 10px;
+                                        padding: 0;"><label
+                                                    style="display: inline-block;max-width: 100%;font-size: 14px;margin-bottom: 5px;font-weight: bold;">
+                                                    Company Name </label> <span
+                                                    style="font-size:14px;position: relative;left: 19%;color: #666666;"
+                                                    class="comp-info-left">{accountname}</span></li>
+											<li style="list-style: none;
+                                        float: left;
+                                        width: 100%;
+                                        margin: 0;
+                                        margin-bottom: 10px;
+                                        padding: 0;"><label
+                                                    style="display: inline-block;max-width: 100%;font-size: 14px;margin-bottom: 5px;font-weight: bold;">Website
+                                                    Address </label> <span
+                                                    style="position: relative;left: 18%;font-size:14px; color: #337ab7;text-decoration: none;"
+                                                    class="comp-info-left">
+                                                    <lightning-formatted-url  value ={website} style="color: #337ab7;text-decoration: none" target="_blank"> </lightning-formatted-url> </span>
+											</li>
+										</ul>
+									</div>
+									<div class="columns" style=" float: right; width: 40%; padding: 10 px;">
+										<ul class="list-type">
+											<li
+												style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+												<label
+                                                    style=" display:inline-block;max-width: 100%;font-size: 14px;margin-bottom: 5px;font-weight: bold;">
+                                                    Address
+                                                </label>
+												<span style="color: #666666;font-size: 14px;font-family: 'Open Sans', sans-serif;font-weight: normal;float: right;
+                                            width: 60%;
+                                            word-wrap: break-word;">
+                                                    {billingaddress}</span>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+
+							<div class="slds-box" style=" height: 199px; border-top: 5px solid #4ECAF4;
+                            background: #F4F4F4;
+                            width: 100%;
+                            -webkit-box-shadow: 0px 0px 22px -3px rgb(120 120 120);
+                            -moz-box-shadow: 0px 0px 22px -3px rgba(120,120,120,1);
+                            box-shadow: 0px 0px 22px -3px rgb(120 120 120);
+                            padding: 15px;
+                            float: left;
+                            height: 215px;
+                            margin-bottom: 30px;">
+
+								<div class="csm-Contact" style="float:left; font-size:150%; width:25%;">
+									<h4
+										style="text-transform: uppercase;font-size: 16px;color: #333333;font-weight: bold;margin-bottom: 25px;float: left;width: 100%;">
+
+										<template lwc:if={isSmallBusiness}>
+											Technical Lead
+										</template>
+										<template lwc:else>
+											Customer Success Manager
+										</template>
+									</h4>
+									<ul class="list-type" style="margin: 0;padding: 0;">
+										<li
+											style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+											<span style="font-size: 14px;font-weight: bold;color: #333;"> {tamName}
+                                            </span>
+										</li>
+										<li
+											style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+											<img src={email} style="float: left;margin-right: 10px;">
+											<span
+                                                style="width: 82%;color: #666666;font-size: 14px;font-family: 'Open Sans', sans-serif;font-weight: normal;float: left;word-wrap: break-word;">
+                                                {emails} {tamEmail} </span>
+										</li>
+										<li
+											style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+											<img src={phone} style="float: left;margin-right: 10px;">
+											<span
+                                                style="width: 82%;color: #666666;font-size: 14px;font-family: 'Open Sans', sans-serif;font-weight: normal;float: left;word-wrap: break-word;">
+                                                {phones} {tamPhone} </span>
+										</li>
+
+									</ul>
+
+								</div>
+								<div class="cus-line csm-Contact"
+									style="float:left; width:25%;font-size:150%; padding-left:20px;border-left: 1px solid #e1e1e1;">
+									<h4
+										style="text-transform: uppercase;font-size: 16px;color: #333333;font-weight: bold;margin-bottom: 25px;float: left;width: 100%;">
+										<template lwc:if={isSmallBusiness}>
+											Backup Technical Lead
+										</template>
+										<template lwc:else>
+											Backup Customer Success Manager
+										</template>
+									</h4>
+									<ul class="list-type" style="margin: 0;padding: 0;">
+										<li
+											style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+											<span style="font-size: 14px;font-weight: bold;color: #333;"> {bcsmname}
+                                            </span>
+										</li>
+										<li
+											style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+											<img src={email} style="float: left;margin-right: 10px;">
+											<span
+                                                style="width: 82%;color: #666666;font-size: 14px;font-family: 'Open Sans', sans-serif;font-weight: normal;float: left;word-wrap: break-word;">
+                                                {emails}{bcsmemail}</span>
+										</li>
+										<li
+											style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+											<img src={phone} style="float: left;margin-right: 10px;">
+											<span
+                                                style="width: 82%;color: #666666;font-size: 14px;font-family: 'Open Sans', sans-serif;font-weight: normal;float: left;word-wrap: break-word;">
+                                                {phones}{bcsmphone}</span>
+										</li>
+
+									</ul>
+
+								</div>
+								
+								<template if:false={isSmallBusiness}>
+									<div style="float:left; width:25%;font-size:150%; padding-left:20px;border-left: 1px solid #e1e1e1;"
+										class="cus-line csm-Contact">
+										<h4
+											style="text-transform: uppercase;font-size: 16px;color: #333333;font-weight: bold;margin-bottom: 25px;float: left;width: 100%;">
+											Customer Success Executive </h4>
+										<ul class="list-type" style="margin: 0;padding: 0;">
+											<li
+												style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+												<span style="font-size: 14px;font-weight: bold;color: #333;"> {CSEname}
+                                            </span>
+											</li>
+											<li
+												style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+												<img src={email} style="float: left;margin-right: 10px;">
+												<span
+                                                style="width: 82%;color: #666666;font-size: 14px;font-family: 'Open Sans', sans-serif;font-weight: normal;float: left;word-wrap: break-word;">{CSEEmail}</span>
+											</li>
+											<li
+												style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+												<img src={phone} style="float: left;margin-right: 10px;">
+												<span
+                                                style="width: 82%;color: #666666;font-size: 14px;font-family: 'Open Sans', sans-serif;font-weight: normal;float: left;word-wrap: break-word;">
+                                                {CSEPhone}</span>
+											</li>
+
+										</ul>
+									</div>
+								</template>
+								<div style="float:left; width:25%;font-size:150%; padding-left:20px;border-left: 1px solid #e1e1e1;"
+									class="cus-line csm-Contact">
+									<h4
+										style="text-transform: uppercase;font-size: 16px;color: #333333;font-weight: bold;margin-bottom: 25px;float: left;width: 100%;">
+										Account Manager </h4>
+									<ul class="list-type" style="margin: 0;padding: 0;">
+										<li
+											style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+											<span style="font-size: 14px;font-weight: bold;color: #333;"> {AccMan}
+                                            </span>
+										</li>
+										<li
+											style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+											<img src={email} style="float: left;margin-right: 10px;">
+											<span
+                                                style="width: 82%;color: #666666;font-size: 14px;font-family: 'Open Sans', sans-serif;font-weight: normal;float: left;word-wrap: break-word;">
+                                                {AccEmail}</span>
+										</li>
+										<li
+											style="list-style: none;float: left;width: 100%;margin: 0; margin-bottom: 10px;padding: 0;">
+											<img src={phone} style="float: left;margin-right: 10px;">
+											<span
+                                                style="width: 82%;color: #666666;font-size: 14px;font-family: 'Open Sans', sans-serif;font-weight: normal;float: left;word-wrap: break-word;">
+                                                {AccPhone}</span>
+										</li>
+
+									</ul>
+								</div>
+							</div>
+
+							<div class="slds-clearfix">
+								<div class="slds-float_left" style="float: left; width: 40%;margin-top: 10px;">
+									<div class="slds-box"
+										style="min-height: 470px;border-top: 5px solid #4ECAF4;background: #F4F4F4;width: 100%;-webkit-box-shadow: 0px 0px 22px -3px rgb(120 120 120);-moz-box-shadow: 0px 0px 22px -3px rgba(120,120,120,1);box-shadow: 0px 0px 22px -3px rgb(120 120 120);padding: 15px;float: left;margin-bottom: 30px;">
+										<h4
+											style=" text-transform: uppercase;font-size: 16px;color: #333333;font-weight: bold;margin-bottom: 25px;float: left;width: 100%;">
+											People Information</h4>
+
+										<ul class="cust-list" style="margin: 0;padding: 0;">
+											<template for:each={ObjCon} for:item="cont">
+
+												<li key={cont.Id}
+													style="padding: 10px 0;float: left;width: 100%;margin-bottom: 1px;border-bottom: 1px solid #cccccc;list-style: none;">
+													<div style=" width: 50%;float: left;">
+														<div class="people-user" style="float: left;">
+															<img src={use}
+                                                                style="border-radius: 100px;width: 40px;height: 40px;">
+                                                        </div>
+															<p
+																style="color: #000;font-family: 'Open Sans', sans-serif;font-size: 14px;margin-left: 5px;float: left;margin-top: 10px;">
+																{cont.Name}</p>
+
+														</div>
+														<span
+                                                        style="float: right;text-align: right;font-size: 12px;width: 50%;line-height: 30px;">
+                                                        <div style="float: left; width: 100%; ">
+                                                            <img src={email}
+                                                                style="margin-left: 3px;float: right;margin-bottom: 3px;">
+                                                            <template if:true={cont.Email}>
+                                                                <strong
+                                                                    style="margin-bottom: 4px;float: right;text-align: right;">
+                                                                    {cont.Email}
+                                                                </strong>
+                                                            </template>
+                                                            <template if:false={cont.Email}>
+                                                                <strong
+                                                                    style="margin-bottom: 4px;float: right;text-align: right;">
+
+                                                                    Not available
+                                                                </strong>
+                                                            </template>
+                                                        </div>
+
+                                                        <div style="width: 100%; ">
+                                                            <img src={phone}
+                                                                style="margin-left: 3px;float: right;margin-bottom: 3px;">
+
+                                                            <template if:true={cont.MobilePhone}>
+                                                                <strong
+                                                                    style="margin-bottom: 4px;float: right;text-align: right;">
+
+                                                                    {cont.MobilePhone}
+                                                                </strong>
+                                                            </template>
+                                                            <template if:false={cont.MobilePhone}>
+                                                                <strong
+                                                                    style="margin-bottom: 4px;float: right;text-align: right;">
+
+                                                                    Not available
+                                                                </strong>
+                                                            </template>
+                                                        </div>
+                                                    </span>
+												</li>
+											</template>
+										</ul>
+									</div>
+								</div>
+								<div class="slds-float_right"
+									style="float: right;width: 57%;margin-left: 3%;margin-top: 10px;">
+									<div class="slds-box"
+										style="border-top: 5px solid #4ECAF4;background: #F4F4F4;width: 100%;-webkit-box-shadow: 0px 0px 22px -3px rgb(120 120 120);-moz-box-shadow: 0px 0px 22px -3px rgba(120,120,120,1);box-shadow: 0px 0px 22px -3px rgb(120 120 120);padding: 15px;margin-bottom: 30px;min-height: 470px;">
+										<h4
+											style="text-transform: uppercase;font-size: 16px;color: #333333;font-weight: bold;margin-bottom: 25px;">
+											ODS Services details</h4>
+										<ul class="cust-form">
+											<li><label>Contract Start Date</label><span>
+                                                    <template if:true={csdate}>
+                                                        {csdate}
+                                                    </template>
+                                                    <template if:false={csdate}>
+                                                        <p>&nbsp;</p>
+                                                    </template>
+                                                </span></li>
+											<li><label>Contract End Date</label><span>
+                                                    <template if:true={cedate}>
+                                                        {cedate}
+                                                    </template>
+                                                    <template if:false={cedate}>
+                                                        <p>&nbsp;</p>
+                                                    </template>
+                                                    </span></li>
+											<li><label>Subscription Fee</label><span>{Retainerfee}</span></li>
+											<li><label>ODS Hourly Rate</label><span>{ODSHourlyRate}</span></li>
+											<li><label>Subscription Fee Frequency</label><span>{RetainerFeeFrequency}</span>
+											</li>
+											<li><label>Customer Portal Demo</label><span>{CustomerPortal}</span> </li>
+											<li><label>Customer Portal Access</label><span>{CustomerPortalAcccess}</span>
+											</li>
+											<li><label>Setup Weekly and Monthly Meeting</label><span>{SetupWeekMonthMeeting}</span>
+											</li>
+											<li><label>Onboarding Document</label><span>{onboardingdocument}</span></li>
+											<li><label>Lightning Readiness Check</label><span>{Lightingreadinescheck}</span>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="pull-right">
+						<lightning-button class="slds-m-top_small cancelButton" variant="brand" label="Back"
+							onclick={handleBack}>
+
+						</lightning-button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+	</template>
+
+</template>

@@ -1,0 +1,12 @@
+<template>
+    <div class="burndown-chart-container">
+        <template if:true={hasData}>
+            <canvas lwc:ref="chartCanvas" class="chart-canvas"></canvas>
+        </template>
+        <template if:false={hasData}>
+            <div class="slds-text-align_center slds-p-around_large">
+                <p class="slds-text-body_regular">No burndown data available</p>
+            </div>
+        </template>
+    </div>
+</template>

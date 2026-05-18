@@ -1,0 +1,95 @@
+.mid-bg  {
+    background: #FFFFFF;
+    width: 100%;
+    padding: 0 2% 15px 2%;
+    float: left;
+}
+.content-box{
+    width: 90%;
+    margin: auto;
+}
+
+h1{
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 16px;
+    color: #333333;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.lgc-bg {
+    background-color: rgb(242, 242, 242);
+    width: 30%;    
+    height: 50px;
+    text-align: left;
+    margin: 10px 0 15px 10px;
+    padding: 5px;
+}
+
+.inputBox {
+    width: 30%;
+    margin-left: 5px;
+    height: 30px;
+    text-align: left;
+    padding-bottom: 5px;
+    font-size: 12px;
+}
+
+.send {
+    color:#4ECAF4; 
+    margin:5px;
+}
+
+.save-draft {
+    color:#4ECAF4; 
+    margin:2px;
+}
+
+.mail-body {
+    margin-top: 20px;
+}
+.new-email {
+    color:#4ECAF4;
+}
+.slds-truncate{
+    text-align: center;
+}
+
+.dataRow{
+    font-weight:normal;text-align:left; margin: left 10px; color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;
+}
+.myDIV {
+    width: 100%;
+}
+.slds-table{
+    width: 100%;
+}
+
+.highlight {
+    background-color: yellow;
+}
+.cust-box{
+    margin-top: 30px !important;
+}
+
+.timelineS td {
+    color: #000;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+    border: 1px solid #d7d7d7;
+    padding: 5px 10px;
+}
+.cust-box h4 {
+    text-transform: uppercase;
+    font-size: 16px;
+    color: #333333;
+    font-weight: bold;
+    margin-bottom: 25px;
+    text-align: center;
+}
+.bodyClass .ql-editor{
+    min-height: 200px;  
+}

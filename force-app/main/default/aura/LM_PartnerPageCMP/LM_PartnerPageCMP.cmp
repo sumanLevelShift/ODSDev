@@ -1,0 +1,5 @@
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:attribute access="public" name="accID" type="id"/> 
+    <aura:attribute access="public" name="servId" type="id"/> 
+    <c:oDSPartnerLWC aura:id="childlwcs" acoountIDFromParent="{!v.accID}" serviceIDFromParent="{!v.servId}"/>
+</aura:component>

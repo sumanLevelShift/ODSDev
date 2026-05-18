@@ -1,0 +1,311 @@
+<template>
+    <div class="mid-bg"
+        style="background: #FFFFFF;width: 98.5% !important;padding: 0 0% 15px 0% !important;float: left;"
+        onchange={unSavedChanges}>
+        <div class="spinnerDiv" style="display: None;">
+            <div class="popupBackground"></div>
+            <div class="PopupPanel">
+                <table border="0" width="100%">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;font-size: 12px;"><b>Please Wait</b></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;"><img src={spinner} /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- modal start -->
+        <template if:true={isShowModalForApprovalUser}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="max-width: 43% !important;">
+                    <!-- modal header start -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={hideModalBoxForApproval}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 style="text-align:center;font-size:16px;font-weight: bold;text-transform: uppercase"
+                            class="slds-text-heading_medium slds-hyphenat">Select the available user for
+                            the approval</h2>
+                    </header>
+                    <!-- modal body start -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1"
+                        style="height: 170px;">
+                        <br />
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_7-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_6-of-12 slds-text-align_right">
+                                        <label class="form-label">Approver List</label>
+                                    </div>
+                                    <div class="slds-col slds-size_8-of-12">
+                                        <lightning-combobox class="dropDownCSS" value={approverUserValue}
+                                            onchange={handleApproversPopUp} options={approverUserList}
+                                            name="ApproverList">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                        <div class="buttonSection" style="float: right;">
+                            <lightning-button variant="brand" label="Cancel" onclick={hideModalBoxForApproval}>
+                            </lightning-button>&nbsp;&nbsp;
+                            <lightning-button variant="brand" label="Approve" onclick={ApproveTheEstimation}
+                                class="searchButton" disabled={approverButtonOnPopUp}></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <!-- modal end -->
+
+        <div class="sub-warp">
+
+            <div class="mid-white" style="height: 580px;background:white;">
+                <div class="slds-scrollable" style="height: 100%;">
+                    <table class="list timeline dataTable no-footer css-serial slds-table slds-table_striped">
+                        <tbody>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Platform &#38; Entity Type
+                                </th>
+                                <th>Effort Type &#38; Complexity</th>
+                                <th>Estimation Element</th>
+                                <th>Brief Description</th>
+                                <th>Quantity</th>
+                                <th>Recomm.<br />
+                                    Effort<br /> (Hours)</th>
+                                <th>Planned <br />Effort<br />
+                                    (Hours)</th>
+                                <th>Remarks/Rationale<br />
+                                    If Different</th>
+                                <th style="display: none;">Assumption</th>
+                                <th>Action</th>
+                            </tr>
+                            <template for:each={existEstimationDetailInventroy} for:item="i">
+                                <tr key={i.Id} class="inputRows" id={i.Id}>
+                                    <td style="text-align: center;">
+
+                                    </td>
+                                    <td>
+                                        <template if:true={i.Platform__c}>
+                                            <lightning-combobox class="platformValue pickList requiredClass"
+                                                options={platformOptionList} value={i.Platform__c} required="true"
+                                                data-rowid={i.Id} onchange={getRecommendedEffort} name="Platform"
+                                                disabled={isApproved}>
+                                            </lightning-combobox>
+                                        </template>
+                                        <template if:false={i.Platform__c}>
+                                            <lightning-combobox class="platformValue pickList requiredClass"
+                                                options={platformOptionList} value={platformValue} required="true"
+                                                data-rowid={i.Id} onchange={getRecommendedEffort} name="Platform"
+                                                disabled={isApproved}>
+                                            </lightning-combobox>
+                                        </template>
+                                        <br />
+                                        <lightning-combobox class="entityTypeValue pickList requiredClass"
+                                            required="true" data-rowid={i.Id} data-entity={i.Id}
+                                            onchange={getRecommendedEffort} disabled={isApproved}
+                                            value={i.Entity_Type__c}>
+                                        </lightning-combobox>
+                                    </td>
+                                    <td>
+                                        <template if:true={i.Effort_Type__c}>
+                                            <lightning-combobox class="effortTypeValue pickList requiredClass"
+                                                options={effortTypeOptionList} value={i.Effort_Type__c} required="true"
+                                                data-rowid={i.Id} onchange={getRecommendedEffort} disabled={isApproved}>
+                                            </lightning-combobox>
+                                        </template>
+                                        <template if:false={i.Effort_Type__c}>
+                                            <lightning-combobox class="effortTypeValue pickList requiredClass"
+                                                options={effortTypeOptionList} value={effortTypeValue} required="true"
+                                                data-rowid={i.Id} onchange={getRecommendedEffort} disabled={isApproved}>
+                                            </lightning-combobox>
+                                        </template>
+                                        <br />
+                                        <template if:true={i.Complexity__c}>
+                                            <lightning-combobox class="complexityValue pickList requiredClass"
+                                                options={complexityOptionList} value={i.Complexity__c} required="true"
+                                                data-rowid={i.Id} onchange={getRecommendedEffort} disabled={isApproved}>
+                                            </lightning-combobox>
+                                        </template>
+                                        <template if:false={i.Complexity__c}>
+                                            <lightning-combobox class="complexityValue pickList requiredClass"
+                                                options={complexityOptionList} value={complexityValue} required="true"
+                                                data-rowid={i.Id} onchange={getRecommendedEffort} disabled={isApproved}>
+                                            </lightning-combobox>
+                                        </template>
+
+                                    </td>
+                                    <td>
+                                        <lightning-textarea class="estimationElementValue textAreaCss requiredClass"
+                                            value={i.Estimation_Element__c} required="true" disabled={isApproved} max-length="255">
+                                        </lightning-textarea>
+                                    </td>
+                                    <td>
+                                        <lightning-textarea class="briefDescriptionValue textAreaCss"
+                                            value={i.Brief_Description__c} disabled={isApproved} max-length="2000">
+                                        </lightning-textarea>
+                                    </td>
+
+                                    <td>
+                                        <lightning-input class="quantityValue" type="number" step="0.01"
+                                            value={i.Quantity__c} onfocusout={handleInvokeParentMethod}
+                                            disabled={isApproved}>
+                                        </lightning-input>
+                                    </td>
+                                    <td>
+                                        <lightning-input class="recommendedEffortValue" type="number" step="0.01"
+                                            value={i.Recommended_Effort__c} disabled="true">
+                                        </lightning-input>
+                                    </td>
+                                    <td>
+                                        <lightning-input class="revisedEffortValue" type="number" step="0.01"
+                                            value={i.Project_Specfic_Effort__c} onfocusout={handleInvokeParentMethod}
+                                            disabled={disableForAll} min="0" max="100">
+                                        </lightning-input>
+                                    </td>
+                                    <td>
+                                        <lightning-textarea
+                                            class="rationalIfDifferentValue textAreaCss requiredRationale"
+                                            value={i.Rationale_If_Different_From_Recommended__c} disabled={isApproved} max-length="32000">
+                                        </lightning-textarea>
+                                    </td>
+                                    <td style="display: none;">
+                                        <lightning-textarea class="assumptionValue textAreaCss" disabled={isApproved}
+                                            value={i.Assumptions__c}>
+                                        </lightning-textarea>
+                                    </td>
+                                    <td>
+                                        <lightning-icon icon-name="action:delete" onclick={removeRow} data-row={i.Id}
+                                            data-id={i.Id} style="cursor: pointer;" disabled={isApproved} id={i.Id}>
+                                        </lightning-icon>
+                                    </td>
+                                </tr>
+                            </template>
+                            <template for:each={rows} for:item="i">
+                                <tr key={i} class="inputRows" id={i} >
+                                    <td style="text-align: center;">
+
+                                    </td>
+                                    <td>
+                                        <lightning-combobox class="platformValue pickList requiredClass newPlatform"
+                                            options={platformOptionList} value={platformValue} required="true"
+                                            data-rowid={i} data-platform={i} onchange={getRecommendedEffort}
+                                            name="Platform">
+                                        </lightning-combobox>
+                                        <br />
+                                        <lightning-combobox class="entityTypeValue pickList requiredClass"
+                                            required="true" data-rowid={i} data-entity={i}
+                                            onchange={getRecommendedEffort} disabled={isApproved} value={entityValue}>
+                                        </lightning-combobox>
+
+                                        <!--     <select class="entityTypeValue pickList requiredClass slds-select" required
+                                                data-rowid={i} data-entity={i} onchange={getRecommendedEffort}>
+                                            </select>-->
+                                    </td>
+                                    <td>
+                                        <lightning-combobox class="effortTypeValue pickList requiredClass"
+                                            options={effortTypeOptionList} value={effortTypeValue} required="true"
+                                            data-rowid={i} onchange={getRecommendedEffort} data-effort={i}>
+                                        </lightning-combobox>
+                                        <br />
+                                        <lightning-combobox class="complexityValue pickList requiredClass"
+                                            options={complexityOptionList} value={complexityValue} required="true"
+                                            data-rowid={i} onchange={getRecommendedEffort}>
+                                        </lightning-combobox>
+                                    </td>
+                                    <td>
+                                        <lightning-textarea class="estimationElementValue textAreaCss requiredClass"
+                                            required="true" max-length="255">
+                                        </lightning-textarea>
+                                    </td>
+                                    <td>
+                                        <lightning-textarea class="briefDescriptionValue textAreaCss" max-length="2000">
+                                        </lightning-textarea>
+                                    </td>
+
+                                    <td>
+                                        <lightning-input class="quantityValue" type="number" step="0.01" value="1"
+                                            onfocusout={handleInvokeParentMethod}>
+                                        </lightning-input>
+                                    </td>
+                                    <td>
+                                        <lightning-input class="recommendedEffortValue" type="number" step="0.01"
+                                            disabled="true">
+                                        </lightning-input>
+                                    </td>
+                                    <td>
+                                        <lightning-input class="revisedEffortValue" type="number" step="0.01"
+                                            onfocusout={handleInvokeParentMethod} required="true" min="0" max="100">
+                                        </lightning-input>
+                                    </td>
+                                    <td>
+                                        <lightning-textarea
+                                            class="rationalIfDifferentValue textAreaCss requiredRationale" max-length="32000">
+                                        </lightning-textarea>
+                                    </td>
+                                    <td style="display: none;">
+                                        <lightning-textarea class="assumptionValue textAreaCss" disabled={isApproved}>
+                                        </lightning-textarea>
+                                    </td>
+                                    <td>
+                                        <lightning-icon icon-name="action:delete" onclick={removeRow} data-row={i}
+                                            data-id={i} style="cursor: pointer;" id={i}></lightning-icon>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="floating-actions">
+        <ul>
+            <template if:true={enableForDeliveryRole}>
+                <template if:false={ObsoleteStatus}>
+                    <template if:true={approvedButton}>
+                        <li><a href="#" onclick={handleForApproveButton} title="Approve"><img
+                                    src={approveButtonIcon}></img></a>
+                        </li>
+                    </template>
+
+                    <template if:true={enableEditButton}>
+                        <li><a href="#" onclick={handleForEditButton} title="Edit"><img src={editButtonIcon}></img></a>
+                        </li>
+                    </template>
+                    <template if:true={exportToInitiative}>
+                        <li><a href="#" onclick={exportToInitiativeMethod} title="Export To Initiative"><img
+                                    src={exportToInitiativeButton}></img></a>
+                        </li>
+                    </template>
+                    <template if:true={enableButtonSection}>
+
+                        <template if:true={isApproved}>
+                            <li><a href="#" onclick={exportExcel} title="Download"><img src={exportButton}></img></a>
+                            </li>
+                        </template>
+                        <template if:false={isApproved}>
+                            <li><a href="#" onclick={handleAddRow} title="Add Row"><img src={addButton}></img></a></li>
+                            <li><a href="#" onclick={handleReset} title="Cancel"><img src={cancelButton}></img></a></li>
+                            <li><a href="#" onclick={handleForInsertInventroy} title="Submit"><img
+                                        src={saveButton}></img></a>
+                            </li>
+                        </template>
+                    </template>
+                </template>
+            </template>
+        </ul>
+    </div>
+</template>

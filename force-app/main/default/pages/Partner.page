@@ -1,0 +1,506 @@
+<!--
+*Author:  Mani
+*Created on: 20/June/2018
+*Controller: ODS_RevenueController
+*Purpose: To display ODS and Partner revenue
+-->
+<apex:page controller="ODS_PartnerController" showHeader="false" sidebar="false" docType="html-5.0">
+    <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/jquery-1.4.4.min.js')}"/> 
+    <script src="{!URLFOR($Resource.ODS_Assets,'js/amcharts.js')}"></script>
+    <script src="{!URLFOR($Resource.ODS_Assets,'js/serial.js')}"></script>
+    <link rel="stylesheet" href="{!URLFOR($Resource.ODS_Assets,'css/export.css')}" type="text/css" media="all" />
+    <script src="{!URLFOR($Resource.ODS_Assets,'js/light.js')}">
+    <script src="https://www.amcharts.com/lib/3/gauge.js"></script>
+    
+    <script type="text/javascript">
+    var timeshtArray = [];
+    var subscArray = [];
+    var chartData = [];
+    var Name = 'preludesysindia' ;
+      
+    $(document).ready(function() {
+        $("#partner").addClass("active");
+        //Getting selected account value
+        var AccountID = $(".ddlstAccount").val();
+        //Getting selected service value
+        var ServiceID = $(".ddlstService").val();
+        
+        if(ServiceID == '' || ServiceID == null){
+            alert('Services has not been configured yet, please check with your Technical Manager.');
+            window.location = "/Login_Page";
+            return;
+        }
+                      
+        //Invoke apply search function and gets the related values of dashboard based on the selected account and service.        
+        ApplySearch();          
+    });
+    
+    //Searches and retrieves the dashboard related details based on the selected account and service.
+    function ApplySearch() {
+        var AccountID = $(".ddlstAccount").val();
+        var ServiceID = $(".ddlstService").val();
+        if(AccountID === 'All' || ServiceID === 'All'){
+            //Invokes the action function to search based on account and service
+            ApplySearchAllAction(AccountID, ServiceID);
+        }
+        else
+        {
+            //Invokes the action function to search based on account and service - even if NULL present, lets load the chart
+            ApplySearchAction(AccountID, ServiceID);
+        }
+    }
+    
+    //Load chart data - action function JSON load
+    function fnLoadChartData() {
+        var AccountID = $(".ddlstAccount").val();
+        var ServiceID = $(".ddlstService").val();
+        
+        var jTnMResponse = $('#hdnTnMChartValue').val();
+        //Parse the response returned by javascript action function
+        timeshtArray = $.parseJSON(jTnMResponse);
+        console.log("TimeNMoneyArr: "+timeshtArray);
+        
+        var jSubsResponse = $('#hdnSubsChartValue').val();
+        //Parse the response returned by javascript action function
+        subscArray = $.parseJSON(jSubsResponse);
+        console.log("SubscArr: "+subscArray);
+        
+        //Construct the AM chart using above data
+        ReloadChartData(); 
+    }
+    
+    //Function to get the number of days in a month
+    function getDaysInMonth(month, year) {
+        // Since no month has fewer than 28 days
+        var date = new Date(year, month, 1);
+        var days = [];
+        while (date.getMonth() === month) {
+            days.push(new Date(date));
+            date.setDate(date.getDate() + 1);
+        }
+        return days;
+    }
+    
+    // function to get all the month values
+    function getMonthInYear(){
+        var Months = [1,2,3,4,5,6,7,8,9,10,11,12];        
+        return Months;
+    }
+    
+    //Function to get the month name based on the month number
+    function formatMonth(monthNumber){
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return months[monthNumber - 1];
+    }
+    
+    //Function to format date in MM/dd/YYYY format
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+        return [month, day, year].join('/');
+    }
+    
+    //Function to get hours worked based on the month and year selected.
+    function GetPartnerRevInMonthJson(value, yearVal, revTyp) {
+        var result = [];
+        
+        if(revTyp == "tnm") {
+            result = $.grep(timeshtArray, function(element, index) {
+                return (((new Date(element.chartDate).getMonth()+1) == value) && ((new Date(element.chartDate).getFullYear()) == yearVal)); 
+            });
+        }else {
+            result = $.grep(subscArray, function(element, index) {                
+                return (((new Date(element.chartDate).getMonth()+1) == value) && ((new Date(element.chartDate).getFullYear()) == yearVal)); 
+            });
+        }
+        var finalRevenue = 0;    
+        if (result != '') {
+            $.each(result, function(key, value){
+                finalRevenue += result[key].partnerRevenue;
+            });            
+        }        
+        return (finalRevenue);        
+    }
+    
+    //Function to get selected date Partner revenue
+    function GetPartRevInJson(value, revnType) {
+        var reslt = [];
+        
+        if(revnType == "tnm") {
+            reslt = $.grep(timeshtArray, function(element, index) {
+                return (element.chartDate == value); 
+            });
+        }else {
+            reslt = $.grep(subscArray, function(element, index) {
+                return (element.chartDate == value); 
+            });
+        }
+        var finlRevenue = 0;     
+        
+        if (reslt != '') {
+            finlRevenue = reslt[0].partnerRevenue;
+        }        
+        return (finlRevenue);
+    }
+    
+    //Reload chart data on drop down value changes
+    function ReloadChartData() {        
+        var chartData = [];
+        var Year = $('.ddlstUSYears').val();
+        var Month = $('.ddlstUSMonths').val();
+        var selectedrevType = $(".ddlstUSRevType").val();
+        
+        var now = new Date('{!CurrentDateTime}'); // To get server date
+        var currentChartMonth = now.getMonth() + 1; //months from 1-12
+        var currentChartYear = now.getFullYear();
+        if(Month > currentChartMonth && Year == currentChartYear)
+        {
+            alert('Sorry, you cannot select upcoming months.');
+            $(".ddlstUSMonths").val(currentChartMonth );
+            $(".ddlstUSYears").val(currentChartYear);
+            SelectedMonthDates = getDaysInMonth(currentChartMonth - 1, currentChartYear);                        
+        }
+        
+        //Checks if the selected month value is 'ALL'    
+        if(Month == 0){
+            var SelectedMonthInYear = getMonthInYear();
+            $.each(SelectedMonthInYear,function(key,value){
+                //Loops through all the months and gets the Partner revenue of each month.
+                var formatedMonth = formatMonth(SelectedMonthInYear[key]);     
+                var partnerRev = [];
+                if(selectedrevType == "subscription") {
+                    partnerRev = GetPartnerRevInMonthJson(SelectedMonthInYear[key], Year, "subs");
+                }else {
+                    partnerRev = GetPartnerRevInMonthJson(SelectedMonthInYear[key], Year, "tnm");
+                }
+                
+                //Builds an array of each month and count of hours worked for related month
+                chartData.push({
+                    date: formatedMonth,
+                    revenue: partnerRev
+                });
+            });        
+        }
+        else{
+            //Displays all the dates in a selected month and the related Partner revenue
+            var SelectedMonthDates = getDaysInMonth(Month - 1, Year);
+            //Loops through each date in a month
+            $.each(SelectedMonthDates, function(key, value) {
+                
+                var formatedDate = formatDate(SelectedMonthDates[key]);
+                var partnerRevn = [];
+                if(selectedrevType == "subscription") {
+                    partnerRevn = GetPartRevInJson(formatedDate, "subs");
+                }else {
+                    partnerRevn = GetPartRevInJson(formatedDate, "tnm");
+                }
+                
+                var newDate = new Date(formatedDate);
+                //Builds the array of each date and partner revenue in each date
+                chartData.push({
+                    date: newDate,
+                    revenue: partnerRevn
+                });                                
+            });            
+        }
+        
+        //Binds the chart with data from built array
+        var chart = AmCharts.makeChart("chartdiv", {
+            "theme": "light",
+            "type": "serial",
+            "marginRight": 80,
+            "autoMarginOffset": 20,
+            "marginTop": 20,
+            "dataProvider": chartData,
+            "valueAxes": [{
+                "id": "v1",
+                "axisAlpha": 0.1
+            }],
+            "graphs": [{
+                
+                "balloonText": "[[category]]<br><b>Revenue: [[value]]</b>",
+                "bullet": "round",
+                "bulletBorderAlpha": 1,
+                "bulletBorderColor": "#FFFFFF",
+                "hideBulletsCount": 50,
+                "lineThickness": 2,
+                "lineColor": "#0083c0",
+                "negativeLineColor": "#0083c0",
+                "valueField": "revenue"
+            }],
+            "chartScrollbar": {
+                "scrollbarHeight": 5,
+                "selectedBackgroundAlpha": 0.1,
+                "selectedBackgroundColor": "#888888",
+                
+                "color": "#AAAAAA"
+            },
+            "chartCursor": {
+                "valueLineEnabled": true,
+                "valueLineBalloonEnabled": true
+            },
+            "categoryField": "date",
+            "categoryAxis": {
+                "parseDates": true,
+                "axisAlpha": 0,
+            },
+            "export": {
+                "enabled": true
+            }
+        });
+        chart.dataProvider = chartData;
+        //If month value selected is 'ALL', then the chart property of parse date is set to false as date is not populated on the x axis.
+        if(Month == 0){
+            chart.categoryAxis.parseDates = false;
+        }               
+        chart.validateData();
+    } 
+    </script>
+    
+    <apex:form id="formId">   
+        <c:ODS_HeaderComponent />
+        <html>
+            <body>
+                <style>
+                    ul.bulltn_list li:first-child{display:block!important;}
+                    #myDiv{position:relative; z-index:10000;}
+                    .white-bg {
+                        width: 100%;
+                        float: left;
+                        background: #f4f4f4;
+                        margin-top: 25px;
+                        margin-right:2%;
+                        overflow: hidden;
+                        box-shadow: 0px 0px 3px #888888;}
+                        #chartdivs {
+                        width: 120%;
+                        height: 560px;
+                        float: left;
+                        display: inline-block;
+                        margin: -65px -55px -112px;
+                        }
+                    .innerwrapper
+                    { 
+                        width: 49%;
+                        display: inline-block;
+                        float: right;
+                    }
+                    .tech-manager-bg{margin-left:0px;}
+                    @media (max-width:1024px)
+                    {
+                        .tech-manager-bg  ul{margin-top:15px}
+                        .tech-manager-bg .user-icon-wid img{width:90px;height:95px}
+                        .user-stories-bg h2 label{width:100%;}
+                    }
+                </style>
+                <!--Action status to occupy screen while loading-->
+                <apex:actionStatus id="statusSaveTrip" stopText="">
+                    <apex:facet name="start">
+                        <div>
+                            <div class="popupBackground" />
+                            <div class="PopupPanel">
+                                <table border="0" width="100%" height="100%">
+                                    <tr>
+                                        <td align="center"><b>Please Wait</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionStatus>
+                <div id="divLoader" style="display:none;" >
+                    <div class="popupBackground" />
+                    <div class="PopupPanel">
+                        <table border="0" width="100%" height="100%">
+                            <tr>
+                                <td align="center"><b>Please Wait</b></td>
+                            </tr>
+                            <tr>
+                                <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <!--Action Functions Start-->
+                <apex:actionFunction name="ApplySearchAllAction" action="{!GetDashboardByAccountServiceID}" status="statusSaveTrip" 
+                        rerender="outptPanl,ODSDashboardPanel,ResUtilChartPanel" 
+                        oncomplete="fnLoadChartData();">
+                    <apex:param name="AccountId" value="" assignTo="{!AccountId}"/>
+                    <apex:param name="ServiceID" value="" assignTo="{!ServiceID}"/>
+                </apex:actionFunction>
+                <apex:actionFunction name="ApplySearchAction" action="{!GetDashboardByAccountServiceID}" status="statusSaveTrip" 
+                        rerender="outptPanl,outPnlDashboard,noSearchRec,ODSDashboardPanel,ResUtilChartPanel" 
+                        oncomplete=" fnLoadChartData();">
+                    <apex:param name="AccountId" value="" assignTo="{!AccountId}"/>
+                    <apex:param name="ServiceID" value="" assignTo="{!ServiceID}"/>
+                </apex:actionFunction>
+                <!--Action Functions End-->
+                
+                <!--Main Dashboard components-->
+                <apex:outputPanel id="outptPanl">
+                    <!--Component data exists panel Start-->
+                    <apex:outputPanel id="outPnlDashboard" rendered="{!ShowRecOutptPnl}">
+                        <div class="clr"></div>
+                        <!--Billing components container div Start-->
+                        <div class="mid-bg">
+                            <!--Notification Panel Start-->
+                            <!--<apex:outputPanel id="NotificationPanel" rendered="{!(notification.size!=0 && notification!=null ) }">
+                                <div class="ods_bulletins row">
+                                    <div class="bulltn_title">
+                                        <span>Bulletins</span>
+                                    </div>
+                                    <div class="bulltn_content col-md-11">
+                                        <apex:dataList value="{!notification}" var="noti" styleClass="bulltn_list">
+                                            <apex:outputText value="{!noti.Key_data_Points__c}" styleClass="default"/>
+                                        </apex:dataList>              
+                                    </div>
+                                    <div class="bulltn_control col-md-1">
+                                        <span class="bexpnd" onclick="bulletin_expand();"> + Expand</span>
+                                        <span class="bclose" onclick="bulletin_close();"> - Close</span>
+                                    </div>
+                                </div>
+                            </apex:outputPanel>-->
+                            <!--Notification Panel End-->
+                            
+                            <!--Hidden container for JSON Chart data-->
+                            <input type='hidden' id='hdnTnMChartValue' value='{!TimeshtJSONtoBind}'/>
+                            <input type='hidden' id='hdnSubsChartValue' value='{!SubscJSONtoBind}'/>
+                            
+                            <!--Dashboard components div start-->
+                            <div class="sub-warp dashboard_cus"> 
+                                <h1></h1>
+                                <apex:outputPanel id="ODSDashboardPanel" rendered="{!ShowTMDashboard}">
+                                    <div class="cli-dash-blue">
+                                        <h2>Customer Billing on ODS <span class="info-text">*</span></h2>
+                                        <div class="clr"></div>
+                                        <!-- This Month -->         
+                                        <div class="cli-blue-box">
+                                            <p>This Month</p>
+                                            <div class="cli-blue-boxbg"> 
+                                                <h3>
+                                                    <apex:outputtext value="{!OdsThisMonthCost}"/>
+                                                </h3>                 
+                                            </div> 
+                                        </div>
+                                        <!-- YTD -->  
+                                        <div class="cli-blue-box">
+                                            <p> YTD </p>
+                                            <div class="cli-blue-boxbg">
+                                                <h3>             
+                                                    <apex:outputtext value="{!OdsYTDCost}"/>
+                                                </h3>
+                                            </div>
+                                        </div>  
+                                        <!-- Life Time -->   
+                                        <div class="cli-blue-box">
+                                            <p>Life Time</p>
+                                            <div class="cli-blue-boxbg">                
+                                                <h3>
+                                                    <apex:outputtext value="{!OdsLifeTimeCost}"/> 
+                                                </h3>  
+                                            </div>
+                                        </div> 
+                                        <div class="clr"></div>
+                                        <div class="blue-box-text"><i>*The billing includes the Subscription invoicing value as well</i></div>
+                                    </div>
+                                    <!-- Partner revenue -->   
+                                    <apex:outputPanel id="PartnerPanel">
+                                        <div class="cli-dash-blue cli-dash-white">
+                                            <h2>Partner Earnings</h2>
+                                            <div class="cli-white-boxbg">
+                                                <p style="color:#000000;text-align:center;">This Month</p>
+                                                <div class="cli-white-box"> 
+                                                    <h3>                                                  
+                                                        <apex:outputtext value="{!PartnerThisMnthCost}" style="white-space: pre;font-size:30px;" escape="false"/>  
+                                                    </h3> 
+                                                    <span>
+                                                        <apex:outputtext value="{!CurrentMonthDate}">  
+                                                        </apex:outputText> 
+                                                    </span>  
+                                                </div>
+                                            </div>
+                                            <!-- Partner YTD -->  
+                                            <div class="cli-white-boxbg">
+                                                <p style="color:#000000;text-align:center;"> YTD </p>
+                                                <div class="cli-white-box cli-white-boxbg-bor">
+                                                    <h3><apex:outputtext value="{!PartnerYTDCost}" style="white-space: pre;font-size:30px;" escape="false"/> </h3>
+                                                    <span>
+                                                        <apex:outputtext value="{!ytdDate}"> 
+                                                        </apex:outputText>  
+                                                    </span>   
+                                                </div>
+                                            </div>
+                                            <!-- Partner Lifetime --> 
+                                            <div class="cli-white-boxbg"> 
+                                                <p style="color:#000000;text-align:center;">Life Time</p>
+                                                <div class="cli-white-box cli-white-boxbg-gray">
+                                                    <h3>
+                                                        <apex:outputtext value="{!partnerLifeTimeCost}" style="white-space: pre;font-size:30px;" escape="false"/> 
+                                                    </h3>    
+                                                    <span>
+                                                        <apex:outputtext value=" Till Date"/>
+                                                    </span> 
+                                                </div> 
+                                            </div> 
+                                        </div> 
+                                    </apex:outputPanel>
+                                    
+                                </apex:outputPanel>
+                                
+                                <!--Partner Revenue Chart Start-->
+                                <div class="cli-dash-res cli-dash-res1" >
+                                    <div class="cli-dash-res1">
+                                        <apex:selectList styleClass="ddlstUSYears" onchange="ReloadChartData();" value="{!slctdYear}" size="1">
+                                            <apex:selectOptions value="{!Years}" />
+                                        </apex:selectList>
+                                        <apex:selectList styleClass="ddlstUSMonths" onchange="ReloadChartData();" value="{!slctdMonth}" size="1">
+                                            <apex:selectOptions value="{!Months}" />
+                                        </apex:selectList>
+                                        <apex:selectList styleClass="ddlstUSRevType" onchange="ReloadChartData();" value="{!slctdRevType}" size="1">
+                                            <apex:selectOptions value="{!RevType}" />
+                                        </apex:selectList>
+                                    </div> 
+                                    <apex:outputPanel id="ResUtilChartPanel" rendered="{!ShowTMDashboard}">
+                                        <div id="resUtilDiv">
+                                            <h2>PARTNER EARNINGS</h2>
+                                            <div class="clr"></div>
+                                            <div style="text-align:center ; padding: 16px 0;">
+                                                <div id="chartdiv"></div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>                                    
+                                </div>                                
+                                <!--Partner Revenue Chart End-->   
+                            </div>
+                            <!--Dashboard components div End-->
+                        </div>
+                        <!--Billing components container div End-->
+                    </apex:outputPanel>
+                    <!--Component data exists panel End-->
+                    
+                    <!--Component data not exists panel Start-->
+                    <apex:outputPanel id="noSearchRec" rendered="{!ShowNoRedOutptPnl}">
+                        <div class="wrap">
+                            <div class="login">
+                                <div class="forgot-text" style="color:#419b1d; font-size:18px; text-align:center; width:450px; padding-top:0; ">
+                                    <apex:image value="{!URLFOR($Resource.ODS_Assets,'images/sad-icon.png')}"/><br/><br/>
+                                    <strong>
+                                        OOPS! Sorry no account has been assigned to you yet. Please contact Administrator
+                                    </strong>
+                                </div>
+                            </div> 
+                        </div>
+                    </apex:outputpanel>
+                    <!--Component data not exists panel End-->
+                    <c:ODS_FooterComponent /> 
+                </apex:outputPanel>
+            </body>
+        </html>
+    </apex:form>
+</apex:page>

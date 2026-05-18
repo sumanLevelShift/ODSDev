@@ -1,0 +1,16 @@
+<template>
+    <lightning-card title="Account Activities"> <br/>
+        <div style="width: auto;">
+            <template if:true={activityRecords}>
+                <lightning-datatable key-field="id"
+                                    data={activityRecords} 
+                                    columns={columns}  
+                                    sorted-by={sortBy}                                                               
+                                    sorted-direction={sortDirection}                                     
+                                    onsort={updateColumnSorting}
+                                    hide-checkbox-column="true">
+                </lightning-datatable>
+            </template>            
+        </div>
+    </lightning-card>
+</template>

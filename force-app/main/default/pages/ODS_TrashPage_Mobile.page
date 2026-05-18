@@ -1,0 +1,206 @@
+<!--
+* @author           Gangadhar R
+* @version          1.0 
+* @date             23-May-2017
+* @description      Page for showing the deleted documents.
+-->
+<apex:page controller="ODS_TrashPageController" sidebar="false" showHeader="false" standardStylesheets="false">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+        
+        <script>
+        $(document).ready(function(){
+            $("#documents").addClass("active");
+            
+            $("button.collapsed").click(function(){
+                $(".header").toggleClass("header-fixed");
+                $(".navbar-toggle").toggleClass("nav-btn-fixed");
+                $(".mid-bg").toggleClass("mid-bg-fixed");
+            });
+            $(".toggleButton").click(function() {
+                $(".list-view thead").toggle();
+                $(".acc").toggle();
+                $(".spno").toggle();
+                $(".crt-by").toggle();
+                $(".list-view tbody tr").toggleClass("search_box");
+                $(".name").toggleClass("srh_content");
+                $(".date").toggleClass("dt");
+                $(".action").toggleClass("srh_overlay");
+                
+            });
+            
+            var AccountID = $(".ddlstAccount").val();            
+            var ServiceID = $(".ddlstService").val(); 
+            
+            FetchTrashRecords(AccountID,ServiceID); 
+        });
+        
+        function ApplySearch(){
+            var AccountID = $(".ddlstAccount").val();
+            var ServiceID = $(".ddlstService").val();  
+            
+            FetchTrashRecords(AccountID,ServiceID);
+        }
+        function DeleteDocument(documentId){
+            
+            var result = confirm("Want to delete?");
+            if (result) {
+                DeleteTrashRecords(documentId);
+                return false;
+                //Logic to delete the item
+            }    
+            else{
+                return false;
+            }
+        }                 
+        </script>  
+        <!-- <script>
+window.onload = function() {
+    $( ".user-name, .shadow-show" ).click(function(event) {
+        event.preventDefault();
+        $( ".account_links, .shadow-show" ).slideToggle( "fast" );
+    });
+};
+
+</script> -->
+        <style>
+            .sub-warp{
+            display:none;
+            }
+        </style>
+        <title>ON DEMAND SERVICES </title>
+    </head>
+    <body> 
+        <apex:form id="formId">
+            <apex:actionFunction name="FetchTrashRecords" action="{!GetDeletedDocuments}" reRender="oppp,trashId" status="statusSaveTrip">
+                <apex:param name="SelectedAccountId" value="" assignTo="{!AccountId}"/>
+                <apex:param name="SelectedServiceId" value="" assignTo="{!ServiceId}"/>
+            </apex:actionFunction>
+            <apex:actionFunction name="DeleteTrashRecords" action="{!DeleteTrashDocument}" reRender="oppp,trashId" status="statusSaveTrip">
+                <apex:param name="SelectedDocumentId" value="" assignTo="{!DocumentId}"/>
+            </apex:actionFunction>
+            
+            <div class="shadow-show"></div>   
+            <div id="divLoader" style="display:none;">
+                <div class="popupBackground" />
+                <div class="PopupPanel">
+                    <table border="0" width="100%" height="100%">
+                        <tr>
+                            <td align="center"><b>Please Wait</b></td>
+                        </tr>
+                        <tr>
+                            <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <c:ODS_HeaderComponent_Mobile />
+            
+            <!--Mobile Code-->
+            <!-- Page Header -->
+            <div class="page-header no-filterhead">
+                <div class="d-flex align-items-center justify-content-between">
+                    <a href="ODS_Documents_Mobile">
+                        <img src="{!URLFOR($Resource.ods_mobile_assets,'images/backarrow.svg')}" alt="back"  />
+                    </a>  
+                    <p>
+                        Deleted Documents                        
+                    </p>
+                    <a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#prelude_mnu" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <img src="{!URLFOR($Resource.ods_mobile_assets,'images/navdots.svg')}" alt="navdots"  />
+                    </a>
+                </div>                
+            </div>
+            <!-- Page Header -->
+            <!-- App Page -->
+            <div class="pglist-wrapper">
+                <div class="container-fluid">
+                    <div class="pglist-view">
+                        <apex:outputPanel id="oppp">
+                            <apex:pageBlock id="pb" >
+                                <apex:outputText value="No Documents Available" style="font-family: initial;font-size: x-large;color: lightcoral;text-align: center;" rendered="{!(RecordsList.size==0)}"/>
+                                <apex:repeat value="{!RecordsList}" var="a"  first="{!CurrentPage }" rows="{!PageSize}" rendered="{!(RecordsList.size>0)}">
+                                    <div class="pglist-item">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <div class="pglist-content status-content">
+                                                    <p class="pglist-id">
+                                                        Deleted Date.
+                                                        <apex:outputText value="{0,date,MM/dd/yy}"  styleClass="name" >
+                                                            <apex:param value="{!a.LastModifiedDate}" />
+                                                        </apex:outputText>
+                                                    </p>
+                                                    <div class="pglist-hours">
+                                                        Name.
+                                                        <apex:outputText value="{!a.Name}" styleClass="name" />
+                                                    </div>
+                                                    <div class="pglist-hours">
+                                                        Folder Name.
+                                                        <span><apex:outputText value="{!a.FolderId__r.name}" styleClass="name" /></span>
+                                                    </div>
+                                                    <div class="pglist-hours">
+                                                        Document Type.
+                                                        <span><apex:outputText value="{!a.Document_Type__c}" styleClass="name" /></span>
+                                                    </div>
+                                                    <p class="pglist-status">
+                                                        Created By: 
+                                                        <span><apex:outputText value="{!a.CreatedBy.name}" styleClass="name" /></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                   
+                                    <div class="col-5">
+                                            	<div class="pglist-action">
+                                                    <ul class="pgaction-menu">
+                                                        <li class="pgmenu-item">
+                                                            <i class="fa fa-cog"></i>
+                                                            <ul class="pgsubmenu-item">
+                                                                <li>
+                                                                    <apex:commandLink styleClass="status_undo approve" title="Restore" action="{!RestoreDeletedDocument}">
+                                                                        <i class="fa fa-undo" aria-hidden="true"></i>
+                                                                        <apex:param name="SelectedDocumentId" value="{!a.Id}"/>
+                                                                    </apex:commandLink>
+                                                                </li>
+                                                                <li>
+                                                                    <apex:commandLink title="Delete" onclick=" return DeleteDocument('{!a.Id}');" styleclass="status_delete delete" >
+                                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                    </apex:commandLink>
+                                                                </li>  
+                                                                
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                         </div>
+                                        </div>
+                                </apex:repeat>
+                            </apex:pageBlock>
+                        </apex:outputPanel>
+                        
+                        
+                    </div>
+                </div>
+                
+            </div>
+            <!-- App Page -->
+            <!--Mobile Code-->            
+             
+                                                        
+            <div class="sub-warp dashboard_cus">
+                <apex:outputPanel id="trashId">
+                    <div class="col-md-6 col-sm-6 col-xs-12 pull-right mt10 mb10 right-align">
+                        <apex:commandButton disabled="true" value="Trash ({!RecordsList.size})" styleClass="save-submit1 trash-btn page-nav-btn next-nav-btn"/>
+                        <!-- <button type="submit" class="btn btn-white xs-btn va-top"><i class="fa fa-trash-o" aria-hidden="true"></i> <span>Trash ({!RecordsList.size})</span></button>-->
+                        <apex:commandButton value="Back To Documents" action="{!RedirectToDocumentsUpload}"  styleClass="save-submit1 trash-btn page-nav-btn next-nav-btn"/> 
+                    </div><!--end col-md-6-->
+                </apex:outputPanel>
+                <div class="clr"></div>
+            </div>
+            <!--end sub-wrap-->
+        </apex:form>
+    </body>
+    <!-- <c:ODS_FooterComponent /> -->
+</apex:page>

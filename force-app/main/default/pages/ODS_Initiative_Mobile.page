@@ -1,0 +1,3193 @@
+<apex:page showHeader="false" sidebar="false" controller="ODS_InitiativeControllerMobile">
+    <apex:form >
+        
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE; IE=10; IE=11; " />
+            
+            <script src="{!URLFOR($Resource.ods_mobile_assets,'js/amcharts.js')}"></script>
+            <script src="{!URLFOR($Resource.ods_mobile_assets,'js/light.js')}"></script>
+            <script src="{!URLFOR($Resource.ods_mobile_assets,'js/serial.js')}"></script>
+            <script src="{!URLFOR($Resource.ods_mobile_assets,'js/gauge.js')}"></script>
+            <!-- <apex:includeScript value="{!URLFOR($Resource.ods_mobile_assets,'ckeditor/ckeditor.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.ods_mobile_assets,'js/jquery-3.4.1.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.ods_mobile_assets,'ckeditor/adapters/jquery.js')}" /> -->
+            <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'ckeditor/ckeditor.js')}"/>
+            <apex:includeScript value="https://code.jquery.com/jquery-1.9.1.js" />
+            <apex:includeScript value="https://code.jquery.com/ui/1.10.3/jquery-ui.js" />
+            
+            
+            <style>
+                /* .EstimatePanel{height:400px;}
+                .EstimatePanel .timeline-scroll{height:350px;}
+                .popupBackground {
+                background-color: black;
+                opacity: 0.20;
+                filter: alpha(opacity=20);
+                width: 100%;
+                height: 500%;
+                top: 0;
+                left: 0;
+                z-index: 998;
+                position: absolute;
+                font-family: sans-serif;
+                cursor: wait;
+                }
+                #initiativeitem .card-title .fa{color:#4BC9F4;font-size:24px;line-height:18px;}
+                
+                .PopupPanel {
+                border: solid 2px skyblue;
+                background-color: white;
+                font-family: sans-serif;
+                left: 50%;
+                width: 100px;
+                margin-left: -100px;
+                top: 50%;
+                height: 100px;
+                margin-top: -25px;
+                z-index: 999;
+                position: fixed;
+                cursor: pointer;
+                }
+                .time-submit{width:100%;}*/
+                
+                #hide{display:none;}
+                /* #chartdiv .amcharts-main-div{top:-40px;}
+                #chartdivnew .amcharts-main-div{top:-40px;} */
+                
+                /*.timeline{
+                margin-top: 5px;
+                float: left;
+                min-width: 100px;
+                }*/
+                
+                .panel-heading span {
+                margin-top: -10px;
+                font-size: 15px;
+                }
+                .clickable {
+                cursor: pointer;
+                }
+                
+                .mid-bg {
+                background: #FFFFFF;
+                width: 100%;
+                padding: 30px 2% 15px 2%;
+                float: left;
+                }
+                
+                /*.timeline td input.width2 {
+                width: 50px;
+                }
+                
+                
+                .ck_edit{
+                width: 45%;
+                }*/
+                
+                .col-md-7{
+                width: 100%;
+                } 
+                
+                
+                /*.timeline td input.width1 {
+                width: 700px;
+                height: 40px;
+                }     
+                
+                
+                .width1.txtTask{
+                width: 350px; 
+                margin: 0px; 
+                height: 39px;
+                }
+                
+                .width3.txtTask{
+                width: 350px; 
+                margin: 0px; 
+                height: 39px;
+                }*/            
+                
+                
+            </style>
+            
+            <script type="text/javascript">
+            
+            j$ = jQuery.noConflict();
+            
+            
+            
+            
+            /*    $(document).on('click', '.panel-heading span.clickable', function(e){
+                var $this = $(this);
+                if(!$this.hasClass('panel-collapsed')) {
+                    $this.parents('.panel').find('.panel-body').slideUp();
+                    $this.addClass('panel-collapsed');
+                    $this.find('i').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    $this.parents('.panel').find('.panel-body').slideDown();
+                    $this.removeClass('panel-collapsed');
+                    $this.find('i').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }) */
+            
+            function validatePercentage(evt) {
+                var val1;
+                //debugger;
+                if (!(evt.keyCode == 46 || (evt.keyCode >= 48 && evt.keyCode <= 57)))
+                    return false;
+                var parts = evt.srcElement.value.split('.');
+                if (parts.length > 2)
+                    return false;
+                
+                if (evt.keyCode != 46) {
+                    var currVal = String.fromCharCode(evt.keyCode);
+                    val1 = parseFloat(String(parts[0]) + String(currVal));
+                    if(parts.length == 2)
+                        val1 = parseFloat(String(parts[0])+ "." + String(currVal));
+                } 
+                
+                if (evt.keyCode == 46){
+                    var currVal = String.fromCharCode(evt.keyCode);
+                    val1 = parseFloat(String(parts[0]) + String(currVal));
+                    if(val1 == 100)
+                        return false;
+                    else
+                        return (parts.length == 1);                      
+                }
+                if (val1 > 100)
+                    return false;
+                if (parts.length == 2 && (parts[1].length) >= 2) 
+                    return false;                            
+            }
+            function validateoffshore(evt) {
+                var val11;
+                //debugger;
+                if (!(evt.keyCode == 46 || (evt.keyCode >= 48 && evt.keyCode <= 57)))
+                    return false;
+                var partss = evt.srcElement.value.split('.');
+                if (parts.length > 6)
+                    return false;
+                
+                if (evt.keyCode != 46) {
+                    var currVals = String.fromCharCode(evt.keyCode);
+                    val11 = parseFloat(String(parts[0]) + String(currVals));
+                    if(partss.length == 6)
+                        val11 = parseFloat(String(parts[0])+ "." + String(currVals));
+                } 
+                
+                if (evt.keyCode == 46){
+                    var currVals = String.fromCharCode(evt.keyCode);
+                    val11 = parseFloat(String(parts[0]) + String(currVals));
+                    if(val11 == 100)
+                        return false;
+                    else
+                        return (partss.length == 1);                      
+                }
+                if (val11 > 100)
+                    return false;
+                if (partss.length == 6 && (parts[1].length) >= 6) 
+                    return false;                            
+            }
+            </script>
+            
+            <script>
+            var StartDateOfWeek = new Date('{!CurrentDate}');
+            var EndDateOfWeek = new Date('{!CurrentDate}');
+            TuesdayDate = new Date('{!CurrentDate}');
+            WednesdayDate = new Date('{!CurrentDate}');
+            ThursdayDate = new Date('{!CurrentDate}');
+            FridayDate = new Date('{!CurrentDate}');
+            SaturdayDate = new Date('{!CurrentDate}');
+            SundayDate = new Date('{!CurrentDate}');
+            var PortalUserRole = '{!PortalUserRole}';
+            var IsDisableFields = false;
+            var timesheetstatus = '';
+            var DeliveryTeam = '{!deliveryTeam}';
+
+            //alert('{!CurrentDate}');
+            function getstartAndEndOfWeek(date) {
+                //If no date object supplied, use current date
+                // Copy date so dont modify supplied date
+                var now = date ? new Date(date) : new Date('{!CurrentDate}');
+                
+                // set time to some convenient value
+                now.setHours(0, 0, 0, 0);
+                
+                // Get the previous Monday
+                var monday = new Date(now);
+                monday.setDate(monday.getDate() - monday.getDay() + 1);
+                
+                // Get next Sunday
+                var sunday = new Date(now);
+                sunday.setDate(sunday.getDate() - sunday.getDay() + 7);
+                
+                // Return array of date objects
+                return [monday, sunday];
+            } 
+            
+            
+            
+            
+            $(document).ready(function() {
+                // debugger;
+                $("#initiative").addClass("active");
+                var AccountID = $(".ddlstAccount").val();
+                var ServiceID = $(".ddlstService").val();
+                if(AccountID  == 'All' || ServiceID  == 'All'){
+                    $('#ContactClient').hide();
+                }
+                
+                var myContent = CKEDITOR.instances.editor1.getData();
+                
+                $(".ddlstAccount").hide();
+                $(".ddlstService").hide();
+                $(".ApplyBtn").hide();
+                $("#j_id0:j_id1:exportaspdf").hide();
+                $("#j_id0:j_id1:exportasexcel").hide();
+                
+                $('#Status_new').show();
+                $('#initiativeAlert').hide();
+                $("#btnApprove").hide();
+                $("#btnReject").hide();
+                $('#Status').hide();
+                $('#Status_Value').html('New');
+                
+                document.getElementById("btnactivestatus").style.display = "none";
+                $(".hrs").attr('maxlength', '3');
+                $('#ActiveInitiative').hide();
+                var initiativeStatusCheck = '{!InitiativeStatus}';
+                if(initiativeStatusCheck.length ==0 || initiativeStatusCheck =='Saved' || initiativeStatusCheck =='Re-evaluate' || initiativeStatusCheck =='Initiative Recalled'){
+                    $('#Bucket_Hours_Type').attr("disabled", false);
+                }else{
+                    $('#Bucket_Hours_Type').attr("disabled", true);
+                }
+                if(initiativeStatusCheck  == 'Active Initiative'){
+                    $('#Status_Value').html(initiativeStatusCheck);
+                    $('#ActiveInitiative').show();
+                }
+                else if(initiativeStatusCheck  == 'Estimation Rejected'){
+                    $('#Status_Value').html('Re-evaluate Estimates');
+                }
+                    else{
+                        $('#Status_Value').html(initiativeStatusCheck);
+                    }
+                var IsCustomer = {!isCustomer};
+                var NonABCType = {!NonABCType};
+             
+                if (IsCustomer) {
+                    $("#mnuMyAccount").css("display", "block");
+                    $(".InitiativeManage").hide();
+                    $("#BucketHoursDiv").css("display", "None");
+                    $(".initiativeBillingTypeClass").css("display", "None");                    
+                } else {
+                    $("#mnuCustomer").css("display", "block");
+                    $(".InitiativeManage").show();
+                }
+                if(NonABCType){
+                    $(".initiativeBillingTypeClass").css("display", "None");   
+                    $(".initiativeType option[value='Other']").hide();
+
+                }
+                $("#txtComments").prop('disabled', true);
+                var portalRole = '{!PortalUserRole}';
+                var portalApprover = '{!IsPortalApprover}';
+                var timeshetStats = '{!CurrentTimeSheetStatus}';
+                var passdFromDate = '{!PassedWeekFromDate}';
+                
+                if (timeshetStats == '') {
+                    
+                    $("divStatus").hide();
+                    
+                }
+                PortalUserRole = '{!PortalUserRole}';
+                IsPortalApprover = '{!IsPortalApprover}';
+                
+                
+                //  BindJSONDataToPage();
+                // CustomizePageByTimesheetStatus(timeshetStats,PortalUserRole );
+                // debugger;
+                BindJSONDataToInitiativePage();
+                $("button.collapsed").click(function() {
+                    
+                    $(".header").toggleClass("header-fixed");
+                    $(".navbar-toggle").toggleClass("nav-btn-fixed");
+                    $(".mid-bg").toggleClass("mid-bg-fixed");
+                });
+                
+                if (passdFromDate == '') {
+                    PopulateWeekDays(new Date('{!CurrentDate}'));
+                } else {
+                    PopulateWeekDays(new Date(passdFromDate));
+                }
+                
+                $(".hrs").each(function() {
+                    
+                    var that = this;
+                    $(this).keyup(function() {
+                        
+                        this.value = this.value.replace(/[^0-9\.]/g, '');
+                        
+                        newSum.call(that);
+                        totalSum.call(that);
+                        
+                    });
+                });
+                
+                $(".hrs").blur(function() {
+                    this.value = this.value.replace(/[^0-9\.]/g, '');
+                    
+                    if (this.value != '') {
+                        
+                        //if((this.value > 24)||(this.value == 0))
+                        if (this.value > 24) {
+                            alert("Invalid Hours. It cannot be more than 24");
+                            //alert("Invalid Hours. It cannot be Zero or more than 24");
+                            this.value = "";
+                            
+                        }
+                    }
+                });
+                
+                $("#Tbltimesheet").on("click", "a.delete-icon", function(e) {
+                    e.preventDefault();
+                    // $(this).closest("#myTableRow1").remove();
+                    $(this).closest("tr").remove();
+                    /* $('#myTableRow1').remove();
+                    
+                    
+                    $('#myTableRow2').remove();
+                    $('#myTableRow3').remove();
+                    $('#myTableRow4').remove(); */
+                    
+                    
+                    CalculateColumnTotal();
+                });
+                // debugger;
+                
+                $(".add-row").click(function(e) {
+                    e.preventDefault();
+                    
+                    var rowCount = $(".timesheet > tbody >tr").length;
+                    var RowNo = rowCount;
+                    
+                    
+                    AddRowToAdditionalTable(RowNo);
+                    var elementid = '#ddlResName_' + RowNo;
+                    var elementid = '#ddlInitiative_' + RowNo;
+                    populateDynamicResoureNameByRow(elementid);
+                    populateDynamicInitiativeByRow(elementid);
+                    DisableFields(timesheetstatus);
+                });
+                
+                
+                $("#btnApprove").on("click", function(e) {
+                    e.preventDefault();
+                });
+                
+                /*$("#btnReject").on("click", function(e){
+                         e.preventDefault();
+                    });*/
+                <!--      passWeekDateToController(FormatDate(new Date($("#weekStDate").html())), FormatDate(new Date($("#weekEndDate").html())))   -->
+                    
+            });
+            
+            //// Bind Resource Name dropdown
+            /*function populateDynamicResoureName() {
+                var jsonResourceName = $('#hdnResourceName').val();
+                resourceNameArray = $.parseJSON(jsonResourceName);
+                $(".ddlResource").append($("<option></option>").val('--Select--').html('--Select--'));
+                $.each(resourceNameArray, function(key, value) {
+                    $(".ddlResource").append($("<option></option>").val(value.ResourceId).html(value.ResourceName));
+                });
+            }
+            
+            function populateDynamicResoureNameByRow(elementid) {
+                var jsonResourceName = $('#hdnResourceName').val();
+                resourceNameArray = $.parseJSON(jsonResourceName);
+                $(elementid).append($("<option></option>").val('--Select--').html('--Select--'));
+                $.each(resourceNameArray, function(key, value) {
+                    $(elementid).append($("<option></option>").val(value.ResourceId).html(value.ResourceName));
+                });
+            }
+            
+            function populateDynamicInitiativeByRow(elementid) {
+                var jsonInitiative = $('#hdnInitiativeName').val();
+                InitiativeArray = $.parseJSON(jsonInitiative);
+                $(elementid).append($("<option></option>").val('--Select--').html('--Select--'));
+                $.each(InitiativeArray, function(key, value) {
+                    $(elementid).append($("<option></option>").val(value.InitiativeId).html(value.InitiativeName));
+                });
+            } */
+            
+            function CommentValidation() {
+                var cmnts = $('.Comments').val();
+                if (cmnts.trim() == '')
+                    
+                {
+                    alert('Please enter comments');
+                    return false;
+                } else {
+                    HidePopup();
+                    RejectAction(cmnts);
+                    return true;
+                }
+                
+            }
+            
+            function reloadpage() {
+                window.location.reload(false);
+            }
+            function reloadPageOnReCall() {
+                alert('Initiative has been recalled');
+                window.location.reload(false);
+            }
+            function reloadpageOnPopupClose() {
+                window.scrollTo(0,0);
+                setTimeout(function() {window.location.reload(false);}, 4000); 
+            }
+            
+            function fnUpdateStatus(Statustype) {
+                //alert(Statustype);
+                if (Statustype == 'Approve') {
+                    HidePopup();
+                    ApproveAction();
+                } else {
+                    
+                    var cmnts = $('.Comments').val();
+                    if (cmnts.trim() == '') {
+                        alert('Please enter comments');
+                        return false;
+                    } else {
+                        HidePopup();
+                        RejectAction(cmnts);
+                        return true;
+                    }
+                }
+            }
+            
+            function fnSendEscalationEmail() {
+                var cmnts = $('.escalationComments').val();
+                if (cmnts.trim() == '') {
+                    alert('Please enter escalation details');
+                    return false;
+                } else {
+                    HideEscalationPopup();
+                    EscalateAction(cmnts);
+                    return true;
+                }
+            }
+            
+            function ClearTimeSheetComments(actiontype) {                    
+                if (actiontype == 'Approve') {
+                    $('.btnApprove').show();
+                    $('.btnReject').hide();
+                    $('#lblHeading').html("Approve");
+                    
+                } else {
+                    $('.btnReject').show();
+                    $('.btnApprove').hide();
+                    $('#lblHeading').html("Reject");
+                }
+                $("#myModal").find("textarea").val('').end();
+                HidePopup();
+            }
+            
+            function ClearEscalationDetails()
+            {
+                $("#escalationMyModal").find("textarea").val('').end();
+                HideEscalationPopup();
+            }
+            
+            //Updated by Mani and Team
+            function CustomizePageByInitiativeStatus(status, PortalUserRole, IsPortalApprover) { 
+                if(PortalUserRole === 'Customer' || PortalUserRole == 'Partner'){ 
+                    if(status =='Initiative Cancelled'){
+                        $(".textAreaBusinessImpact :input").attr("disabled", true);      
+                    }
+                    $('#Status_new').show();
+                    $('#Status_Value').show();
+                    $('#Status_root').hide();
+                    $('#Test').hide();
+                    $('#initiativeAlert').hide();
+                    $(".panel-body :input").attr("disabled", true);
+                    $("#Description_Assumption :input").attr("disabled", true);  
+                    $("#description_content :input").attr("disabled", true);                            
+                    $(".actiontd").hide(); 
+                    $(".panel-body.EstimatePanel :input").attr("disabled", true);                                
+                    $(".add-row").hide(); 
+                    $('#btnSave').hide();
+                    $('#btnSavePostSubmit').hide();
+                    $('#btnSubmit').hide();
+                    $('#btnReSend').hide();
+                    $('#btnRecall').hide();
+                    $('#btnCancel').hide();
+                    $('#btnCancelInit').hide();
+                    $('#btnEscalate').hide();
+                    $('#escalationPanel').hide();
+                    $("#btnApprove").hide();
+                    $("#btnReject").hide(); 
+                    $('#OnHold').hide();
+                    $('#ChangeStatus').hide();
+                    $('#ActiveInitiative').hide();                            
+                    $('#hide').show();                                                           
+                    var IsInitiativeApprover = '{!IsInitiativeApprover}';                      
+                    if(status == 'Initiative Submitted' && IsInitiativeApprover == 'true'){                                                                                        
+                        $("#btnApprove").show();
+                        $("#btnReject").show();  
+                        $('#hide').hide();                                                              
+                    }  
+                    if(status == 'Initiative Cancelled'){
+                        document.getElementById("j_id0:j_id1:exportasexcel").style.display = 'none';
+                        $('#exportasexcel').hide();
+                    }  
+                    
+                }
+                else{
+                    $('#Status_new').hide();
+                    $('#Test').hide();
+                    $("#btnApprove").hide();
+                    $("#btnReject").hide();
+                    $('#btnCancelInit').show();
+                    $('#hide').hide();       
+                    $("#description_content :input").attr("disabled", true); 
+                    $('#editor1').attr("disabled", true);
+                    $('#btnSavePostSubmit').hide();
+                    $('#btnReSend').hide();
+                    $('#btnRecall').hide();
+                    //debugger;
+                    if(status == 'Initiative Submitted' && (PortalUserRole == 'Technical Account Manager' || PortalUserRole == 'Practice Head') ){
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        //debugger;
+                        $("#initiative_name :input").attr("disabled", true); 
+                        $("#jiraId").attr("disabled", true);
+                        $("#OffshoreEstimate").attr("disabled", false);
+                        $(".col-md-8.col-sm-8.col-xs-12 :input").attr("disabled", true); 
+                        $(".panel-body :input").attr("disabled", true); 
+                        $("#description_content :input").attr("disabled", true);                                                                  
+                        $(".panel-body.EstimatePanel :input").attr("disabled", true); 
+                        $("#ProbablePercent:input").attr("disabled", false); 
+                        $("#date_service:input").attr("disabled", false);                               
+                        $("#date_service1:input").attr("disabled", false);  
+                        $("#date_service2:input").attr("disabled", false);
+                        $('.time-submit').show();                           
+                        $('.actiontd').hide();
+                        $('.add-row').hide();
+                        $('#btnSave').hide();
+                        $('#btnSavePostSubmit').show();
+                        $('#btnSubmit').hide();
+                        $('#btnReSend').show();
+                        $('#btnRecall').show();
+                        $('#btnCancel').hide();
+                        $('#btnCancelInit').show();
+                        $("#btnBack :input").attr("disabled", false); 
+                        $('#btnBack').show();
+                        $('#OnHold').hide();
+                        $('#hide').hide();                                  
+                        $("#btnApprove").show();
+                        $("#btnReject").show();                                                                
+                    }
+                    
+                    
+                    else if(status == 'Initiative Approved' || status == 'Initiative Submitted' && (PortalUserRole != 'Technical Account Manager' || PortalUserRole != 'Practice Head') || status ==  'Initiative Delivered' || status == 'Approved After Re-evaluation'){                                 
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $("#initiative_name :input").attr("disabled", true);  
+                        $("#jiraId").attr("disabled", true);
+                        $("#OffshoreEstimate :input").attr("disabled", true);
+                        $("#date_service :input").attr("disabled", true);                               
+                        $("#date_service1 :input").attr("disabled", true);
+                        $("#date_service2 :input").attr("disabled", true);
+                        $(".col-md-8.col-sm-8.col-xs-12 :input").attr("disabled", true); 
+                        $(".panel-body :input").attr("disabled", true); 
+                        $("#description_content :input").attr("disabled", true);                                                   
+                        $(".panel-body.EstimatePanel :input").attr("disabled", true);                              
+                        $('.time-submit').show();                           
+                        $('.actiontd').hide();
+                        $('.add-row').hide();
+                        $('#btnSave').hide();
+                        $('#btnSubmit').hide();
+                        $('#btnCancel').hide();
+                        $("#btnBack :input").attr("disabled", false); 
+                        $('#btnBack').show();
+                        $('#OnHold').hide();
+                        $('#hide').show();
+                        $('#exportasexcel').show();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide();                                                                
+                        
+                    }
+                    if(status == 'Active Initiative'){
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $("#Description_Assumption :input").attr("disabled", true);
+                        $(".form-horizontal :input").attr("disabled", true);
+                        $("#ActiveInitiative :input").attr("disabled", false);      
+                        $(".form-group :input").attr("disabled", true);
+                        $(".panel-body.EstimatePanel :input").attr("disabled", true); 
+                        $("#description_content :input").attr("disabled", true);                                                                                              
+                        $("#Description_Assumption :input").attr("disabled", true);    
+                        $(".timeline-scroll :input").attr("disabled", true);
+                        $('#btnSave').hide();
+                        $('.actiontd').hide();
+                        $('.add-row').hide();
+                        $('#btnSubmit').hide();
+                        $('#btnCancel').hide();
+                        $('#btnCancelInit').show();
+                        $('#OnHold').hide();
+                        $('#ActiveInitiative').show();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $('#btnEscalate').show();                                                             
+                    }
+                    if(status == 'Initiative Delivered'){
+                        $("#ProbablePercent:input").attr("disabled", true);
+                        $('#btnCancelInit').hide();
+                        $('#btnEscalate').hide();
+                    }
+                    if(status == 'Initiative Approved'){
+                        $("#ProbablePercent:input").attr("disabled", true);
+                        $('#btnCancelInit').hide();
+                        $('#btnEscalate').show();
+                    }
+                    if(status == 'Initiative Cancelled'){
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $("#initiative_name :input").attr("disabled", true);    
+                        $("#jiraId").attr("disabled", true);  
+                        $("#OffshoreEstimate :input").attr("disabled", true);
+                        $("#date_service :input").attr("disabled", true);                               
+                        $("#date_service1 :input").attr("disabled", true);  
+                        $("#date_service2 :input").attr("disabled", true);
+                        $(".col-md-8.col-sm-8.col-xs-12 :input").attr("disabled", true);
+                        $(".panel-body :input").attr("disabled", true); 
+                        $("#description_content :input").attr("disabled", true);                                                   
+                        $(".panel-body.EstimatePanel :input").attr("disabled", true);  
+                        $("#ProbablePercent:input").attr("disabled", true);                            
+                        $('.time-submit').show();                           
+                        $('.actiontd').hide();
+                        $('.add-row').hide();
+                        $('#btnSave').hide();
+                        $('#btnSubmit').hide();
+                        $('#btnCancel').hide();
+                        $("#btnBack :input").attr("disabled", false); 
+                        $('#btnBack').show();
+                        $('#OnHold').hide();
+                        $('#hide').hide();
+                        $('#btnCancelInit').hide();
+                        $('#exportasexcel').hide();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $('#btnEscalate').hide();
+                    }
+                    if(status == 'On Hold'){
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $(".form-horizontal :input").attr("disabled", true);
+                        $("#OnHold :input").attr("disabled", false);      
+                        $("#Description_Assumption :input").attr("disabled", true);
+                        $(".form-group :input").attr("disabled", true);
+                        $(".panel-body.EstimatePanel :input").attr("disabled", true);      
+                        $("#description_content :input").attr("disabled", true);                                                                                              
+                        $(".timeline-scroll :input").attr("disabled", true);
+                        $("#ProbablePercent:input").attr("disabled", true);
+                        $("#OffshoreEstimate:input").attr("disabled", true);
+                        $('#btnSave').hide();
+                        $('#btnSubmit').hide();
+                        $('#btnCancel').hide();
+                        $('#btnCancelInit').show();
+                        $('.actiontd').hide();
+                        $('.add-row').hide();
+                        $('#OnHold').show();
+                        $('#btnactivestatus').show();   
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $('#btnEscalate').show();                                                              
+                    }
+                    if(status == 'Initiative Rejected'){
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $('#OnHold').hide();
+                        $("#Description_Assumption :input").attr("disabled", true);
+                        $("#description_content :input").attr("disabled", false);   
+                        $("#ProbablePercent:input").attr("disabled", true); 
+                        $("#OffshoreEstimate:input").attr("disabled", true);
+                        $('#ActiveInitiative').hide();
+                        $('#Status_root').html('Status');
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide();
+                        $('#btnCancelInit').show();   
+                        $('#btnEscalate').hide();
+                        
+                    }  
+                    if(status == 'Saved' || status == 'Initiative Recalled'){
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $('#OnHold').hide();
+                        $('#ActiveInitiative').hide();
+                        $("#description_content :input").attr("disabled", false); 
+                        $("#ProbablePercent:input").attr("disabled", false);
+                        // $("#date_service2:input").attr("disabled", false);
+                        $("#OffshoreEstimate:input").attr("disabled", false);
+                        $('#Status_root').html('Status');
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $('#hide').show();
+                        $('#btnCancelInit').hide();
+                        $('#btnEscalate').hide();
+                        $('#escalationPanel').hide();
+                    }                       
+                    if(status == 'Re-evaluate'){
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $('#OnHold').hide();
+                        $("#description_content :input").attr("disabled", false);   
+                        $("#ProbablePercent:input").attr("disabled", true);
+                        $("#OffshoreEstimate:input").attr("disabled", true);
+                        $('#ActiveInitiative').hide();
+                        $('#Status_root').html('Status');
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $('#btnCancelInit').show(); 
+                        $('#btnEscalate').hide();                               
+                    } 
+                    if(status == ''){
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_Value').html('New');
+                        $('#Status_root').hide();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $('#btnCancelInit').hide();
+                        $("#description_content :input").attr("disabled", false); 
+                        $("#ProbablePercent:input").attr("disabled", false);
+                        $("#OffshoreEstimate:input").attr("disabled", false);
+                        $('#btnEscalate').hide();
+                        $('#escalationPanel').hide();
+                        
+                    }
+                    
+                }  
+                  //DCO - 109
+                if(status =='New' || status =='' || status == 'Initiative Submitted' || status =='Re-evaluate' || status == 'Saved' || 
+                   status == 'Initiative Recalled' || status == 'Initiative Approved' || status == 'Active Initiative' ){
+                    $(".textAreaBusinessImpact :input").attr("disabled", false);   
+                }else{
+                    $(".textAreaBusinessImpact :input").attr("disabled", true);      
+                }
+                if(status == 'Initiative Approved' || status == 'Active Initiative'){
+                    $('#btnSavePostSubmit').show();
+                }
+                if((status == 'Initiative Recalled' || status =='Re-evaluate' || status == 'Initiative Submitted') && (PortalUserRole === 'Customer' || PortalUserRole == 'Partner')){
+                    $('#btnSavePostSubmit').show();
+                }
+                if(DeliveryTeam=='true'){
+                    $("#btnSubmit").hide();
+                }
+            }
+            //Updated by Mani and Team
+            function CustomizePageByTimesheetStatus(status, PortalUserRole, IsPortalApprover) {
+                //debugger;
+                if (PortalUserRole === 'Customer' || PortalUserRole == 'Partner') {
+                    $(".timesheet").find("input").prop('disabled', true);
+                    $("#txtComments").hide();
+                    
+                    if (status == 'Approved') {
+                        $(".actiontd").hide();
+                        $("#addRowTd").attr("colspan", "1");
+                        
+                        $(".add-row").hide();
+                        $(".delete-icon").hide();
+                        $(".timesheet").find("input").prop('disabled', true);
+                        //alert('1');
+                        $("#btnSave").hide();
+                        $("#btnSubmit").hide();
+                        $("#btnCancel").hide();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide();
+                        $("#txtComments").show();
+                        document.getElementById("j_id0:j_id1:exportaspdf").style.display = 'inline-block';
+                        document.getElementById("j_id0:j_id1:exportasexcel").style.display = 'inline-block';
+                        
+                    }
+                    if (status == 'Rejected') {
+                        $(".actiontd").hide();
+                        $("#addRowTd").attr("colspan", "1");
+                        
+                        $(".add-row").hide();
+                        $(".delete-icon").hide();
+                        $(".timesheet").find("input").prop('disabled', true);
+                        //alert('1');
+                        $("#btnSave").hide();
+                        $("#btnSubmit").hide();
+                        $("#btnCancel").hide();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide();
+                        $("#txtComments").show();
+                        document.getElementById("j_id0:j_id1:exportaspdf").style.display = 'none';
+                        document.getElementById("j_id0:j_id1:exportasexcel").style.display = 'none';
+                        
+                    }
+                    if (status == 'Submitted') {
+                        $(".actiontd").hide();
+                        $("#addRowTd").attr("colspan", "1");
+                        
+                        $(".add-row").hide();
+                        $(".delete-icon").hide();
+                        $(".timesheet").find("input").prop('disabled', true);
+                        
+                        //alert('1');
+                        $("#btnSave").hide();
+                        $("#btnSubmit").hide();
+                        $("#btnCancel").hide();
+                        
+                        if (IsPortalApprover == "true") {
+                            $("#btnApprove").show();
+                            $("#btnReject").show();
+                        } else {
+                            $("#btnApprove").hide();
+                            $("#btnReject").hide();
+                        }
+                        $("#txtComments").hide();
+                        document.getElementById("j_id0:j_id1:exportaspdf").style.display = 'none';
+                        document.getElementById("j_id0:j_id1:exportasexcel").style.display = 'none';
+                        
+                    }
+                    if (status == 'Saved') {
+                        $(".actiontd").hide();
+                        $("#divStatus").hide();
+                        $("#addRowTd").attr("colspan", "1");
+                        
+                        $(".add-row").hide();
+                        $(".delete-icon").hide();
+                        $(".timesheet").find("input").prop('disabled', true);
+                        //alert('1');
+                        $("#btnSave").hide();
+                        $("#btnSubmit").hide();
+                        $("#btnCancel").hide();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide();
+                        $("#txtComments").hide();
+                        document.getElementById("j_id0:j_id1:exportaspdf").style.display = 'none';
+                        document.getElementById("j_id0:j_id1:exportasexcel").style.display = 'none';
+                    }
+                    if (status == '') {
+                        // debugger;
+                        $(".actiontd").hide();
+                        $("#divStatus").hide();
+                        $("#addRowTd").attr("colspan", "1");
+                        
+                        $(".add-row").hide();
+                        $(".delete-icon").hide();
+                        $(".timesheet").find("input").prop('disabled', true);
+                        //alert('1');
+                        $("#btnSave").hide();
+                        $("#btnSubmit").hide();
+                        $("#btnCancel").hide();
+                        $("#btnApprove").hide();
+                        document.getElementById("j_id0:j_id1:exportaspdf").style.display = 'none';
+                        document.getElementById("j_id0:j_id1:exportasexcel").style.display = 'none';
+                        $("#btnReject").hide();
+                        $("#txtComments").hide();
+                        
+                    }
+                    $(".Rescol").hide();
+                    $("#tdColTotal").hide();
+                } else {
+                    $("#txtComments").hide();
+                    if (status == 'Approved') {
+                        $(".actiontd").hide();
+                        $("#addRowTd").attr("colspan", "1");
+                        $(".add-row").hide();
+                        $(".delete-icon").hide();
+                        $(".timesheet").find("input").prop('disabled', true);
+                        $(".ddlResource").prop('disabled', true);
+                        $("#btnSave").hide();
+                        $("#btnSubmit").hide();
+                        $("#btnCancel").hide();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide();
+                        $("#txtComments").show();
+                        document.getElementById("j_id0:j_id1:exportaspdf").style.display = 'inline-block';
+                        document.getElementById("j_id0:j_id1:exportasexcel").style.display = 'inline-block';
+                    }
+                    if (status == 'Rejected') {
+                        $(".actiontd").show();
+                        $("#addRowTd").attr("colspan", "2");
+                        
+                        $(".add-row").show();
+                        $(".delete-icon").show();
+                        
+                        $(".timesheet").find("input").prop('disabled', false);
+                        $(".ddlResource").prop('disabled', false);
+                        $("#btnSave").show();
+                        $("#btnSubmit").show();
+                        $("#btnCancel").show();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide();
+                        $("#txtComments").show();
+                        document.getElementById("j_id0:j_id1:exportaspdf").style.display = 'none';
+                        document.getElementById("j_id0:j_id1:exportasexcel").style.display = 'none';
+                        
+                    }
+                    if (status == 'Submitted') {
+                        $(".actiontd").hide();
+                        $("#addRowTd").attr("colspan", "1");
+                        
+                        $(".add-row").hide();
+                        $(".delete-icon").hide();
+                        
+                        
+                        $(".timesheet").find("input").prop('disabled', true);
+                        $(".ddlResource").prop('disabled', true);
+                        //alert('1');
+                        $("#btnSave").hide();
+                        $("#btnSubmit").hide();
+                        $("#btnCancel").hide();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide();
+                        $("#txtComments").hide();
+                        document.getElementById("j_id0:j_id1:exportaspdf").style.display = 'inline-block';
+                        document.getElementById("j_id0:j_id1:exportasexcel").style.display = 'inline-block';
+                        
+                    }
+                    if (status == 'Saved' || status == '') {
+                        $(".actiontd").show();
+                        $("#addRowTd").attr("colspan", "2");
+                        
+                        $(".add-row").show();
+                        $(".delete-icon").show();
+                        
+                        $("#Tbltimesheet").find("input").prop('disabled', false);
+                        //alert('1');
+                        $("#btnSave").show();
+                        $("#btnSubmit").show();
+                        $("#btnCancel").show();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide();
+                        $("#txtComments").hide();
+                        document.getElementById("j_id0:j_id1:exportaspdf").style.display = 'none'; 
+                        document.getElementById("j_id0:j_id1:exportasexcel").style.display = 'none';
+                        
+                        
+                    }  
+                    
+                }
+                
+            }
+            
+            function validateNewRows(element) {
+                var elementvalue = $(element).val();
+                var newelementvalue = elementvalue.replace(/[^0-9\.]/g, '');
+                $(element).val(newelementvalue);
+                if ($(element).val() > 24) {
+                    alert("Hours cannot be more than 24");
+                    $(element).val("");
+                }
+            }
+            
+            function newSum() {
+                var sum = 0;
+                var thisRow = $(this).closest("tr");
+                thisRow.find("td .hrs").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        sum += parseFloat($(this).val());
+                    }
+                });
+                thisRow.find("td.total").html(sum); // It is an <input>, right?
+            }
+            
+            function newSumInAddRow(element) {
+                var sum = 0;
+                var thisRow = $(element).closest("tr");
+                thisRow.find("td .hrs").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        sum += parseFloat($(this).val());
+                        
+                    }
+                });
+                thisRow.find("td.total").html(sum); // It is an <input>, right?
+            }
+            
+            function totalSum() {
+                var sum = 0;
+                var table = $(".timesheet");
+                table.find("td.total").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).html()))) {
+                        sum += parseFloat($(this).html());
+                    }
+                });
+                $("#tdTotalSum").html(sum);
+            }
+            
+            
+            function CalculateColumnTotalTimesheet() {
+                var MonSum = 0;
+                var TueSum = 0;
+                var WedSum = 0;
+                var ThuSum = 0;
+                var FriSum = 0;
+                var SatSum = 0;
+                var SunSum = 0;
+                
+                var table = $(".timesheet");
+                
+                table.find("td .mondate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        MonSum += parseFloat($(this).val());
+                    }
+                });
+                table.find("td .tuedate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        TueSum += parseFloat($(this).val());
+                    }
+                });
+                table.find("td .weddate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        WedSum += parseFloat($(this).val());
+                    }
+                });
+                table.find("td .thudate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        ThuSum += parseFloat($(this).val());
+                    }
+                });
+                table.find("td .fridate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        FriSum += parseFloat($(this).val());
+                    }
+                });
+                table.find("td .satdate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        SatSum += parseFloat($(this).val());
+                    }
+                });
+                table.find("td .sundate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        SunSum += parseFloat($(this).val());
+                    }
+                });
+                
+                $("#tdMonSum").html(MonSum);
+                $("#tdTueSum").html(TueSum);
+                $("#tdWedSum").html(WedSum);
+                $("#tdThuSum").html(ThuSum);
+                $("#tdFriSum").html(FriSum);
+                $("#tdSatSum").html(SatSum);
+                $("#tdSunSum").html(SunSum); 
+            }
+            
+            function PopulateWeekDays(DateValue) {
+                var shortMonth = new Array();
+                shortMonth[0] = "JAN";
+                shortMonth[1] = "FEB";
+                shortMonth[2] = "MAR";
+                shortMonth[3] = "APR";
+                shortMonth[4] = "MAY";
+                shortMonth[5] = "JUN";
+                shortMonth[6] = "JUL";
+                shortMonth[7] = "AUG";
+                shortMonth[8] = "SEP";
+                shortMonth[9] = "OCT";
+                shortMonth[10] = "NOV";
+                shortMonth[11] = "DEC";
+                var startEndDateofWeek = [];
+                
+                
+                startEndDateofWeek = getstartAndEndOfWeek(new Date(DateValue));
+                WeekDay1 = "";
+                WeekDay2 = "";
+                WeekDay3 = "";
+                WeekDay4 = "";
+                WeekDay5 = "";
+                WeekDay6 = "";
+                WeekDay7 = "";
+                WeekStartDayYear = "";
+                WeekEndDayYear = "";
+                locale = "en-us"
+                $.each(startEndDateofWeek, function(index, value) {
+                    eachDate = new Date(value);
+                    if (index == 0) {
+                        StartDateOfWeek = eachDate;
+                        //WeekDay1 = eachDate.toLocaleString(locale, { month: "short" }) +" " +eachDate.getDate();   
+                        WeekDay1 = shortMonth[eachDate.getMonth()] + " " + eachDate.getDate();
+                        //alert(shortMonth[eachDate.getMonth()]);                   
+                        WeekStartDayYear = shortMonth[eachDate.getMonth()] + " " + eachDate.getDate() + " " + eachDate.getFullYear();
+                    } else if (index == 1) {
+                        EndDateOfWeek = eachDate;
+                        WeekDay7 = shortMonth[eachDate.getMonth()] + " " + eachDate.getDate();
+                        WeekEndDayYear = shortMonth[eachDate.getMonth()] + " " + eachDate.getDate() + " " + eachDate.getFullYear();
+                    }
+                });
+                TuesdayDate = new Date(StartDateOfWeek);
+                WednesdayDate = new Date(StartDateOfWeek);
+                ThursdayDate = new Date(StartDateOfWeek);
+                FridayDate = new Date(StartDateOfWeek);
+                SaturdayDate = new Date(StartDateOfWeek);
+                SundayDate = new Date(StartDateOfWeek);
+                
+                TuesdayDate.setDate(StartDateOfWeek.getDate() + 1);
+                WednesdayDate.setDate(StartDateOfWeek.getDate() + 2);
+                ThursdayDate.setDate(StartDateOfWeek.getDate() + 3);
+                FridayDate.setDate(StartDateOfWeek.getDate() + 4);
+                SaturdayDate.setDate(StartDateOfWeek.getDate() + 5);
+                SundayDate.setDate(StartDateOfWeek.getDate() + 6);
+                
+                
+                
+                WeekDay2 = shortMonth[TuesdayDate.getMonth()] + " " + TuesdayDate.getDate(); // AssignWeekValueToSet(StartDateOfWeek.getDate()+ 1,StartDateOfWeek,EndDateOfWeek); 
+                WeekDay3 = shortMonth[WednesdayDate.getMonth()] + " " + WednesdayDate.getDate(); //  AssignWeekValueToSet(StartDateOfWeek.getDate()+ 2,StartDateOfWeek,EndDateOfWeek);
+                WeekDay4 = shortMonth[ThursdayDate.getMonth()] + " " + ThursdayDate.getDate(); //  AssignWeekValueToSet(StartDateOfWeek.getDate()+ 3,StartDateOfWeek,EndDateOfWeek);
+                WeekDay5 = shortMonth[FridayDate.getMonth()] + " " + FridayDate.getDate(); //  AssignWeekValueToSet(StartDateOfWeek.getDate()+ 4,StartDateOfWeek,EndDateOfWeek);
+                WeekDay6 = shortMonth[SaturdayDate.getMonth()] + " " + SaturdayDate.getDate(); // AssignWeekValueToSet(StartDateOfWeek.getDate()+ 5,StartDateOfWeek,EndDateOfWeek);
+                //alert(WeekDay2)
+                
+                $("#HdrDay1").html(WeekDay1 + "<br/> MON");
+                $("#weekStDate").html(WeekStartDayYear);
+                $("#HdrDay2").html(WeekDay2 + "<br/> TUE");
+                $("#HdrDay3").html(WeekDay3 + "<br/> WED");
+                $("#HdrDay4").html(WeekDay4 + "<br/> THU");
+                $("#HdrDay5").html(WeekDay5 + "<br/> FRI");
+                $("#HdrDay6").html(WeekDay6 + "<br/> SAT");
+                $("#HdrDay7").html(WeekDay7 + "<br/> SUN");
+                
+                $("#weekEndDate").html(WeekEndDayYear);
+                $(".mondate").attr("DateValue", FormatDate(StartDateOfWeek));
+                $(".tuedate").attr("DateValue", FormatDate(TuesdayDate));
+                $(".weddate").attr("DateValue", FormatDate(WednesdayDate));
+                $(".thudate").attr("DateValue", FormatDate(ThursdayDate));
+                $(".fridate").attr("DateValue", FormatDate(FridayDate));
+                $(".satdate").attr("DateValue", FormatDate(SaturdayDate));
+                $(".sundate").attr("DateValue", FormatDate(SundayDate));
+            }
+            
+            
+            
+            function AssignMonthValueToSet(valToSet, dateVal) {
+                var days = getDaysInMonth(dateVal.getMonth() + 1, dateVal.getFullYear());
+                if (valToSet > days) {
+                    return dateVal.getMonth() + 2;
+                } else {
+                    return dateVal.getMonth() + 1;
+                }
+            }
+            
+            function AssignWeekValueToSet(valToSet, dateVal, dateSetVal) {
+                var shortMonth = new Array();
+                shortMonth[0] = "JAN";
+                shortMonth[1] = "FEB";
+                shortMonth[2] = "MAR";
+                shortMonth[3] = "APR";
+                shortMonth[4] = "MAY";
+                shortMonth[5] = "JUN";
+                shortMonth[6] = "JUL";
+                shortMonth[7] = "AUG";
+                shortMonth[8] = "SEP";
+                shortMonth[9] = "OCT";
+                shortMonth[10] = "NOV";
+                shortMonth[11] = "DEC";
+                
+                var days = getDaysInMonth(dateVal.getMonth() + 1, dateVal.getFullYear());
+                if (valToSet <= days) {
+                    //return (new Date(dateVal) ).toLocaleString(locale, { month: "short" }) +" " +valToSet;
+                    return shortMonth[dateVal.getMonth()] + " " + valToSet;
+                } else {
+                    //return (new Date(dateSetVal)).toLocaleString(locale, { month: "short" }) +" " +(valToSet - days);
+                    return shortMonth[dateSetVal.getMonth()] + " " + (valToSet - days);
+                }
+            }
+            
+            
+            
+            var getDaysInMonth = function(month, year) {
+                return new Date(year, month, 0).getDate();
+            }
+            
+            function FormatDate(datevalue) {
+                var dd = datevalue.getDate();
+                var mm = datevalue.getMonth() + 1;
+                var y = datevalue.getFullYear();
+                var FormattedDate = mm + "/" + dd + "/" + y;
+                return FormattedDate;
+            }
+            
+            function ValidateInitiativeRows(status){
+                var initiativename =  $('#initiative_name').val().trim();
+                var jiraId = $('#jiraId').val().trim();
+                if(initiativename.length < 2){
+                    alert("Initiative Name is mandatory");
+                    return false;
+                }
+                if(jiraId.length == 0){
+                    alert("JIRA Id is mandatory");
+                    return false;
+                }
+                
+                
+                <!-- DCO-155 on 28/09/2022-->
+                if(status == 'Submitted' || status == 'btnSavePostSubmit'){
+                
+                        var Total_hrs = parseFloat($('#tdColTotal').html());
+                        var businessChallange = $("#BusinessChallenge").val().trim();
+                        var personasInvolved = $("#PersonasInvolved").val().trim();
+                        var technologyDetails = $("#TechnologyDetails").val().trim();
+                        var outcomeOfOurSolution = $("#OutcomeOfOurSolution").val().trim();
+                        
+                        if(Total_hrs >= {!$Label.Estimated_Hr_Threshold}){
+                            
+                            if(businessChallange.length<{!$Label.Content_Entry}){
+                                alert('Business Challenge should not be empty and must be greater than ' + {!$Label.Content_Entry} + ' characters!!');
+                                return false;
+                            }
+                            else if(personasInvolved.length<{!$Label.Content_Entry}){
+                                alert('Personas Involved should not be empty and must be greater than ' + {!$Label.Content_Entry} + ' characters!!');
+                                return false;
+                            }
+                            else if(technologyDetails.length<{!$Label.Content_Entry}){
+                                alert('Technology Details should not be empty and must be greater than ' + {!$Label.Content_Entry} + ' characters!!');
+                                return false;
+                            }
+                            else if(outcomeOfOurSolution.length<{!$Label.Content_Entry}){
+                                alert('Outcome Of Our Solution should not be empty and must be greater than ' + {!$Label.Content_Entry} + ' characters!!');
+                                return false;
+                            }
+                               
+                        }
+                }
+                
+                
+                
+                //added by Indhu on 28/08/2019
+                // Initative name field validation
+                if(initiativename.length > 80){
+                    alert("Initiative Name should not be greater than 80 character");
+                    return false;
+                }
+                var firstValue = $('#date_service').val().split('/');
+                var secondValue = $('#date_service1').val().split('/');
+                var thirdValue = $('#date_service2').val().split('/');
+                
+                var StartDate = $('#date_service').val();
+                var EndDate = $('#date_service1').val();
+                var UATExpectedDate = $('#date_service2').val();
+                
+                if(StartDate.length == 0){
+                    alert('Probable Start Date should not be empty');
+                    return false;
+                }
+                
+                if(EndDate.length == 0){
+                    alert('Probable End Date should not be empty');
+                    return false;
+                }
+                
+                var probableStart = new Date(StartDate);
+                var probableEnd = new Date(EndDate);
+                
+                if(probableStart > probableEnd){ 
+                    alert('Probable End date should be more than Probable Start date');
+                    return false;
+                }
+                if(UATExpectedDate != '' && (PortalUserRole == 'Technical Account Manager' || PortalUserRole == 'Practice Head')){
+                    var UATExpected = new Date(UATExpectedDate);
+                    if(UATExpected < probableStart){ 
+                        alert('UAT Expected Date should be later than Probable Start date.');
+                        return false;
+                    }
+                }
+                
+                var initiativeType = $('.initiativeType').val();
+                var programmingReason = $('.programmingReason').val().trim();
+                if(initiativeType == 'None'){
+                    alert('Initiative Type is Mandatory');
+                    return false;
+                }
+                if(initiativeType == 'Programming' && programmingReason == ''){
+                    alert('Specify the reason the Initiative can’t be done in a declarative way');
+                    return false;
+                }                     
+                var initiativeTrig = $('.initiativeTrig').val();
+                var initiativeTag = $('.initiativeTag').val();
+                if(initiativeTrig == 'None'){
+                    alert('Trigger for Initiative is Mandatory');
+                    return false;
+                }
+                if(initiativeTag == null){
+                    alert('Tags about Initiative is Mandatory');
+                    return false;
+                }
+                
+                var total_Count = parseFloat($('#tdColTotal').html());
+                
+                if(status != 'Saved'){
+                    if(total_Count == 0){
+                        alert('Estimates Should not be Empty');
+                        return false;
+                    }
+                }
+                if(status == 'Submitted'){
+                    var OffshoreEstimate = $('#OffshoreEstimate').val();
+                    
+                    if(OffshoreEstimate == 0){
+                        alert('Offshore estimate field should have the estimated provided by the delivery team.');
+                        return false;
+                    }
+                }
+                //Added by Harish for TPM  - submit button validation
+                    
+                    if(status == 'Submitted'){
+                         var technicalProjectManager = $('.technicalProjectManager').val();
+    
+                         if(technicalProjectManager =='None'){
+                            alert('Please assign a Technical Project Manager to this initiative.');
+                            return false;
+                         }
+                      }
+                
+                return true;
+            }
+            
+            function ActiveStatus(status){
+                ActiveStatusMethod(status);
+            }
+            
+            
+            function FetchInitiativeValues(stats){
+                
+                var InitiativeEstimateJSON = {};
+                $("#hdnAction").val(stats);
+                InitiativeEstimateJSON.Estimate = [];
+                var initiative_Removequotes = $('#initiative_name').val().trim().replace(/\'/g, "");
+                var Initiative_Name = initiative_Removequotes.replace(/\"/g, ""); 
+                var UATExpectedDate = $('#date_service2').val();
+                var StartDate = $('#date_service').val();
+                var EndDate = $('#date_service1').val();
+                var ContactAccService = document.getElementById("j_id0:j_id1:ContactClient").value;
+                var BriefDescription;
+                var Content_BriefDescription = CKEDITOR.instances.editor1.getData();
+                var ContentDescription_len = Content_BriefDescription.length;
+                if(ContentDescription_len  > 0 ){
+                    BriefDescription = Content_BriefDescription.slice(3,ContentDescription_len-5);}
+                else{
+                    BriefDescription = Content_BriefDescription;
+                }
+                
+                var Assumption;
+                var Content_Assumption =  CKEDITOR.instances.editor2.getData();
+                var Assumption_len = Content_Assumption.length;
+                if(Assumption_len  > 0){
+                    Assumption = Content_Assumption.slice(3,Assumption_len-5);}
+                else{
+                    Assumption = Content_Assumption;
+                }
+                var InitiativeType = $('.initiativeType').val();
+                var InitiativeProgrammingReason = $('.programmingReason').val().trim().replace(/\'/g, "");
+                InitiativeProgrammingReason = InitiativeProgrammingReason.replace(/\"/g, "");
+                
+                  var InitiativeBusinessChallenge = $('.businessChallenge').val().trim().replace(/\'/g, "");
+                InitiativeBusinessChallenge = InitiativeBusinessChallenge.replace(/\"/g, "");
+                var InitiativePersonasInvolved = $('.personasInvolved').val().trim().replace(/\'/g, "");
+                InitiativePersonasInvolved = InitiativePersonasInvolved.replace(/\"/g, "");
+                var InitiativeTechnologyDetails = $('.technologyDetails').val().trim().replace(/\'/g, "");
+                InitiativeTechnologyDetails = InitiativeTechnologyDetails.replace(/\"/g, "");
+                var InitiativeOutcomeOfOurSolution = $('.outcomeOfOurSolution').val().trim().replace(/\'/g, "");
+                InitiativeOutcomeOfOurSolution = InitiativeOutcomeOfOurSolution.replace(/\"/g, "");
+                
+                var InitiativeTrigger = $('.initiativeTrig').val();
+                var ArchitectOrEngineer = $('.solArchitectOrEngineer').val();
+                var TechnicalProjectManager = $('.technicalProjectManager').val();//Added by Harish - TPM
+                var InitiativeTag = $('.initiativeTag').val();
+                var jiraId = $('#jiraId').val();
+                var OffshoreEstimate = $('#OffshoreEstimate').val();
+                var Status = $('#Status').val();
+                var probablePercent = $('#ProbablePercent').val();
+                var InitiativeBillingType = $('.initiativeBillingType').val();
+
+                InitiativeEstimateJSON.InitiativeName =  Initiative_Name;
+                InitiativeEstimateJSON.StartDate  = StartDate;
+                InitiativeEstimateJSON.UATExpectedDate =UATExpectedDate;
+                InitiativeEstimateJSON.EndDate  = EndDate;
+                InitiativeEstimateJSON.ContactAccService = ContactAccService;
+                InitiativeEstimateJSON.BriefDescription = BriefDescription;
+                InitiativeEstimateJSON.Assumption = Assumption;
+                InitiativeEstimateJSON.Status = Status ;
+                InitiativeEstimateJSON.InitiativeType = InitiativeType;
+                InitiativeEstimateJSON.InitiativeProgrammingReason = InitiativeProgrammingReason;
+                InitiativeEstimateJSON.BusinessChallenge = InitiativeBusinessChallenge;
+                InitiativeEstimateJSON.PersonasInvolved = InitiativePersonasInvolved;
+                InitiativeEstimateJSON.TechnologyDetails = InitiativeTechnologyDetails;
+                InitiativeEstimateJSON.OutcomeOfOurSolution = InitiativeOutcomeOfOurSolution;
+                InitiativeEstimateJSON.InitiativeTrigger = InitiativeTrigger;
+                InitiativeEstimateJSON.ArchitectOrEngineer = ArchitectOrEngineer;
+                
+                InitiativeEstimateJSON.InitiativeTag = InitiativeTag;
+                InitiativeEstimateJSON.stats = stats;
+                InitiativeEstimateJSON.JiraId = jiraId;
+                InitiativeEstimateJSON.BucketHoursType=$('#Bucket_Hours_Type').prop('checked');
+
+                if(OffshoreEstimate == ""){
+                    OffshoreEstimate = 0;
+                }
+                InitiativeEstimateJSON.OffshoreEstimate = OffshoreEstimate;
+                if(probablePercent == ""){
+                    probablePercent = 0;
+                }
+                InitiativeEstimateJSON.ProbablePercent = probablePercent;
+                InitiativeEstimateJSON.TechnicalProjectManager = TechnicalProjectManager; // Added by Harish 08-jun-21 - TPM
+                InitiativeEstimateJSON.InitiativeBillingType = InitiativeBillingType;
+
+                
+                var validation = ValidateInitiativeRows(stats);
+                var confirmresult = false;
+                var table = $('#addtionalTable'); 
+                var checkTask = 0;    
+                var checkHours = 0;  
+                var checkContact = 1;                              
+                table.find(".width1.txtTask").each(function(i,el){                          
+                    if($(el).val().trim().length == 0){
+                        checkTask ++;
+                        return false;
+                    }
+                });
+                table.find(".width2.txtTask").each(function(i,el){                          
+                    if($(el).val().trim().length == 0 || $(el).val() == null || $(el).val() == '' || $(el).val() == 0){
+                        checkHours++;
+                        return false;
+                    }
+                });
+                if(checkTask > 0){
+                    alert('Task/Components should not be empty!!');
+                }
+                 if(checkHours > 0){
+                    alert('Hours should be greater than 0!!');
+                    return false;
+                }
+                
+                
+                if($('select.qq option').length == 0){
+                    alert('Client side contact should not be empty!!');
+                    checkContact = 0;
+                }
+                 if(ContactAccService.length==0){
+                    alert('Please select the approver!!');
+                    return false;
+                }
+                <!--DCO-110--> 
+                if($('#jiraId').prop('disabled') == false && stats != 'SaveCreateJira'){
+                    var jiraFromController = '{!targetValues}';
+                    var jiravalues = jiraId.toLowerCase().replace(/(sprint|task|epic|bug|user(\s)*story)(\W)*(\d|,|\W)+/g, '').trim();
+                    const jiraIds = [...jiravalues.matchAll(/\d+/g)];/*numbers only*/
+                    const jiraPrefix = [...jiravalues.matchAll(/[a-zA-Z]+/g)];/*alphabets only*/
+                    const jiraIdRange = [...jiravalues.matchAll(/\d+[\s]*\-[\s]*\d+/g)];/*number range*/
+                    for(var i=0;i<jiraIdRange.length;i++){
+                        var rangeInfo = jiraIdRange[i]["0"].replace(' ','').split('-');
+                        var rangeStart = parseInt(rangeInfo[0]);
+                        var rangeEnd = parseInt(rangeInfo[1]);
+                        for(var n=rangeStart;n<=rangeEnd;n++){
+                            jiraIds.push(n);
+                        }
+                    }
+
+                    if(jiraIds.length == 0){
+                        var searchStr = '';
+                        for(var i=0;i<jiraPrefix.length;i++){
+                            searchStr += jiraPrefix[i];
+                        }
+                        if(jiraFromController.indexOf(searchStr) >= 0){
+                            alert('An Initiative already exits for this Jira Id. Please enter a different Jira Id.');
+                            return true;
+                        }
+                    }
+
+                    var matchFound = false;
+                    for(var i=0;i<jiraIds.length;i++){
+                        var searchStrId = jiraIds[i];
+                        var searchStr = jiraIds[i];
+                        
+                        if(jiraPrefix.length != 0){
+                            for(var j=0;j<jiraPrefix.length;j++){
+                                searchStr = jiraPrefix[j]["0"] + '-' + searchStrId;
+                                if(jiraFromController.indexOf(searchStr) >= 0){
+                                    matchFound = true;
+                                }
+                            }
+                        }else{
+                            if(jiraFromController.indexOf(searchStr) >= 0){
+                                matchFound = true;
+                            }
+                        }
+                    }
+                    if(matchFound){
+                        alert('An Initiative already exits for this Jira Id. Please enter a different Jira Id.');
+                        return true;
+                    }
+                }
+                if (validation && checkTask == 0 && checkContact != 0) {
+                    if (stats == "Submitted") {                                  
+                        confirmresult = confirm("Are you sure want to submit the Initiative Page");                                  
+                    } else {
+                        confirmresult = true;
+                    }
+                    if (confirmresult) {
+                        var table = $(".timesheet");
+                        table.find("tr").each(function(i, el) {
+                            var RowNo = $(this).attr("RowNo");
+                            var EstimateJsonValue = {};
+                            if (RowNo > 0) {
+                                var Phase = $("#ddlInitiative_" + RowNo).find('option:selected').val();                                      
+                                var remove_Lines = $("#txtTask_" + RowNo).val().trim().replace(/\n/g, "");
+                                var remove_space = remove_Lines.replace(/'/g, '\'');
+                                var remove_doublespace = remove_space.replace(/"/g, '\"');    
+                                var remove_exceptcharanddigits = remove_doublespace.replace(/[^\w\s]/g,''); 
+                                var remove_tabs = remove_doublespace.replace(/\t/g, '');                                                       
+                                var TaskName = remove_tabs.replace('~', '-') ;                                      
+                                var remove_assumLines = $("#assumption_" + RowNo).val().trim().replace(/\n/g, "");
+                                var remove_assumspace = remove_assumLines.replace(/'/g, '\'');
+                                var remove_assumdoublespace = remove_assumspace.replace(/"/g, '\"');    
+                                var remove_assumexceptcharanddigits = remove_assumdoublespace.replace(/[^\w\s]/g,''); 
+                                var remove_assumtabs = remove_assumdoublespace.replace(/\t/g, '');                                      
+                                var assumption = remove_assumtabs.replace('~', '-');
+                                var Hours = $("#txtTask1_" + RowNo).val(); 
+                                EstimateJsonValue.Phase = Phase;
+                                EstimateJsonValue.TaskName = TaskName;
+                                EstimateJsonValue.Assumption = assumption;
+                                EstimateJsonValue.Hours = Hours;
+                                InitiativeEstimateJSON.Estimate.push(EstimateJsonValue);
+                                
+                                // Save Object as a value for the key - row no
+                            }
+                        });
+                        
+                        var strUpdatedList = JSON.stringify(InitiativeEstimateJSON);
+                        PassJSONToInitiativeController(strUpdatedList); 
+                    }
+                }
+            } 
+            function populatePreviousWeekDates() {
+                $(".total").html('');
+                $(".ColTotal").html('');
+                $(".spanTotal").html('');
+                $("#tdTotalSum").html('');
+                var currDate = $("#weekStDate").html();
+                var currDateSplit = currDate.split(" ");
+                var shortMonth = currDateSplit[0];
+                var monthstring = getMonthFromString(shortMonth) + 1;
+                var dayString = parseFloat(currDateSplit[1]) - 7;
+                var yearString = currDateSplit[2];
+                if (dayString <= 0) {
+                    monthstring = monthstring - 1;
+                    //var days = Math.round(((new Date(yearString, monthstring))-(new Date(yearString, monthstring-1)))/86400000);
+                    var days = new Date(yearString, monthstring, 0).getDate();
+                    dayString = dayString + days;
+                    if (monthstring == 0) {
+                        monthstring = 12;
+                        yearString = yearString - 1;
+                    }
+                }
+                var currWeekDate = monthstring + '/' + dayString + '/' + yearString;
+                var datecurr = new Date(currWeekDate);
+                var WeekDate = FormatDate(datecurr);
+                
+                PopulateWeekDays(WeekDate);
+                $("#Tbltimesheet").find("input").val('');
+                //DisableFields();
+                passWeekDateToController(FormatDate(new Date($("#weekStDate").html())), FormatDate(new Date($("#weekEndDate").html())))
+            }
+            
+            //To Disable the Previous Month Fields
+            function DisableFields(tstatus) {
+                
+                //To get the Current and Previous Month
+                
+                
+                var currentMonthdate = new Date('{!CurrentDate}');
+                
+                
+                var previousMonth = new String(currentMonthdate.getMonth());
+                var currentMonth = new String(currentMonthdate.getMonth() + 1);
+                var currentYear = new String(currentMonthdate.getFullYear());
+                if (previousMonth == "0") {
+                    previousMonth = 12;
+                }
+                
+                $(".timesheet").children("tr").each(function() {
+                    
+                    $('td', this).each(function() {
+                        var timeValue = $(this).find(":input").attr("Datevalue");
+                        var currentRowDate = new Date(timeValue);
+                        // alert(currentRowDate);             
+                        //$(this).find(":input").prop('disabled', true);
+                        if (typeof timeValue !== "undefined") {
+                            var splitTimeValue = timeValue.split("/");
+                            
+                            if (currentRowDate > currentMonthdate) {
+                                if (tstatus == '' || tstatus == 'Saved') {
+                                    $(this).find(":input").prop('disabled', true);
+                                    $(this).find(":input").parent().prop('disabled', true);
+                                }
+                                
+                            }
+                            if (previousMonth == 12) {
+                                if ((splitTimeValue[0] != previousMonth.valueOf() && splitTimeValue[0] != currentMonth.valueOf())) {
+                                    if (tstatus == '' || tstatus == 'Saved') {
+                                        $(this).find(":input").prop('disabled', true);
+                                        $(this).find(":input").parent().prop('disabled', true);
+                                    }
+                                }
+                                
+                            } else if ((splitTimeValue[0] != previousMonth.valueOf() && splitTimeValue[0] != currentMonth.valueOf()) || (splitTimeValue[2] != currentYear.valueOf())) {
+                                if (tstatus == '' || tstatus == 'Saved') {
+                                    $(this).find(":input").prop('disabled', true);
+                                    $(this).find(":input").parent().prop('disabled', true);
+                                }
+                            } else {
+                                if (tstatus == '' || tstatus == 'Saved') {
+                                    $(this).find(":input").prop('disabled', false);
+                                    $(this).find(":input").parent().prop('disabled', false);
+                                }
+                            }
+                            
+                        }
+                        
+                    })
+                    
+                    //TO Check whether all the hours entry fields are disabled. If disabled then we are disabling the task and resource fields  
+                    if ($(".mondate").prop("disabled") == true && $(".tuedate").prop("disabled") == true && $(".weddate").prop("disabled") == true && $(".thudate").prop("disabled") == true && $(".fridate").prop("disabled") == true && $(".satdate").prop("disabled") == true && $(".sundate").prop("disabled") == true) {
+                        if (tstatus == '' || tstatus == 'Saved') {
+                            $(".txtTask").prop('disabled', true);
+                            $(".ddlResource").prop('disabled', true);
+                        }
+                        
+                    } else {
+                        if (tstatus == '' || tstatus == 'Saved') {
+                            $(".txtTask").prop('disabled', false);
+                            $(".ddlResource").prop('disabled', false);
+                        }
+                    }
+                })
+            }
+            
+            function populateNextWeekDates() {
+                var currDate = $("#weekEndDate").html();
+                var currDateSplit = currDate.split(" ");
+                var shortMonth = currDateSplit[0];
+                var monthstring = getMonthFromString(shortMonth) + 1;
+                var dayString = parseFloat(currDateSplit[1]) + 1;
+                var yearString = currDateSplit[2];
+                var days = new Date(yearString, monthstring, 0).getDate();
+                if (dayString > days) {
+                    dayString = dayString - days;
+                    monthstring = monthstring + 1;
+                    if (monthstring == 13) {
+                        yearString = yearString + 1;
+                    }
+                }
+                var currWeekDate = monthstring + '/' + dayString + '/' + yearString;
+                var datecurr = new Date(currWeekDate);
+                var TodayDate = new Date('{!CurrentDate}');
+                if (datecurr > TodayDate) {
+                    
+                    return false;
+                }
+                
+                $(".total").html('');
+                $(".ColTotal").html('');
+                $("#tdTotalSum").html('');
+                var WeekDate = FormatDate(datecurr);
+                //alert(WeekDate);
+                PopulateWeekDays(WeekDate);
+                $("#Tbltimesheet").find("input").val('');
+                passWeekDateToController(FormatDate(new Date($("#weekStDate").html())), FormatDate(new Date($("#weekEndDate").html())));
+            }
+            
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if (!(charCode > 31 && (charCode < 48 || charCode > 57) && charCode ==91 )) {
+                    return false;
+                }
+                return true;
+            }
+            
+            //To Get the Month Value from Short Month Name
+            function getMonthFromString(mon) {
+                var months = new Array("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC");
+                var result = getPosition(mon.toUpperCase(), months);
+                return result;
+            }
+            
+            //To get the Position of the Month
+            function getPosition(elementToFind, arrayElements) {
+                var i;
+                for (i = 0; i < arrayElements.length; i += 1) {
+                    
+                    var strarrayElements = arrayElements[i];
+                    var strelementToFind = elementToFind;
+                    
+                    if (strarrayElements.localeCompare(strelementToFind) == 0) {
+                        return i;
+                    }
+                }
+                return null; //not found
+            }
+            
+            
+            function CancelTimesheet() {
+                location.reload();
+            }
+            
+            function HidePopup() {
+                $("#myModal").hide();
+                $(".modal-backdrop").removeClass("modal-backdrop");
+            }
+            
+            function HideEscalationPopup() {
+                $("#escalationMyModal").hide();
+                $(".modal-backdrop").removeClass("modal-backdrop");
+            }
+            
+            function ApplySearch() {
+                var AccountID = $(".ddlstAccount").val();
+                var ServiceID = $(".ddlstService").val();
+                
+                ApplySearchAction(AccountID, ServiceID)
+            }
+            
+            function SetVisiblityForNextWeek(CurrentWeekEndDate) {
+                var nextWeekEndDate = new Date('{!CurrentDate}');
+                var TodayDate = new Date('{!CurrentDate}');
+                nextWeekEndDate.setDate(CurrentWeekEndDate.getDate() + 6);
+                if (TodayDate < nextWeekEndDate) {
+                    $("#nextWeekID").hide();
+                } else {
+                    $("#nextWeekID").show();
+                }
+            }
+            </script>
+            
+            <apex:outputPanel id="jsPanel">
+                <script>
+                function BindJSONDataToPage() {
+                    
+                    timesheetstatus = '';
+                    var jResponse = '{!TimeshtJSONtoBind}';
+                    jResponse = jResponse.replace(/'/g, "\\'");
+                    console.log('jResponse'+jResponse);
+                    var jsonFromCtrl = '';
+                    var Comments = '';
+                    
+                    if (jResponse != '') {
+                        jsonFromCtrl = jResponse.split('~')[0];
+                        console.log('jsonFromCtrl'+jsonFromCtrl);
+                        timesheetstatus = jResponse.split('~')[1];
+                        console.log('timesheetstatus'+timesheetstatus);
+                        Comments = jResponse.split('~')[2];
+                        
+                    }
+                    $("#txtComments").val(Comments);
+                    if (!timesheetstatus) {
+                        $("#divStatus").hide();
+                    } else {
+                        $("#divStatus").show();
+                        $("#lblStatus").html(timesheetstatus);
+                    }
+                    $(".staticRows").remove();
+                    if (jsonFromCtrl != '') {
+                        
+                        var timeshtArray = $.parseJSON(jsonFromCtrl);
+                        
+                        $.each(timeshtArray, function(key, value) {
+                            var rowno = timeshtArray[key].Row_No__c;
+                            
+                            if (rowno > 0) {
+                                if ($('#txtTask_' + rowno).length == 0) {
+                                    AddRowToAdditionalTable(rowno);
+                                    var elementid = '#ddlResName_' + rowno;
+                                    populateDynamicResoureNameByRow(elementid);
+                                }
+                            }
+                            var TaskName = timeshtArray[key].Task_Name__c;
+                            TaskName = TaskName.replace('$#$', "'");
+                            
+                            $('#txtTask_' + rowno).val(TaskName);
+                            $('#ddlResName_' + rowno).val(timeshtArray[key].Resource_Id__c);
+                            var timeshtDate = timeshtArray[key].Timesheet_Date__c;
+                            
+                            var timeDate = new Date(toMmDdYy(timeshtDate));
+                            var dayName = timeDate.getDay();
+                            switch (dayName) {
+                                case 1:
+                                    $('#txtMonHrs_' + rowno).val(timeshtArray[key].Hours_Worked__c);
+                                    $('#txtMonHrs_' + rowno).keyup();
+                                    break;
+                                case 2:
+                                    $('#txtTueHrs_' + rowno).val(timeshtArray[key].Hours_Worked__c);
+                                    $('#txtTueHrs_' + rowno).keyup();
+                                    break;
+                                case 3:
+                                    $('#txtWedHrs_' + rowno).val(timeshtArray[key].Hours_Worked__c);
+                                    $('#txtWedHrs_' + rowno).keyup();
+                                    break;
+                                case 4:
+                                    $('#txtThuHrs_' + rowno).val(timeshtArray[key].Hours_Worked__c);
+                                    $('#txtThuHrs_' + rowno).keyup();
+                                    break;
+                                case 5:
+                                    $('#txtFriHrs_' + rowno).val(timeshtArray[key].Hours_Worked__c);
+                                    $('#txtFriHrs_' + rowno).keyup();
+                                    break;
+                                case 6:
+                                    $('#txtSatHrs_' + rowno).val(timeshtArray[key].Hours_Worked__c);
+                                    $('#txtSatHrs_' + rowno).keyup();
+                                    break;
+                                default:
+                                    $('#txtSunHrs_' + rowno).val(timeshtArray[key].Hours_Worked__c);
+                                    $('#txtSunHrs_' + rowno).keyup();
+                                    break;
+                            }
+                        });
+                    } else {
+                        
+                        AddRowToAdditionalTable(1);
+                        /* AddRowToAdditionalTable(2);
+                        AddRowToAdditionalTable(3);
+                        AddRowToAdditionalTable(4);
+                        AddRowToAdditionalTable(5); */
+                        populateDynamicResoureName();
+                        $("#Tbltimesheet").find("input").val('');
+                    }
+                    
+                    CustomizePageByTimesheetStatus(timesheetstatus, PortalUserRole, IsPortalApprover);
+                    if (PortalUserRole != 'Customer') {
+                        DisableFields(timesheetstatus);
+                    }
+                }
+                
+                function PostSaveTimesheet() {
+                    
+                    //var accid = '{!AccountId}';
+                    //alert(BindJSONDataToPage);
+                    //alert(FetchTimesheetValues);
+                    //alert(   $("#hdnAction").val());
+                    if ($("#hdnAction").val() == 'Saved') {
+                        alert("Timesheet has been saved successfully");
+                    } else {
+                        window.location.href = "ViewTimesheet";
+                        
+                    }
+                    //accntId ='+AccountId+'&srvcId='+'serviceId
+                    
+                }
+                
+                function PostSaveInitiative(){
+                    window.location.href = "ODS_ViewInitiative_Mobile";
+                }
+                function exportAsExcel(){
+                    var crntInvId =  '{!$CurrentPage.parameters.CurrenInitiativeId}';
+                    
+                    // window.location.href = "/apex/ods_exportinitiativeexcel?InitiativeId="+crntInvId+"";
+                    var base_url = window.location.origin;
+                    // alert(base_url);
+                    //sforce.one.navigateToURL(base_url +'/apex/ods_exportinitiativeexcel?InitiativeId='+crntInvId, true);
+                    //window.open(base_url +'/apex/ods_exportinitiativeexcel?InitiativeId='+crntInvId, '_self');
+                    // win.focus();
+                    
+                    
+                    var base_url = window.location.origin;
+                    
+                    base_url  = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '') + '/apex/ods_exportinitiativeexcel?InitiativeId=' +crntInvId;
+                    alert(base_url);
+                    //sforce.one.navigateToURL(base_url, false);
+                    //alert(base_url);
+                    window.open(base_url,'_target');
+                    
+                    //var win = window.open('https://ezreodsqa-customer-demandblue.cs70.force.com/apex/ods_exportinitiativeexcel?InitiativeId='+crntInvId, '_self');
+                    
+                    // win.focus();
+                }
+                
+                var toMmDdYy = function(input) {
+                    var ptrn = /(\d{4})\-(\d{2})\-(\d{2})/;
+                    if (!input || !input.match(ptrn)) {
+                        return null;
+                    }
+                    return input.replace(ptrn, '$2/$3/$1');
+                };
+                
+                function AddRowToAdditionalTable(RowNo) {
+                    
+                    var table = $('#addtionalTable');
+                    
+                    var table_length = $("#addtionalTable tr").length;
+                    
+                    
+                    //recent   $("#addtionalTable").append("<div class='estimate-addbox' id='myTableRow1'><tr   class='staticRows'    RowNo=" + RowNo + "> <td  class = 'Rescol' width='70%'> <label>Phase</label> <select id='ddlInitiative_" + RowNo + "' class='form-control form-group'  > <option value='Analysis'>Analysis</option> <option value='Design'>Design</option> <option value='Development'>Development</option> <option value='System Testing'>System Testing</option> <option value='Deployment'>Deployment</option>  </select></td> <td width='30%'> <label>Hours<span class='required'>*</span></label> <input type='text' maxlength = '4' title = 'Max chars 150' id='txtTask1_" + RowNo + "' class='width2 txtTask form-control form-group'  onkeyup='CalculateColumnTotal()'  /></td> </tr> <tr id='myTableRow2' class='staticRows'    RowNo=" + RowNo + ">  <td  colspan='2'> <label>Task/Components<span class='required'>*</span></label> <textarea type='text' class='form-control form-group'  maxlength = '1500' title = 'Max chars 150' id='txtTask_" + RowNo + "' class='width1 txtTask'  /></td> </tr><tr id='myTableRow3' class='staticRows'    RowNo=" + RowNo + ">  <td  colspan='2'> <label>Assumptions</label> <textarea type='text' class='form-control form-group'  maxlength = '1500' title = 'Max chars 150' id='assumption_" + RowNo + "' class='width3 txtTask'  /></td> </tr><tr class='staticRows' RowNo=" + RowNo + ">  <td class='actiontd' colspan='2'> <a href='#' class='delete-icon delete-item'><i class='fa fa-close' aria-hidden='true'></i></a> </td> </tr></div>  ");
+                    //$("#addtionalTable").append("<tr id='myTableRow2' class='staticRows'    RowNo=" + RowNo + ">  <td  colspan='2'> <label>Task/Components</label> <textarea type='text' class='form-control form-group'  maxlength = '1500' title = 'Max chars 150' id='txtTask_" + RowNo + "' class='width1 txtTask'  /></td> </tr>");
+                    //$("#addtionalTable").append("<tr id='myTableRow3' class='staticRows'    RowNo=" + RowNo + ">  <td  colspan='2'> <label>Assumptions</label> <textarea type='text' class='form-control form-group'  maxlength = '1500' title = 'Max chars 150' id='assumption_" + RowNo + "' class='width3 txtTask'  /></td> </tr>");
+                    //$("#addtionalTable").append("<tr class='staticRows'    RowNo=" + RowNo + ">  <td class='actiontd' colspan='2'> <a href='#' class='delete-icon delete-item'><i class='fa fa-close' aria-hidden='true'></i></a> </td> </tr>");
+                    // $("#addtionalTable").append("<div class='estimate-addbox' id='myTableRow1'><tr   class='staticRows'    RowNo=" + RowNo + "> <td  class = 'Rescol' width='70%'><div> <label>Phase</label> <select id='ddlInitiative_" + RowNo + "' class='form-control form-group'  > <option value='Analysis'>Analysis</option> <option value='Design'>Design</option> <option value='Development'>Development</option> <option value='System Testing'>System Testing</option> <option value='Deployment'>Deployment</option>  </select></td> <td width='30%'> <label>Hours<span class='required'>*</span></label> <input type='text' maxlength = '4' title = 'Max chars 150' id='txtTask1_" + RowNo + "' class='width2 txtTask form-control form-group'  onkeyup='CalculateColumnTotal()'  /></div><div> <label>Task/Components<span class='required'>*</span></label> <textarea type='text' class='form-control form-group'  maxlength = '1500' title = 'Max chars 150' id='txtTask_" + RowNo + "' class='width1 txtTask'  /></div><div><label>Assumptions</label> <textarea type='text' class='form-control form-group'  maxlength = '1500' title = 'Max chars 150' id='assumption_" + RowNo + "' class='width3 txtTask'  /></div> <td class='actiontd' colspan='2'> <a href='#' class='delete-icon delete-item'><i class='fa fa-close' aria-hidden='true'></i></a> </td></td> </tr></div> ");
+                    $("#addtionalTable").append("<tr class='staticRows'    RowNo=" + RowNo + "><td class = 'Rescol'> <div class='estimate-addbox'><div  style='width:70%;display:inline-block;padding-right:5px;'><label>Initiative Name</label><select id='ddlInitiative_" + RowNo + "' class='form-control form-group' > <option value='Analysis'>Analysis</option> <option value='Design'>Design</option> <option value='Development'>Development</option> <option value='System Testing'>System Testing</option> <option value='Deployment'>Deployment</option> <option value='Data Migration'>Data Migration</option><option value='Consulting / Advisory Hours'>Consulting / Advisory Hours</option> <option value='UAT Support'>UAT Support</option> <option value='Post Production Support'>Post Production Support</option> <option value='Sandbox Refresh'>Sandbox Refresh</option> <option value='Scrum Activities'>Scrum Activities</option> </select></div><div style='width:30%;display:inline-block;padding-left:5px;'> <label>Hours<span class='required'>*</span></label> <input type='text' maxlength = '4' title = 'Max chars 150' id='txtTask1_" + RowNo + "' class='width2 txtTask form-control form-group'  onkeyup='CalculateColumnTotal()' /></div><div><div> <label>Task/Components<span class='required'>*</span></label>  <textarea type='text' maxlength = '1500' title = 'Max chars 150' id='txtTask_" + RowNo + "' class='width1 txtTask form-control from-group'  /></div><label>Assumptions</label> <textarea type='text' maxlength = '1500' title = 'Max chars 150' id='assumption_" + RowNo + "' class='width3 txtTask form-control form-group' /></div> <td class='actiontd'> <a href='#' class='delete-icon delete-item'><i class='fa fa-close' aria-hidden='true'></i></a> </td></td> </tr></div>");
+                    
+                    
+                }
+                
+                function CalculateColumnTotal
+                () {
+                    // debugger;
+                    var table = $('#addtionalTable');
+                    
+                    var count = 0;
+                    
+                    table.find(".width2.txtTask").each(function(i,el){  
+                        if($(el).val().trim().length != 0){    
+                            count += parseFloat($(el).val());
+                        }
+                    });
+                    
+                    
+                    var total_Count= parseFloat(count).toFixed( 2 );
+                    
+                    
+                    $('#tdColTotal').html(total_Count);
+                }
+                
+                function logout() {
+                    window.location.replace("{!$Site.Prefix}/secur/logout.jsp");
+                }
+                
+                function Redirect() {
+                    window.location.href = "ViewTimesheet";
+                }
+                </script>
+            </apex:outputPanel>
+            
+            
+            
+            <apex:outputPanel id="jsInitiativePanel">
+                <script>
+                function BindJSONDataToInitiativePage() {
+                    // debugger;
+                    var jInitiativeResponse = '{!Initiative_JSONtoBind}';                                                
+                    //jInitiativeResponse = jInitiativeResponse.replace(/'/g, "\\'");
+                    var jEstimateResponse = '{!EstimateJSONtoBind}';
+                    jEstimateResponse = jEstimateResponse.replace(/'/g, "\\'");
+                    var jsonFromInitiativeCtrl = '';
+                    var jsonFromEstimateCtrl = '';
+                    var initiativestatus = '';
+                    var estimatestatus = '';
+                    var splitDate  = '';
+                    var formatDate = '';
+                    var RowNo = 2;
+                    if(jInitiativeResponse != ''){
+                        jsonFromInitiativeCtrl = jInitiativeResponse.split('~')[0];
+                        console.log('@@@@jsonFromInitiativeCtrl '+jsonFromInitiativeCtrl);       
+                        jsonFromInitiativeCtrl = '['+jsonFromInitiativeCtrl+']'
+                        initiativestatus = jInitiativeResponse.split('~')[1];
+                    }
+                    
+                    if(jEstimateResponse  != ''){
+                        jsonFromEstimateCtrl = jEstimateResponse.split('~')[0];
+                        jsonFromEstimateCtrl = jsonFromEstimateCtrl.replace(/`/g, "\'");
+                        console.log('@@@@jsonFromEstimateCtrl  '+jsonFromEstimateCtrl);       
+                        estimatestatus =  jEstimateResponse.split('~')[1];
+                    }
+                    if(jsonFromInitiativeCtrl != ''){
+                        // debugger;
+                        var initiativeArray = $.parseJSON(jsonFromInitiativeCtrl); 
+                        $('#initiative_name').val(initiativeArray[0].Name);
+                        $('#Bucket_Hours_Type')[0].checked=initiativeArray[0].Is_a_bucket_of_hours_type__c;
+                        $('#jiraId').val(initiativeArray[0].JIRA_ID__c);
+                        $('#OffshoreEstimate').val(initiativeArray[0].Offshore_Estimate__c);
+                        var startDate = initiativeArray[0].Probable_Start_Date__c;                                         
+                        splitDate = startDate.split('-');
+                        formatDate = splitDate[1]+"/"+splitDate[2]+"/"+splitDate[0];
+                        $('#date_service').val(formatDate);
+                        var endDate = initiativeArray[0].Probable_End_Date__c;
+                        splitDate = '';
+                        splitDate = endDate.split('-');
+                        formatDate = '';
+                        formatDate = splitDate[1]+"/"+splitDate[2]+"/"+splitDate[0];
+                        $('#date_service1').val(formatDate);
+                        var uatExpectedDate = initiativeArray[0].UAT_Expected_Date__c;
+                        if(typeof(uatExpectedDate) !== "undefined"){
+                            splitDate = '';
+                            splitDate = uatExpectedDate.split('-');
+                            formatDate = '';
+                            formatDate = splitDate[1]+"/"+splitDate[2]+"/"+splitDate[0];
+                            $('#date_service2').val(formatDate);
+                        }
+                        $('.ContactClient').val(initiativeArray[0].Client_side_Contact__r.Name);
+                        
+                        $('#ProbablePercent').val(initiativeArray[0].Probability_Percentage__c);
+                        $('#Status').val(initiativeArray[0].Status__c);
+                        $('.initiativeType').val(initiativeArray[0].Initiative_Type__c);
+                        $('.programmingReason').val(initiativeArray[0].Initiative_Programming_Reason__c);
+                        $('.initiativeTrig').val(initiativeArray[0].Trigger_For_Initiative__c);   
+                         $('.businessChallenge').val(initiativeArray[0].Business_Challenge__c);
+                        $('.personasInvolved').val(initiativeArray[0].Persona_s_Involved__c);
+                        $('.technologyDetails').val(initiativeArray[0].Technology_Details__c);
+                        $('.outcomeOfOurSolution').val(initiativeArray[0].Outcome_of_our_solution__c);
+                         if(typeof initiativeArray[0].Solution_Architect_Engineer__c !== 'undefined'){
+                             $('.solArchitectOrEngineer').val(initiativeArray[0].Solution_Architect_Engineer__c);  
+                         }
+
+                         if(typeof initiativeArray[0].Technical_Project_Manager__c !== 'undefined'){
+                              $('.technicalProjectManager').val(initiativeArray[0].Technical_Project_Manager__c);
+                         }                        
+                        if(initiativeArray[0].Initiative_Billing_Type__c !=undefined || initiativeArray[0].Initiative_Billing_Type__c !=null){
+                            $('.initiativeBillingType').val(initiativeArray[0].Initiative_Billing_Type__c);
+                        }else{
+                            //$('.initiativeBillingType').val('Build');
+                        }
+                        if(initiativeArray[0].Tags_About_Initiative__c != null){
+                            var selectList = document.getElementById('j_id0:j_id1:TagInitiative');
+                            var selectedOptions = (initiativeArray[0].Tags_About_Initiative__c).split(';');
+                            for(var i=0; i<selectList.length; i++){
+                                if(selectedOptions.includes(selectList.options[i].value)){
+                                    selectList.options[i].selected = true;
+                                }
+                                else{
+                                    selectList.options[i].selected = false;
+                                }
+                            }
+                            //initiativeArray[0].Tags_About_Initiative__c
+                        }
+                        
+                        
+                        CKEDITOR.instances.editor1.setData('{!JSENCODE(Initiative_Description)}'); 
+                        
+                        CKEDITOR.instances.editor2.setData('{!JSENCODE(Initiative_Assumption)}'); 
+                        
+                    }
+                    
+                    if(jsonFromEstimateCtrl  != ''){
+                        var estimateArray = $.parseJSON(jsonFromEstimateCtrl);
+                        console.log('@@@@@@@estimateArray'+estimateArray);
+                        $.each(estimateArray, function(key, value) {
+                            AddRowToAdditionalTable(RowNo);
+                            $('#ddlInitiative_'+RowNo).val(estimateArray[key].Phase__c); 
+                            $('#txtTask_'+RowNo).val(estimateArray[key].Task_Components__c);                                            
+                            $('#assumption_'+RowNo).val(estimateArray[key].Assumptions__c);                                               
+                            $('#txtTask1_'+RowNo).val(estimateArray[key].Hours__c);
+                            
+                            RowNo++;
+                        });
+                    }
+                    CustomizePageByInitiativeStatus(initiativestatus, PortalUserRole, IsPortalApprover);
+                    CalculateColumnTotal();
+                }
+                </script>          
+            </apex:outputPanel>
+            <style>
+                .mid-bg{
+                display:none;
+                }
+                #left {
+                width: 50%;
+                float: left;
+                }
+                #right {
+                width: 50%;
+                float: right;
+                }
+                /* #chartdiv {
+                width: 100%;
+                height: 420px;
+                float: right;            
+                } 
+                #chartdivnew {
+                width: 100%;
+                height: 420px;
+                float: right;            
+                }  */
+                .delete-icon{
+                position:relative;
+                top:284px;
+                }
+                .accordion .card-header:after{display:none;}
+                #initiativeitem .card-title .fa{color:#4BC9F4;font-size:24px;line-height:18px;}
+            </style>
+            <script>
+            var utilizationHurs=0.0; 
+            var consumedHrs = 0.0;
+            var unUtilizedHrs=0.0;
+            var remainingHrs=0.0;
+            window.onload=function(){
+                hrs();
+                toHide();
+                //debugger;
+                var approvalType = getParameterByName('Type');
+                if(approvalType == 'Reject'){
+                    $('#btnReject').click();
+                    
+                }
+            }
+            
+            
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, '\\$&');
+                var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            }
+            </script>   
+            
+            
+            <script>    
+            function hrs(){
+                var crntInvId =  '{!$CurrentPage.parameters.CurrenInitiativeId}';
+                // debugger;
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.ODS_InitiativeControllerMobile.GetUtilizedHours}', 
+                    crntInvId,
+                    function(result, event){
+                        // debugger;
+                        if(result === null)
+                        {
+                            utilizationHurs = 0.0;
+                            consumedHrs = 0.0;
+                            unUtilizedHrs=0.0;
+                            remainingHrs=0.0;
+                        }
+                        else
+                        {                   
+                            var hrsArray = result.split("|");                                     
+                            utilizationHurs = hrsArray[0];
+                            consumedHrs = hrsArray[1];
+                            unUtilizedHrs=hrsArray[2];
+                            remainingHrs=hrsArray[3];
+                        }
+                    });
+                
+            }
+            
+            var chart = AmCharts.makeChart("chartdiv", {
+                "theme": "light",
+                "type": "gauge",
+                "axes": [{
+                    "topTextFontSize":16,
+                    "topTextYOffset":30,
+                    "topTextColor": "#FFFFFF",
+                    "axisColor": "#FF0000",
+                    "axisThickness": 0,
+                    "centerY": "18%",
+                    "endValue": 100,
+                    "color": "#FFFFFF",
+                    "gridInside": true,
+                    "labelFrequency": 10,
+                    "inside": false,
+                    "radius": "95%",
+                    "valueInterval": 10,
+                    "minorTickLength": 0,
+                    "tickColor": "#FFFFFF",
+                    "tickThickness": 2,
+                    "startAngle": -90,
+                    "endAngle": 90,
+                    "unit": "%",
+                    "bandOutlineAlpha": 0,
+                    "bands": [{
+                        "color": "#FFFFFF ",
+                        "endValue": 100,
+                        "innerRadius": "132%",
+                        "radius": "135%",
+                        "gradientRatio": [0, 0, 0],
+                        "startValue": 0
+                    }]
+                }],
+                "arrows": [{
+                    "color": "#FFFFFF",
+                    "alpha": 1,
+                    "innerRadius": "0",
+                    "nailRadius": 10,
+                    "startWidth": 8,
+                    "radius": "130%"
+                }]
+            });
+            
+            setInterval(randomValue, 50);
+            
+            // set random value
+            function randomValue() {
+                var value = utilizationHurs;
+                var consumedValue = consumedHrs;
+                chart.arrows[0].setValue(value);
+                
+                chart.axes[0].setTopText(consumedValue + " Hours");
+                // adjust darker band to new value
+                if(typeof chart.axes[0].bands[1] !== 'undefined'){
+                chart.axes[0].bands[1].setEndValue(value);
+            }
+            }
+            var chartnew = AmCharts.makeChart("chartdivnew", {
+                "theme": "light",
+                "type": "gauge",
+                "axes": [{
+                    "topTextFontSize":16,
+                    "topTextYOffset":30,
+                    "topTextColor": "#FFFFFF",
+                    "axisColor": "#FF0000",
+                    "axisThickness": 0,
+                    "centerY": "18%",
+                    "endValue": 100,
+                    "color": "#FFFFFF",
+                    "gridInside": true,
+                    "labelFrequency": 10,
+                    "inside": false,
+                    "radius": "95%",
+                    "valueInterval": 10,
+                    "minorTickLength": 0,
+                    "tickColor": "#FFFFFF",
+                    "tickThickness": 2,
+                    "startAngle": -90,
+                    "endAngle": 90,
+                    "unit": "%",
+                    "bandOutlineAlpha": 0,
+                    "bands": [{
+                        "color": "#FFFFFF ",
+                        "endValue": 100,
+                        "innerRadius": "132%",
+                        "radius": "135%",
+                        "gradientRatio": [0, 0, 0],
+                        "startValue": 0
+                    }]
+                }],
+                "arrows": [{
+                    "color": "#FFFFFF",
+                    "alpha": 1,
+                    "innerRadius": "0",
+                    "nailRadius": 10,
+                    "startWidth": 8,
+                    "radius": "130%"
+                }]
+            });
+            
+            setInterval(randomValueNew, 50);
+            
+            // set random value
+            function randomValueNew() {
+                var value = unUtilizedHrs;
+                var remainingValue = remainingHrs;
+                chartnew.arrows[0].setValue(value);
+                
+                chartnew.axes[0].setTopText(remainingValue + " Hours");
+                // adjust darker band to new value
+                if(typeof chartnew.axes[0].bands[1] !== 'undefined'){
+                chartnew.axes[0].bands[1].setEndValue(value);
+            }
+            }
+            function toHide(){
+                var status =  '{!$CurrentPage.parameters.Status}'; 
+                if(status == '' ||status == 'Re-evaluate' || status == 'New' || status == 'Initiative Submitted' || status == 'Saved'  ){
+                    $('#chartdiv').hide();
+                    $('#chartdivnew').hide();
+                    $('#chartdiv2').hide(); 
+                    
+                }
+            }
+            </script>
+            
+            
+            <!-------- Fonts Awesome ----->
+            <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'font-awesome/css/font-awesome.css')}" />
+            <title>ON DEMAND SERVICES </title>
+        </head>
+        
+        <body>
+            <apex:pageMessages id="showmsg"></apex:pageMessages>
+            
+            <apex:actionFunction name="PassJSONToInitiativeController" action="{!SaveInitativeAndEstimate}" status="statusSaveTrip" rerender="showmsg" >
+                <apex:param name="PassedInitiativeEstimateJSON" assignTo="{!PassedInitiativeEstimateJSON}" value="InitiativeController"/>
+            </apex:actionFunction>
+            
+            <!--Updated by Saurav. Referesh only when there is no Error.-->
+            <apex:actionFunction name="ActiveStatusMethod" action="{!SaveActiveInitiativeStatus}" status="statusSaveTrip" rerender="showmsg" oncomplete="javascript: if({!SaveActiveInitiativeStatusError==false})location.reload();">
+                <apex:param name="PassedActiveStatus" assignTo="{!PassedActiveStatus}" value="ActiveStatusVariable"/>
+            </apex:actionFunction> 
+            <!--Updated by Saurav. Show alert only when there is no Error.-->
+            <apex:actionFunction name="ReSendInitiativeAction" action="{!ReSendInitiativeEmail}" status="statusSaveTrip" reRender="showmsg" onComplete="javascript: if({!ReSendInitiativeEmailError==false}){alert('Initiative email resent successfully');}"/> 
+            <!--Updated by Saurav. Show alert and refresh the page only when there is no Error.-->
+            <apex:actionFunction name="ReCallInitiativeAction" action="{!ReCallInitiativeEmail}" status="statusSaveTrip" reRender="showmsg" onComplete="javascript: if({!ReCallInitiativeEmailError==false}){reloadPageOnReCall();}"/>   
+            
+            
+            
+            <apex:actionFunction name="ApproveRejectAction" action="{!GetTimeSheetIdFromAction}" rerender="SearchResultsPanel, myModal" immediate="true">
+                <apex:param name="CurrentTimesheetId" value="" assignTo="{!CurrenTimesheetId}" />
+            </apex:actionFunction>
+            
+            <!--Updated by Saurav. Reload page when there is no Error else show the error msg and reload.-->
+            <apex:actionFunction name="RejectAction" action="{!RejectInitiative}" reRender="SearchResultsPanel,showmsg" status="statusSaveTrip" oncomplete="javascript: if({!RejectInitiativeError==false}){reloadpage();}else{reloadpageOnPopupClose();}">
+                <apex:param name="timeshtCmnts" value="" assignTo="{!TimesheetComments}" />
+            </apex:actionFunction>
+            <apex:actionFunction name="ApproveAction" action="{!ApproveInitiative}" reRender="SearchResultsPanel,showmsg" status="statusSaveTrip" oncomplete="javascript: if({!ApproveInitiativeError==false}){reloadpage();}else{reloadpageOnPopupClose();}" />
+             <!--Updated by Saurav. Show error if it exist.-->
+            <apex:actionFunction name="CancelAction" action="{!CancelInitiative}" reRender="showmsg"/>
+            <apex:actionFunction name="EscalateAction" action="{!EscalateInitiative}" reRender="SearchResultsPanel,showmsg" status="statusSaveTrip" oncomplete="javascript: if({!EscalateInitiativeError==false}){reloadpage();}else{reloadpageOnPopupClose();}">
+                <apex:param name="escalationComments" value="" assignTo="{!EscalationComments}" />
+            </apex:actionFunction>
+            <div class="shadow-show"></div>
+            <c:ODS_HeaderComponent_Mobile />
+            <apex:actionStatus id="statusSaveTrip" stopText="">
+                <apex:facet name="start">
+                    <div>
+                        <div class="popupBackground" />
+                        <div class="PopupPanel">
+                            <table border="0" width="100%" height="100%">
+                                <tr>
+                                    <td align="center"><b>Please Wait</b></td>
+                                </tr>
+                                <tr>
+                                    <td align="center"><img src="{!$Resource.ODS_Statussign}" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionStatus>
+            
+            
+            <!-- Mobile Code -->
+            <!-- Page Header -->
+            <div class="page-header no-filterhead">
+                
+                <div class="d-flex align-items-center justify-content-between">                    
+                    <a href="ODS_ViewInitiative_Mobile" >
+                        <img src="{!URLFOR($Resource.ods_mobile_assets,'images/backarrow.svg')}" alt="back"  />
+                    </a>
+                    <p>
+                        Initiative
+                    </p>
+                    <a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#prelude_mnu" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <img src="{!URLFOR($Resource.ods_mobile_assets,'images/navdots.svg')}" alt="navdots"  />
+                    </a>                    
+                </div>                
+            </div>
+            <!-- Page Header -->
+            <!-- App Page -->
+            <div class="page-info">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-6 col-sm-6 col-md-6 text-left">
+                            <label class="info-label" id="Account_NameHeader">Account</label>
+                            <p class="info-value" id="Account_Name">
+                                {!PassAccountName}
+                            </p>
+                        </div>
+                        <div class="col-6 col-sm-6 col-md-6 text-right">
+                            <label class="info-label" id="Service_NameHeader">Service</label>
+                            <p class="info-value" id="Service_Name">
+                                {!PassServiceName}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="error-item mt-3" style="display:none;">
+                <div class="container-fluid">
+                    <div class="error-box">
+                        <p id="initiativeAlert">
+                            Client side contact should not be empty
+                        </p>
+                    </div>
+                </div>                
+            </div>
+            <apex:outputPanel rendered="{!inActiveApprover}" style="color: red; text-align: center; margin: 10px 0;">
+                <p><strong>{!currentClientName}</strong> is inactive as an approver in the system. Please select an active approver.</p>
+            </apex:outputPanel>
+            <div class="pglist-wrapper">
+                <div class="container-fluid">
+                    <div class="collapse-content">
+                        <div id="initiativeitem" class="accordion">
+                            <div class="card mb-0">
+                                <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+                                    <a class="card-title" >Initiative
+                                        <i class="fa fa-minus-circle pull-right"></i>
+                                    </a>
+                                </div>
+                                <div id="collapseOne" class="card-body collapse show panel-body" data-parent="#initiativeitem">
+                                    <div class="form-group" >
+                                        <label>Initiative Name<span class="required">*</span></label>
+                                        <input class="form-control" id="initiative_name" name="initiativename" type="text" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>JIRA ID<span class="required">*</span></label>
+                                        <input class="form-control" id="jiraId" name="JIRAID" type="text" value="" />
+                                    </div>
+                                    <div class="form-group panel-body">
+                                        <label>Probable Start Date<span class="required">*</span></label>
+                                        <div class="calendar-input">
+                                            <i class="fa fa-calendar icon"></i>
+                                            <input type="text" name="txt_from" class="input-field tfrom_date" placeholder="From Date" id="date_service" onkeypress="return isNumber(event)" autocomplete = "off" />                                                                 
+                                        </div>
+                                    </div>
+                                    <div class="form-group panel-body">
+                                        <label>Probable End Date<span class="required">*</span></label>
+                                        <div class="calendar-input">
+                                            <i class="fa fa-calendar icon"></i>
+                                            <input type="text" name="txt_to" class="input-field tto_date" placeholder="To Date" id="date_service1" onkeypress="return isNumber(event)" autocomplete = "off"/>                                                                
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Approver<span class="required">*</span></label>
+                                        <apex:selectList styleClass="form-control qq ContactClient"  id="ContactClient" value="{!ClientContact}" size="1"> 
+                                            <apex:selectOptions value="{!ContactAccountServices}"></apex:selectOptions>
+                                        </apex:selectList>
+                                    </div>
+                                    <apex:outputPanel styleClass="InitiativeManage" id="pnlInitiativeType">
+                                        <div class="form-group initiativeBillingTypeClass">
+                                            <label>Initiative Category</label>
+                                            <apex:selectList styleClass="form-control qq initiativeBillingType"  id="InitiativeBillingTypePicklist" size="1" value="{!InitiativeBillingType}"> 
+                                                <apex:selectoptions value="{!getInitiativeBillingType}"/> 
+                                            </apex:selectList>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Initiative Type<span class="required">*</span></label>
+                                            <apex:selectList styleClass="form-control qq initiativeType"  id="InitiativeType" value="{!InitiativeType}" size="1"> 
+                                                <apex:selectOption itemValue="None" itemLabel="--None--"/>
+                                                <apex:selectoptions value="{!getInitiativeType}"/>  
+                                            </apex:selectList>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Reasons for Programming</label>
+                                            <textarea type="text" maxlength="1500" rows="5" id="ProgrammingReason" class="form-control programmingReason width1 txtTask"/>                                
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Trigger For Initiative<span class="required">*</span></label>
+                                            <apex:selectList styleClass="form-control qq initiativeTrig"  id="TrigInitiative" value="{!InitiativeTrigger}" size="1"> 
+                                                <apex:selectOption itemValue="None" itemLabel="--None--"/>
+                                                <apex:selectoptions value="{!getTriggerForInitiative}"/>  
+                                            </apex:selectList>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Solution Architect/Engineer<span></span></label>
+                                            <apex:selectList styleClass="form-control qq solArchitectOrEngineer" value="{!ArchitectOrEngineer}" size="1"> 
+                                                <apex:selectoptions value="{!getArchitectOrEngineer}"/>       
+                                            </apex:selectList>
+                                        </div>
+                                        
+                         <!--Added by Harish --TPM 04-06-21-  --> 
+                        <div class="form-group">    
+                            <label>Technical Project Manager<span ></span></label>
+                           
+                               <apex:selectList styleClass="form-control qq technicalProjectManager" value="{!TechnicalProjectManager}" size="1"> 
+                               <apex:selectoptions value="{!getTechnicalProjectManager}"/>
+                               </apex:selectList>
+                           </div>
+                        
+                                        
+                                        <div class="form-group">
+                                            <label>Tags About Initiative<span class="required">*</span></label>
+                                            <apex:selectList styleClass="form-control qq initiativeTag"  id="TagInitiative" value="{!InitiativeTags}" size="4" multiselect="true">                   
+                                                <apex:selectoptions value="{!getInitiativeTagPicklist}"/>      
+                                            </apex:selectList>
+                                        </div>                                        
+                                        <div class="form-group panel-body">
+                                            <label>Probability Percentage</label>
+                                            <input class="form-control" id="ProbablePercent" name="ProbablePercent" type="text" placeholder="Probable Percentage" maxlength="5" onkeypress="javascript:return validatePercentage(event);"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Offshore Estimate</label>
+                                            <input class="form-control" id="OffshoreEstimate" name="OffshoreEstimate" type="text"  maxlength="6" placeholder="Offshore Estimate"  onkeypress="javascript:return validateoffshore(event);"/>
+                                        </div>
+                                        <div class="form-group panel-body">
+                                            <label>UAT Expected Date</label>
+                                            <input type="text" name="txt_UAT" class="UATfrom_date form-control" placeholder="UAT Expected Date" id="date_service2" onkeypress="return isNumber(event)" autocomplete = "off" />                                                                 
+                                        </div>
+                                        <div class="form-group" id="BucketHoursDiv">
+                                            <label>Is a bucket of hours type?</label>
+                                               <input class="form-control" type="checkbox" id="Bucket_Hours_Type" style="width: 20px !important;height: 20px !important;" />
+                                        </div>
+                                    </apex:outputPanel>
+                                    <div class="form-group">
+                                        <label id="Status_new">Status</label>
+                                        <p id="Status_Value" class="statusvalue"></p>                                        
+                                    </div>
+                                    <div id="Initiative_Description">
+                                        <div class="form-group">                                 
+                                            <div id="brief_description1">
+                                                <div id = "description_content">
+                                                    <label>Brief Description</label>
+                                                    <textarea id="editor1" class="form-control" name="editor1"></textarea>
+                                                    <script type="text/javascript">
+                                                    CKEDITOR.replace( 'editor1' );
+                                                    </script>
+                                                </div>
+                                            </div>     
+                                        </div> 
+                                    </div>
+                                    <div id="ActiveInitiative">
+                                        <input type="button" id="btnOnhold" class="btnsave" value="Mark As On Hold" onclick="return ActiveStatus('On Hold')" />
+                                        <input type="button" id="btnDelivered" class="btnsave" value="Mark As Delivered" onclick="return ActiveStatus('Initiative Delivered')" />
+                                    </div> 
+                                    <div id="OnHold">
+                                        <input type="button" id="btnactivestatus"  class="btnsave" value="Make Active" onclick="return ActiveStatus('Active Initiative')" />
+                                    </div>
+                                </div>
+                                <!--  <div class="card-header collapsed" data-toggle="collapse" data-parent="#initiativeitem" href="#collapseTwo">
+<a class="card-title">
+Brief description and assumption
+</a>
+</div>
+<div id="collapseTwo" class="card-body collapse" data-parent="#initiativeitem">
+<div id="Test">
+<div id="Description_Assumption">
+<div class="row">
+<div class="col-12">
+<div class="form-group">
+<div id="brief_description1">
+<div id = "description_content1">
+<label>Brief Description </label>
+<textarea id="editor3" name="editor3"></textarea>
+<script type="text/javascript">
+CKEDITOR.replace( 'editor3' );
+</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-12">
+<div class="form-group">
+<div id="assumption">
+<div id ="assumption_content">
+<label>Assumption </label>
+<textarea id="editor2" name="editor2"></textarea>
+<script type="text/javascript">
+CKEDITOR.replace( 'editor2' );
+</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div> -->
+                                
+                                <div class="card-header collapsed" data-toggle="collapse" data-parent="#initiativeitem" href="#collapseSeven">
+                                    <a class="card-title" >Business Impact
+                                        <i class="fa fa-plus-circle pull-right"></i>
+                                    </a>
+                                </div>
+                                <div id="collapseSeven" class="card-body collapse" data-parent="#initiativeitem">
+                                    <div class="form-group">
+                                        <label>Business Challenge
+                                            <img src="/s.gif" alt="Help" class="helpIcon" title="{!$ObjectType.Initiatives__c.fields.Business_Challenge__c.inlineHelpText}"/>
+                                        </label>
+                                        <div class="textAreaBusinessImpact">
+                                            <textarea type="text" maxlength="500" rows="5" id="BusinessChallenge" class="form-control businessChallenge width1 txtTask"/> 
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Persona’s Involved
+                                            <img src="/s.gif" alt="Help" class="helpIcon" title="{!$ObjectType.Initiatives__c.Fields.Persona_s_Involved__c.InlineHelpText}"/>
+                                        </label>
+                                        <div class="textAreaBusinessImpact">
+                                            <textarea type="text" maxlength="500" rows="5" id="PersonasInvolved" class="form-control personasInvolved width1 txtTask"/>                                
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>                         
+                                            Technology Details
+                                            <img src="/s.gif" alt="Help" class="helpIcon" title="{!$ObjectType.Initiatives__c.Fields.Technology_Details__c.InlineHelpText}"/>
+                                        </label>
+                                        <div class="textAreaBusinessImpact">
+                                            <textarea type="text" maxlength="500" rows="5" id="TechnologyDetails" class="form-control technologyDetails width1 txtTask"/>                                
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Outcome Of Our Solution
+                                            <img src="/s.gif" alt="Help" class="helpIcon" title="{!$ObjectType.Initiatives__c.Fields.Outcome_of_our_solution__c.InlineHelpText}"/>
+                                        </label>
+                                        <div class="textAreaBusinessImpact">
+                                            <textarea type="text" maxlength="500" rows="5" id="OutcomeOfOurSolution" class="form-control outcomeOfOurSolution width1 txtTask"/>                                
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                                
+                                <div class="card-header collapsed" data-toggle="collapse" data-parent="#initiativeitem" href="#collapseThree">
+                                    <a class="card-title" >Estimate
+                                        <i class="fa fa-plus-circle pull-right"></i>
+                                    </a>
+                                </div>
+                                <div id="collapseThree" class="card-body collapse" data-parent="#initiativeitem">
+                                    <div class="mb-3 clearfix">
+                                        <div class="float-right">
+                                            <p class="timelabel">
+                                                Total Hours:&nbsp;<span class="timevalue"><output id="tdColTotal"/></span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="" >
+                                        <div class="panel panel-default">  
+                                            
+                                            <div class="panel-body EstimatePanel" >                                        
+                                                <div class="estimate-tblsection">                   
+                                                    <div class="timeline-scroll">
+                                                        <!--   <table class="timeline timesheet " id="Tbltimesheet" cellpadding="0" cellspacing="0" width="100%">
+
+<tbody id="addtionalTable" class="timesheet tbladdestimate"> </tbody>
+<tbody> 
+<tr class="total-bg"> 
+<td  class="action-section" style="text-align:right" id="addRowTd">  
+<a href="#" id="add-row1"  class="add-row add-item">
+<i  class="fa fa-plus" aria-hidden="true"></i>
+</a>  
+
+<!--  <span style="text-align: right"> TOTAL </span> -->
+                                                        <!--  </td>
+<td  colspan="3" id="tdColTotal1" ></td>                                                                      
+</tr> 
+</tbody>
+</table>     -->     
+                                                        
+                                                        <table class="timeline timesheet" id="Tbltimesheet" cellpadding="0" cellspacing="0" width="100%">
+                                                            <tr RowNo="0">                                 
+                                                                
+                                                            </tr>
+                                                            
+                                                            <tbody id="addtionalTable" class="timesheet"> </tbody>
+                                                            <tr class="total-bg">
+                                                                <td  class="action-section" colspan="3" style="text-align:Right" id="addRowTd">
+                                                                    <!--<a href="#" id="add-row1" class="add-row"><i class="fa fa-plus" aria-hidden="true"></i> Add Row</a>   -->
+                                                                    <a href="#" id="add-row1"  class="add-row add-item">
+                                                                        <i  class="fa fa-plus" aria-hidden="true"></i>
+                                                                    </a>
+                                                                    <!--  <span style="text-align: right"> TOTAL </span> -->
+                                                                </td>
+                                                                <td  colspan="3" id="tdColTotal" ></td>                                                                      
+                                                            </tr>
+                                                            <div class="col-md-6 col-sm-6 col-xs-12"> </div>                         
+                                                        </table>
+                                                        <textarea id="txtComments" style="display:none" class="edit-timesheet-com" placeholder="Comments"></textarea>
+                                                    </div>
+                                                </div>                          
+                                            </div>    
+                                        </div>
+                                    </div>
+                                </div> 
+                                
+                                <div class="card-header collapsed" data-toggle="collapse" data-parent="#initiativeitem" href="#collapseFive">
+                                    <a class="card-title" >Progress
+                                        <i class="fa fa-plus-circle pull-right"></i>
+                                    </a>
+                                </div>
+                                <div id="collapseFive" class="card-body collapse" data-parent="#initiativeitem">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label class="mb-3">Consumed Hours</label>
+                                                <div class="bluebg">
+                                                    <div id="chartdiv"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label class="mb-3">Remaining Hours</label>
+                                                <div class="blackbg">
+                                                    <div id="chartdivnew"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-header collapsed" data-toggle="collapse" data-parent="#initiativeitem" href="#collapseSix">
+                                    <a class="card-title" >Escalation Details
+                                        <i class="fa fa-plus-circle pull-right"></i>
+                                    </a>
+                                </div>
+                                <div id="collapseSix" class="card-body collapse" data-parent="#initiativeitem">
+                                    <apex:outputText rendered="{!(escalationList.size ==0 || escalationList ==null ) }"><strong>None</strong></apex:outputText>
+                                    <div class="pglist-view">
+                                        <apex:repeat rendered="{!(escalationList.size!=0 && escalationList !='' && escalationList !=null ) }" value="{!escalationList}" var="string" id="theRepeat1">
+                                            <div class="pglist-item">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="pglist-content">
+                                                            <p class="pglist-id">
+                                                                Escalated Date:
+                                                                <span><apex:outputText value="{0,date,MM/dd/yy}"  style="pglist-id" escape="false">
+                                                                    <apex:param value="{!string.EscalationDateTime__c}"/>
+                                                                    </apex:outputText>
+                                                                </span>
+                                                            </p>
+                                                            <p class="pglist-title">
+                                                                Escalation Content:
+                                                                <span><apex:outputText value="{!string.EscalationDetails__c}"  style="pglist-id" /></span>
+                                                            </p>
+                                                            <p class="pglist-status">
+                                                                Email Recipients: 
+                                                                <span><apex:outputText value="{!string.InitiativeEscalationRecipients__c}"  style="pglist-id" /></span>
+                                                                
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </apex:repeat>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+                <div class="page-footer">
+                    <div class="time-submit">
+                        <input type="button" id="btnSave" class="btnsave" value="Save" onclick="return FetchInitiativeValues('Saved')" />
+                        <input type="button" id="btnSavePostSubmit" class="btnsave save-submit" value="Save" onclick="return FetchInitiativeValues('btnSavePostSubmit')"  />
+                        <input type="button" id="btnSubmit" class="btnsave" value="Submit" onclick="return FetchInitiativeValues('Submitted')" />
+                        <input type="button" id="btnReSend" class="btnsave" value="Re-Send" onclick="return ReSendInitiativeAction();" />
+                        <input type="button" id="btnRecall" class="btndecline" value="Re-Call" onclick="return ReCallInitiativeAction();" />
+                        <input type="hidden" id="hdnAction" value="" />
+                        <input type="button" id="btnApprove" class="btnsave save-submit" value="Approve Initiative" onclick="ClearTimeSheetComments('Approve')" data-toggle="modal" data-target="#myModal" />
+                        <input type="button" id="btnReject" class="btndecline" value="Re-evaluate Estimates" onclick="ClearTimeSheetComments('Reject')" data-toggle="modal" data-target="#myModal" />
+                        <input type="button" id="btnEscalate" class="btnsave" value="Escalate" onclick="ClearEscalationDetails();" data-toggle="modal" data-target="#escalationMyModal" />
+                        <input type="button" id="btnCancelInit" class="btndecline" value="Cancel Initiative" style="background: #ee2c2c;" onclick="CancelAction();"/>                            
+                        <div id="hide">
+                            <!-- <apex:commandLink action="{!exportAsExcel}" immediate="True" reRender="redirectToTimeSheet" /> 
+<input type="button" id="exportasexcel" value="Export TO Excel" class="btnsave"   /> -->
+                            <!-- <a href="#" class="download" onClick="exportAsExcel();return false;" ><i class="fa fa-download" aria-hidden="true"></i></a>-->
+                            <!-- <apex:commandButton id="exportasexcel" value="Export TO Excel" styleclass="btnsave" action="{!exportAsExcel}" immediate="True" reRender="redirectToTimeSheet" />  -->
+                        </div>
+                        <apex:commandLink action="{!redirectToInitiative}" reRender="showmsg">
+                            <input type="button" id="btnBack" class="btncancel" value="Back" />
+                        </apex:commandLink>
+                    </div>
+                </div>
+                <!-- Approve/Reject Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered">                            
+                        <div class="modal-content formmodal">
+                            <!-- Modal Header -->
+                            <div class="modal-header gradient3">
+                                <h4 class="modal-title">Approve</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div> 
+                            <!-- Modal Body -->
+                            <div class="modal-body">
+                                <apex:inputTextarea html-placeholder="Comments" id="Comments" rows="5" styleclass="form-control Comments" value="{!TimesheetComments}" />                                    
+                            </div>
+                            <!-- Modal Footer -->
+                            <div class="modal-footer"> 
+                                <input type="button" id="btnApprove" class="popup-add btnsave btnApprove" value="Approve Initiative" onclick="return fnUpdateStatus('Approve')" />
+                                <input type="button" id="btnReject" class="popup-cancel btndecline btnReject" value="Re-evaluate Estimates" onclick="return fnUpdateStatus('Reject')" />
+                                <button type="button" class="btncancel" data-dismiss="modal">Close</button>
+                            </div>                                 
+                        </div>
+                    </div>
+                </div>
+                <!-- Approve/Reject Modal -->
+                <!-- Escalate Modal -->
+                <div class="modal fade" id="escalationMyModal" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered">                            
+                        <div class="modal-content formmodal">
+                            <!-- Modal Header -->
+                            <div class="modal-header gradient3">
+                                <h4 class="modal-title">Escalation Details</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <!-- Modal Body -->
+                            <div class="modal-body">
+                                <apex:inputTextarea html-placeholder="Escalation Comments" rows="5" id="escalationComments" styleclass="form-control escalationComments" value="{!EscalationComments}" />
+                            </div>
+                            <!-- Modal Footer -->
+                            <div class="modal-footer"> 
+                                <input type="button" id="btnEscalationMail" class="popup-add btnsave btnApprove" value="Escalate" onclick="return fnSendEscalationEmail();" />
+                                <button type="button" class="btncancel" data-dismiss="modal">Close</button>
+                            </div>                                
+                        </div>
+                    </div>
+                </div>
+                <!-- Escalate Modal -->
+            </div>
+            <script type="text/javascript">
+            var selectIds = $('#collapseOne,#collapseThree,#collapseFive,#collapseSix,#collapseSeven'); 
+            $(function ($) {
+                selectIds.on('show.bs.collapse hidden.bs.collapse', function () {
+                    $(this).prev().find('.fa').toggleClass('fa-minus-circle fa-plus-circle');
+                })
+            });
+            </script>
+            <!-- App Page -->
+            <!-- Mobile Code -->
+            
+            
+            <div class="clr"></div>
+            
+            <div class="mid-bg">
+                <div class="sub-warp">
+                    <div class="panel panel-default">          
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4">
+                            <h3 class="panel-title">INITIATIVE</h3>
+                            <span style="padding-left:457px">    <label class="panel-title" id="Account_NameHeader1">Account:</label>  </span>
+                            <label class="panel-title" id="Account_Name1">{!PassAccountName}</label>
+                            <span style="padding-left:20px">      <label class="panel-title" id="Service_NameHeader1">Service:</label>  </span>
+                            <label class="panel-title" id="Service_Name1">{!PassServiceName}</label>
+                            
+                            <h3 id= "initiativeAlert"> CLIENT SIDE CONTACT SHOULD NOT BE EMPTY </h3>   
+                            <span class="pull-right clickable" style="margin-top: 0.2px;" ><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                        </div>   
+                        <div class="panel-body">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-horizontal"> 
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Initiative Name<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span>
+                                        </label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <input class="form-control" id="initiative_name" name="initiativename" type="text" value="" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">JIRA ID<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span>
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input class="form-control" id="jiraId" name="JIRAID" type="text" value="" />
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Probable Start Date<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">                                                   
+                                            <input type="text" name="txt_from" class="tfrom_date" placeholder="From Date" id="date_service" onkeypress="return isNumber(event)" autocomplete = "off" />                                                                 
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Probable End Date<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">                     
+                                            <input type="text" name="txt_to" class="tto_date" placeholder="To Date" id="date_service1" onkeypress="return isNumber(event)" autocomplete = "off"/>                                                                
+                                        </div> 
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Approver<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:selectList styleClass="form-control qq ContactClient"  id="ContactClient1" value="{!ClientContact}" size="1"> 
+                                                <apex:selectOptions value="{!ContactAccountServices}"></apex:selectOptions>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                    <apex:outputPanel styleClass="InitiativeManage" id="pnlInitiativeType1">
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Initiative Type<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control qq initiativeType"  id="InitiativeType1" value="{!InitiativeType}" size="1"> 
+                                                    <apex:selectOption itemValue="None" itemLabel="--None--"/>
+                                                    <apex:selectOption itemValue="Declarative" itemLabel="Declarative"/>
+                                                    <apex:selectOption itemValue="Programming" itemLabel="Programming"/>  
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Reasons for Programming</label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="1500" rows="5" id="ProgrammingReason" class="form-control programmingReason width1 txtTask"/>                                
+                                            </div>
+                                        </div>                        
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Trigger For Initiative<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control qq initiativeTrig"  id="TrigInitiative1" value="{!InitiativeTrigger}" size="1"> 
+                                                    <apex:selectOption itemValue="None" itemLabel="--None--"/>
+                                                    <apex:selectOption itemValue="Customer" itemLabel="Customer"/>
+                                                    <apex:selectOption itemValue="CSM" itemLabel="CSM"/> 
+                                                    <apex:selectOption itemValue="DemandBlue Labs" itemLabel="DemandBlue Labs"/>  
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Tags About Initiative<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control qq initiativeTag"  id="TagInitiative1" value="{!InitiativeTags}" size="4" multiselect="true">                   
+                                                    <apex:selectoptions value="{!getInitiativeTagPicklist}"/>      
+                                                </apex:selectList>                               
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Probability Percentage</label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input class="width3" id="ProbablePercent1" name="ProbablePercent" type="text" placeholder="Probable Percentage" maxlength="5" onkeypress="javascript:return validatePercentage(event);"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Offshore Estimate
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input class="form-control" id="OffshoreEstimate" name="OffshoreEstimate" type="text"  maxlength="6" placeholder="Offshore Estimate" style="width: 200px" onkeypress="javascript:return validateoffshore(event);"/>
+                                            </div>
+                                        </div>
+                                        
+                                    </apex:outputPanel>
+                                    <div class="form-horizontal">
+                                        
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label " id="Status_new">Status:</label>
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label " id="Status_root" style="left: -150px;">Status</label>
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label " id="Status_Value" style="text-align: left !important;" ></label>  
+                                            
+                                        </div>
+                                        
+                                        
+                                    </div>    
+                                    <div id = "ActiveInitiative" style="position: absolute;left: 226px;display: block;">
+                                        <input type="button" id="btnOnhold" class="save-submit" value="Mark As On Hold" onclick="return ActiveStatus('On Hold')" />
+                                        <input type="button" id="btnDelivered" class="save-submit" value="Mark As Delivered" onclick="return ActiveStatus('Initiative Delivered')" />
+                                    </div> 
+                                    <div id = "OnHold" style = "position: absolute;left: 226px;display: block;">
+                                        <input type="button" id="btnactivestatus"  class="save-submit" value="Make Active" onclick="return ActiveStatus('Active Initiative')" />
+                                    </div>   
+                                    
+                                    
+                                    
+                                </div>
+                            </div>
+                            <div id= "Initiative_Description">
+                                <div class="col-md-6 col-sm-6 col-xs-12">                                 
+                                    <div id="brief_description1">
+                                        <p id = "description_content">
+                                            <b>               Brief Description: </b><br />
+                                            <textarea id="editor1" name="editor1"></textarea>
+                                            <script type="text/javascript">
+                                            CKEDITOR.replace( 'editor1' );
+                                            </script>
+                                        </p>
+                                    </div>     
+                                </div>      
+                            </div>
+                            
+                            
+                        </div>     
+                        
+                    </div>
+                    <div id= "Test">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="color: white;background-color: #3399cc;">
+                                <h3 class="panel-title">BRIEF DESCRIPTION AND ASSUMPTION</h3>                            
+                                <span class="pull-right clickable" style="margin-top: 0.2px;" ><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                            </div>
+                            
+                            <div class="panel-body">
+                                <div id = "Description_Assumption1">
+                                    <div class="col-md-6">
+                                        <div id="brief_description1">
+                                            <p id = "description_content1">
+                                                <b>Brief Description: </b><br />
+                                                <textarea id="editor3" name="editor3"></textarea>
+                                                <script type="text/javascript">
+                                                CKEDITOR.replace( 'editor3' );
+                                                </script>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div id="assumption">
+                                            <p id = "assumption_content">                               
+                                                <b>Assumption: </b><br />
+                                                <textarea id="editor2" name="editor2"></textarea>
+                                                <script type="text/javascript">
+                                                CKEDITOR.replace( 'editor2' );
+                                                </script>
+                                            </p>
+                                        </div>            
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="" >
+                        <div class="panel panel-default">   
+                            <div class="panel-heading" style="color: white;background-color: #4ECAF4;">
+                                <h3 class="panel-title">ESTIMATE</h3>
+                                <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                            </div>                  
+                            <div class="panel-body EstimatePanel" >                                        
+                                <div class="mid-white">                   
+                                    <div class="timeline-scroll">
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <table class="timeline timesheet" id="Tbltimesheet" cellpadding="0" cellspacing="0" width="190%">
+                                                <tr RowNo="0">                                 
+                                                    <th Class="Rescol"><strong>Phase <span style="color:#ff9797; font-size:15px;" > </span> </strong>
+                                                    </th>
+                                                    <th ><strong>Task/Components <span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></strong>
+                                                    </th>
+                                                    <th ><strong>Assumptions<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory"></span></strong>
+                                                    </th>
+                                                    
+                                                    <th  Class="Rescol"><strong>Hours <span style="color:#ff9797; font-size:15px;" title="Mandatory">*</span> </strong>
+                                                    </th>
+                                                    
+                                                    <th  class="actiontd"><strong>ACTION</strong>
+                                                    </th>
+                                                </tr>
+                                                
+                                                <tbody id="addtionalTable" class="timesheet"> </tbody>
+                                                <tr class="total-bg">
+                                                    <td colspan="3" style="text-align:left" id="addRowTd"> 
+                                                        <a href="#" id="add-row1" class="add-row"><i class="fa fa-plus" aria-hidden="true"></i> Add Row</a>  
+                                                        
+                                                        <span style="text-align: right"> TOTAL </span>
+                                                    </td> 
+                                                    <td  colspan="3" id="tdColTotal" ></td>                                                                      
+                                                </tr> 
+                                                <div class="col-md-6 col-sm-6 col-xs-12"> </div>                         
+                                            </table>
+                                        </div>                            
+                                        <textarea id="txtComments" style="display:none" class="edit-timesheet-com" placeholder="Comments"></textarea>
+                                    </div>
+                                </div>                          
+                            </div>    
+                        </div>
+                    </div>
+                    
+                    
+                    <div id="chartdiv2" class="panel panel-default">          
+                        <div  class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4;">
+                            <h3 class="panel-title">PROGRESS</h3>
+                            <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                        </div>
+                        
+                        
+                        <div class="panel-body"> 
+                            <div id="left">
+                                <h4 class="panel-title">CONSUMED HOURS</h4>
+                                <div id="chartdiv"></div> 
+                            </div>
+                            <div id="right">
+                                <h4 class="panel-title">REMAINING HOURS</h4>
+                                <div id="chartdivnew"></div>
+                            </div>
+                        </div>
+                    </div> 
+                    
+                    <div id="escalationPanel" class="panel panel-default"> 
+                        <div class="panel-heading" style="color: white;background-color: #4ECAF4;">
+                            <h3 class="panel-title"> ESCALATION DETAILS</h3>
+                            <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                        </div>            
+                        <div class="panel-body">
+                            <apex:outputText rendered="{!(escalationList.size ==0 || escalationList ==null ) }"><strong>None</strong></apex:outputText>
+                            <apex:dataTable StyleClass="timeline timesheet" id="pgTable1" Style="cellpadding:0; cellspacing:0; width:100%;color:#4ECAF4;"  value="{!escalationList}" var="escalations"
+                                            rendered="{!(escalationList.size!=0 && escalationList !='' && escalationList !=null ) }" html-cid="accountsTable">              
+                                
+                                
+                                <apex:column headerValue="Escalated Date" styleClass="icon-table" style="width:20%;">
+                                    <apex:outputText value="{0,date,MM/dd/yyyy}">
+                                        <apex:param value="{!escalations.EscalationDateTime__c}" />
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column headerValue="Escalation Content" value="{!escalations.EscalationDetails__c} " styleClass="icon-table" style="width:40%;"/>
+                                <apex:column headerValue="Email Recipients" value="{!escalations.InitiativeEscalationRecipients__c}" styleClass="icon-table" style="width:40%;"/>  
+                            </apex:dataTable>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    
+                    <div class="time-submit">
+                        <div class="pull-right">                          
+                            <input type="button" id="btnSave" class="save-submit" value="Save" onclick="return FetchInitiativeValues('Saved')"  />
+                            <input type="button" id="btnSavePostSubmit" class="save-submit" value="Save" onclick="return FetchInitiativeValues('btnSavePostSubmit')"  />
+                            <input type="button" id="btnSubmit" class="save-submit" value="Submit" onclick="return FetchInitiativeValues('Submitted')" />
+                            <input type="button" id="btnReSend" class="save-submit" value="Re-Send" onclick="return ReSendInitiativeAction();" />
+                            <input type="button" id="btnRecall" class="save-submit" value="Re-Call" onclick="return ReCallInitiativeAction();"  style="background: #ee2c2c;" />
+                            <input type="hidden" id="hdnAction" value="" />
+                            <input type="button" id="btnApprove" class="save-submit" value="Approve Initiative" onclick="ClearTimeSheetComments('Approve')" data-toggle="modal" data-target="#myModal" />
+                            <input type="button" id="btnReject" class="save-submit" value="Re-evaluate Estimates" onclick="ClearTimeSheetComments('Reject')" data-toggle="modal" data-target="#myModal" style="background: #ee2c2c;" />
+                            <input type="button" id="btnEscalate" class="save-submit" value="Escalate" onclick="ClearEscalationDetails();" data-toggle="modal" data-target="#escalationMyModal" />
+                            <input type="button" id="btnCancelInit" class="save-submit" value="Cancel Initiative" style="background: #ee2c2c;" onclick="CancelAction();"/>
+                            <!--<input type="button" id="btnCancel" class="cancel" value="Cancel" onclick="CancelTimesheet();" />-->
+                        </div>                             
+                        <div id="hide"  class="pull-right">
+                            <apex:commandButton id="exportasexcel1" value="Export TO Excel" styleclass="save-submit" action="{!exportAsExcel}" immediate="True" reRender="redirectToTimeSheet,showmsg" /> 
+                        </div>
+                        <div class="pull-right">
+                            <!--Updated by Saurav. Show error if it exist.-->
+                            <apex:commandLink action="{!redirectToInitiative}" reRender="showmsg">
+                                <input type="button" id="btnBack" class="cancel" value="Back" style="margin-right: 10px;" />
+                            </apex:commandLink>
+                        </div>                  
+                    </div>
+                    
+                </div>  
+                
+            </div>
+            
+            
+            
+            <!-- <c:ODS_FooterComponent /> -->
+            
+            
+            
+        </body>
+        
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">                
+                <div class="modal-content">
+                    <h1><span id="lblHeading">Approve </span> </h1>
+                    <apex:inputTextarea html-placeholder="Comments" id="Comments1" styleclass="Comments" value="{!TimesheetComments}" />
+                    <div class="clr"></div>
+                    <div class="popup-btn">
+                        <input type="button" id="btnApprove" class="popup-add btnApprove" value="Approve Initiative" onclick="return fnUpdateStatus('Approve')" />
+                        <input type="button" id="btnReject" class="popup-cancel btnReject" value="Re-evaluate Estimates" style="background:#ee2c2c;" onclick="return fnUpdateStatus('Reject')" />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal fade" id="escalationMyModal" role="dialog">
+            <div class="modal-dialog">                
+                <div class="modal-content">
+                    <h1><span id="lblHeading">Escalation Details </span> </h1>
+                    <apex:inputTextarea html-placeholder="Escalation Comments" id="escalationComments1" styleclass="escalationComments" value="{!EscalationComments}" />
+                    <div class="clr"></div>
+                    <div class="popup-btn">
+                        <input type="button" id="btnEscalationMail" class="popup-add btnApprove" value="Escalate" onclick="return fnSendEscalationEmail();" />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </apex:form>
+    <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/jquery-1.4.4.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/jquery-ui.js')}"/>
+    <script type="text/javascript">//<![CDATA[
+    j$ = jQuery.noConflict();
+    j$(document).ready(function()  
+                       {
+                           j$( "#date_service, #date_service1, #date_service2").datepicker(
+                               {
+                                   dateFormat : 'mm/dd/yy',
+                                   changeMonth : true,
+                                   changeYear : true,
+                                   
+                               });
+                           
+                           j$("#date_service, #date_service1, #date_service2").bind('paste',function(e){
+                               e.preventDefault();  //disable paste in datePicker
+                           });
+                       });
+    </script>
+</apex:page>

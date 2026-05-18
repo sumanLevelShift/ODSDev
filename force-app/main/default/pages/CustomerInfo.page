@@ -1,0 +1,883 @@
+<apex:page controller="ODS_CustomerInfoController" showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE; IE=10; IE=11; " />
+        <apex:includeScript value="https://code.jquery.com/jquery-latest.min.js" />
+        <!-------- Bootstrap ----->
+        <script src="{!URLFOR($Resource.ODS_Assets,'js/amcharts.js')}"></script>
+        <script src="{!URLFOR($Resource.ODS_Assets,'js/serial.js')}"></script>
+        <script src="{!URLFOR($Resource.ODS_Assets,'js/light.js')}">
+        <script src="https://www.amcharts.com/lib/3/gauge.js"></script>
+        <script src="{!URLFOR($Resource.ODS_Assets,'guagejs/gauge.js')}"></script>
+        <link rel="stylesheet" href="{!URLFOR($Resource.ODS_Assets,'css/export.css')}" type="text/css" media="all" />
+            <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/bootstrap.css')}" />
+                <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/bootstrap.js')}" />
+                    <apex:stylesheet value="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
+                        <apex:includeScript value="https://www.google.com/recaptcha/api.js" />
+                            <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/style.css')}" />
+                                <apex:stylesheet value="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"  />
+                                    <apex:includeScript value="https://code.jquery.com/jquery-1.9.1.js" />
+                                        <apex:includeScript value="https://code.jquery.com/ui/1.10.3/jquery-ui.js" />
+                                            <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'ckeditor/ckeditor.js')}"/>
+                                                <link href="font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
+                                                    <link href="{!URLFOR($Resource.ODS_Assets,'css/style_dev.css')}" rel="stylesheet" type="text/css" />
+                                                        
+                                                        <style>
+                                                        .mid-bg {
+                                                            background: #FFFFFF;
+                                                            width: 100%;
+                                                            padding: 30px 2% 15px 2%;
+                                                            float: left;
+                                                        }
+        .panel-heading span {
+            margin-top: -10px;
+            font-size: 15px;
+        }
+        .clickable {
+            cursor: pointer;
+        }
+        .width1.txtTask{
+            width: 393px; 
+            margin: 0px; 
+            height: 51px;
+        }
+        .width2.txtTasks{
+            width: 1024px; 
+            margin: 0px; 
+            height: 200px;
+        }
+        .width3.txtTasks{
+            width: 1024px; 
+            margin: 0px; 
+            height: 100px;
+        }
+        .custPopup{
+            border: solid 2px skyblue;
+            background-color: white;
+            font-family: sans-serif;
+            left: 20%;
+            top: 12.5%;
+            right: 20%;
+            bottom: 12.5%;
+            margin-top: -25px;
+            z-index: 999;
+            overflow-y:scroll;
+            position: fixed;
+            
+        }
+        .BackGPopup{
+            /* Background color */
+            background-color:black;
+            opacity: 0.20;
+            filter: alpha(opacity = 20);
+            
+            /* Dimensions */
+            width: 100%;
+            height: 500%;
+            top: 0;
+            left: 0;
+            z-index: 998;
+            position: absolute;
+            font-family: sans-serif;
+            
+        }
+        .closeButton {
+            float: right;
+            position: relative;
+            
+        }
+        .closeIcon {
+            width: 20px;
+            height: 20px;
+            margin: 3px;
+        }        
+        #popupText{
+        margin: 20px 15px 10px 20px;
+        }
+        #Has_Communities{
+        width: 20px !important;
+        height: 20px !important;
+        
+        }
+        #Future_Timesheet{
+        width: 20px !important;
+        height: 20px !important;
+        
+        }
+        
+         .customPopup{
+            background-color: white;
+           height: 100%;
+        }
+       .test:after {
+  content: '\2807';
+  font-size: 10px;
+  }
+  
+        
+        </style>
+        <script>
+            $(document).ready(function(){
+            $("#customerInfo").addClass("active");
+            var AccountID = $(".ddlstAccount").val();
+            var ServiceID = $(".ddlstService").val();
+            
+            if(AccountID === 'All')
+            {
+                $("#Org_Id").val("");
+                $("#Salesforce_AE_Name").val("");
+                $(".Customer_Portal_Access").val("");
+                $(".Customer_Engagement_Score").val("");
+                $(".Status_Report_Frequency").val("");
+                $(".Customer_Portal_Access_Status_Date").val("");
+                $(".Weekly_Monthly_Meeting").val("");
+                $(".Setup_Weekly_Monthly_Meeting_Date").val("");
+                $(".Environment_Access").val("");
+                $(".Environment_Access_Status_Date").val("");
+                $(".Onboarding_Document").val("");
+                $(".Onboarding_Document_Status_Date").val("");
+                $(".LRC").val("");
+                $(".LRC_Status_Date").val("");
+                $("#Instance_Name").val(""); 
+                $("#Marketing_Cloud_Instance_Name").val("");
+                $("#Salesforce_Products").val(""); 
+                $("#Business_Overview").val("");
+                $("#Customers").val("");
+                $("#Key_Competitors").val("");
+                $("#Collaborators_Partners").val("");
+                $("#Compliance_Requirements").val("");
+                $("#Current_Painpoints").val("");
+                $("#Product_Backlog").val("");
+                $("#Products_Services_Offered").val("");
+                $("#Salesforce_Roadmap").val("");
+                $("#Has_Communities").val("");
+                $("#Future_Timesheet").val("");
+                $("#Appexchange_Apps").val("");
+                $("#Customer_Service").val("");
+                $("#CPQ_Product").val("");
+                $("#Marketing").val("");
+                $("#Middleware").val("");
+                $("#ERP").val("");
+                $("#Document_Generation").val("");
+                $("#External_Storage").val("");
+                $("#Digital_Signature").val("");
+                $("#Analytics").val("");
+                $("#Backup").val("");
+                $("#Project_Management").val("");
+                $("#Development_Tools").val("");
+                document.getElementById('Account_Name').innerHTML = 'All'; 
+                document.getElementById('Service_Name').innerHTML = 'All'; 
+                document.getElementById("btnCancel").disabled = true;
+                document.getElementById("btnSave").disabled = true;
+            }
+            else {
+                ApplySearch();
+            }
+        });
+        function ApplySearch(){
+            var AccountID = $(".ddlstAccount").val();
+            var ServiceID = $(".ddlstService").val();
+            
+            $("#Org_Id").val("");
+            $("#Salesforce_AE_Name").val("");
+            $(".Customer_Portal_Access").val("");
+            $(".Customer_Engagement_Score").val("");
+            $(".Status_Report_Frequency").val("");
+            $(".Customer_Portal_Access_Status_Date").val("");
+            $(".Weekly_Monthly_Meeting").val("");
+            $(".Setup_Weekly_Monthly_Meeting_Date").val("");
+            $(".Environment_Access").val("");
+            $(".Environment_Access_Status_Date").val("");
+            $(".Onboarding_Document").val("");
+            $(".Onboarding_Document_Status_Date").val("");
+            $(".LRC").val("");
+            $(".LRC_Status_Date").val("");
+            $("#Instance_Name").val("");
+            $("#Marketing_Cloud_Instance_Name").val("");
+            $("#Has_Communities").val("");
+            $("#Future_Timesheet").val("");
+            $("#Salesforce_Products").val("");
+            $("#Business_Overview").val("");
+            $("#Customers").val("");
+            $("#Key_Competitors").val("");
+            $("#Collaborators_Partners").val("");
+            $("#Compliance_Requirements").val("");
+            $("#Current_Painpoints").val("");
+            $("#Product_Backlog").val("");
+            $("#Products_Services_Offered").val("");
+            $("#Salesforce_Roadmap").val("");
+            
+            $("#Appexchange_Apps").val("");
+            $("#Customer_Service").val("");
+            $("#CPQ_Product").val("");
+            $("#Marketing").val("");
+            $("#Middleware").val("");
+            $("#ERP").val("");
+            $("#Document_Generation").val("");
+            $("#External_Storage").val("");
+            $("#Digital_Signature").val("");
+            $("#Analytics").val("");
+            $("#Backup").val("");
+            $("#Project_Management").val("");
+            $("#Development_Tools").val("");
+            if(AccountID === 'All')
+            {
+                document.getElementById('Account_Name').innerHTML = 'All'; 
+                document.getElementById('Service_Name').innerHTML = 'All'; 
+                document.getElementById("btnCancel").disabled = true;
+                document.getElementById("btnSave").disabled = true;
+            }
+            else {
+                ApplySearchAction(AccountID,ServiceID);
+            }   
+        }
+        
+        function loadAfterSave(AccountID,ServiceID)
+        {
+            ApplySearchAction(AccountID,ServiceID);
+        }
+        function Save()
+        {
+            var DatatoSave = {};
+            var AccountToSaveData = $(".ddlstAccount").val();
+            //   var AccountID = $(".ddlstAccount").val();
+            var Org_Id = $("#Org_Id").val();
+            var Salesforce_AE_Name = $("#Salesforce_AE_Name").val();
+            var Customer_Portal_Access = $(".Customer_Portal_Access").val();
+            var Customer_Engagement_Score = $(".Customer_Engagement_Score").val();
+            var Status_Report_Frequency = $(".Status_Report_Frequency").val();
+            var Customer_Portal_Access_Status_Date = $(".Customer_Portal_Access_Status_Date").val();
+            var Weekly_Monthly_Meeting = $(".Weekly_Monthly_Meeting").val();
+            var Setup_Weekly_Monthly_Meeting_Date = $(".Setup_Weekly_Monthly_Meeting_Date").val();
+            var Environment_Access = $(".Environment_Access").val();
+            var Environment_Access_Status_Date = $(".Environment_Access_Status_Date").val();
+            var Onboarding_Document = $(".Onboarding_Document").val();
+            var Onboarding_Document_Status_Date = $(".Onboarding_Document_Status_Date").val();
+            var LRC = $(".LRC").val();
+            var LRC_Status_Date = $(".LRC_Status_Date").val();
+            var Instance_Name = $("#Instance_Name").val();
+            var Marketing_Cloud_Instance_Name = $("#Marketing_Cloud_Instance_Name").val();
+            var Has_Communities = $("#Has_Communities").prop('checked');
+            var Future_Timesheet = $("#Future_Timesheet").prop('checked');
+            var Salesforce_Products = $("#Salesforce_Products").val();
+            var Business_Overview = $("#Business_Overview").val();
+            var Customers = $("#Customers").val();
+            var Key_Competitors = $("#Key_Competitors").val();
+            var Collaborators_Partners = $("#Collaborators_Partners").val();
+            var Compliance_Requirements = $("#Compliance_Requirements").val();
+            var Current_Painpoints = $("#Current_Painpoints").val();
+            var Product_Backlog = $("#Product_Backlog").val();
+            var Products_Services_Offered = $("#Products_Services_Offered").val();
+            var Salesforce_Roadmap = $("#Salesforce_Roadmap").val();
+            var Appexchange_Apps = $("#Appexchange_Apps").val();
+            var Customer_Service = $("#Customer_Service").val();
+            var CPQ_Product = $("#CPQ_Product").val();
+            var Marketing = $("#Marketing").val();
+            var Middleware = $("#Middleware").val();
+            var ERP = $("#ERP").val();
+            var Document_Generation = $("#Document_Generation").val();
+            var External_Storage = $("#External_Storage").val();
+            var Digital_Signature = $("#Digital_Signature").val();
+            var Analytics = $("#Analytics").val();
+            var Backup = $("#Backup").val();
+            var Project_Management = $("#Project_Management").val();
+            var Development_Tools = $("#Development_Tools").val();
+            
+            //DatatoSave.AccountID = AccountID;
+            DatatoSave.Org_Id = Org_Id;
+            DatatoSave.Salesforce_AE_Name = Salesforce_AE_Name;
+            DatatoSave.Customer_Portal_Access = Customer_Portal_Access;
+            DatatoSave.Customer_Engagement_Score = Customer_Engagement_Score;
+            DatatoSave.Status_Report_Frequency = Status_Report_Frequency;
+            if (Customer_Portal_Access_Status_Date != "")
+            {
+                DatatoSave.Customer_Portal_Access_Status_Date = Customer_Portal_Access_Status_Date;
+            }
+            DatatoSave.Weekly_Monthly_Meeting = Weekly_Monthly_Meeting;
+            if (Setup_Weekly_Monthly_Meeting_Date != "")
+            {
+                DatatoSave.Setup_Weekly_Monthly_Meeting_Date = Setup_Weekly_Monthly_Meeting_Date;
+            } 
+            DatatoSave.Environment_Access = Environment_Access;
+            if (Environment_Access_Status_Date != "")
+            {
+                DatatoSave.Environment_Access_Status_Date = Environment_Access_Status_Date;
+            }
+            DatatoSave.Onboarding_Document = Onboarding_Document ;
+            if (Onboarding_Document_Status_Date != "")
+            {
+                DatatoSave.Onboarding_Document_Status_Date = Onboarding_Document_Status_Date;
+            }
+            DatatoSave.LRC = LRC;
+            if (LRC_Status_Date != "")
+            {
+                DatatoSave.LRC_Status_Date = LRC_Status_Date;
+            }
+            DatatoSave.Instance_Name = Instance_Name;
+            DatatoSave.Marketing_Cloud_Instance_Name = Marketing_Cloud_Instance_Name;
+            DatatoSave.Salesforce_Products = Salesforce_Products;
+            DatatoSave.Business_Overview = Business_Overview;
+            DatatoSave.Customers = Customers;
+            DatatoSave.Key_Competitors = Key_Competitors;
+            DatatoSave.Collaborators_Partners = Collaborators_Partners;
+            DatatoSave.Compliance_Requirements = Compliance_Requirements;
+            DatatoSave.Current_Painpoints = Current_Painpoints;
+            DatatoSave.Product_Backlog = Product_Backlog;
+            DatatoSave.Products_Services_Offered = Products_Services_Offered;
+            DatatoSave.Salesforce_Roadmap = Salesforce_Roadmap;
+            DatatoSave.Has_Communities = Has_Communities;
+            DatatoSave.Future_Timesheet = $("#Future_Timesheet").prop('checked');
+            DatatoSave.Appexchange_Apps = Appexchange_Apps;
+            DatatoSave.Customer_Service = Customer_Service ;
+            DatatoSave.CPQ_Product = CPQ_Product;
+            DatatoSave.Marketing = Marketing;
+            DatatoSave.Middleware = Middleware;
+            DatatoSave.ERP = ERP;
+            DatatoSave.Document_Generation = Document_Generation;
+            DatatoSave.External_Storage = External_Storage;
+            DatatoSave.Digital_Signature = Digital_Signature;
+            DatatoSave.Analytics = Analytics;
+            DatatoSave.Backup = Backup;
+            DatatoSave.Project_Management = Project_Management;
+            DatatoSave.Development_Tools = Development_Tools;
+            var DatatoSaveJSON = JSON.stringify( DatatoSave);
+            
+            var AccountToSaveData = $(".ddlstAccount").val();
+            PassDataToController(DatatoSaveJSON,AccountToSaveData);
+        }
+        function Cancel()
+        {
+            doCancel();
+        }
+        function closePopup()
+        {
+            
+            closePopupBox();
+        }
+        j$ = jQuery.noConflict();
+        j$(document).ready(function()  
+           {
+               j$( "#date_service, #date_service1, #date_service2, #date_service3, #date_service4").datepicker(
+                   {
+                       dateFormat : 'mm/dd/yy',
+                       changeMonth : true,
+                       changeYear : true,    
+                   });
+               j$("#date_service, #date_service1, #date_service2, #date_service3, #date_service4").bind('paste',function(e){
+                   e.preventDefault();  //disable paste in datePicker
+               });   
+           });
+        
+        $(document).on('click', '.panel-heading span.clickable', function(e){
+            var $this = $(this);
+            if(!$this.hasClass('panel-collapsed')) {
+                $this.parents('.panel').find('.panel-body').slideUp();
+                $this.addClass('panel-collapsed');
+                $this.find('i').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+            } else {
+                $this.parents('.panel').find('.panel-body').slideDown();
+                $this.removeClass('panel-collapsed');
+                $this.find('i').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+            }
+        })
+        function isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (!(charCode > 31 && (charCode < 48 || charCode > 57) && charCode ==91 )) {
+                return false;
+            }
+            return true;
+        }
+        
+        </script>
+    </head>
+    <body>
+        <apex:form >
+            <c:ODS_HeaderComponent />
+            <apex:actionStatus id="statusSaveTrip" stopText="">
+                <apex:facet name="start">
+                    <div>
+                        <div class="popupBackground" />
+                        <div class="PopupPanel">
+                            <table border="0" width="100%" height="100%">
+                                <tr>
+                                    <td align="center"><b>Please Wait</b></td>
+                                </tr>
+                                <tr>
+                                    <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionStatus>
+            
+            <apex:actionFunction name="ApplySearchAction" action="{!getAccountServiceId}" status="statusSaveTrip"  reRender="listPanel" immediate="True" >
+                <apex:param name="SelectedAccountId" value="" assignTo="{!AccountId}" />
+                <apex:param name="SelectedServiceID" value="" assignTo="{!ServiceID}" />
+            </apex:actionFunction>
+            <apex:actionFunction name="PassDataToController" action="{!SaveCustomerInfo}" status="statusSaveTrip" oncomplete="loadAfterSave('{!updatedAccount}','{!updatedservice}');" >
+                <apex:param name="DatatoSaveJSON" assignTo="{!DatatoSaveJSON}" value=""/>
+                <apex:param name="AccountToSaveData" assignTo="{!AccountToSaveData}" value="" />
+            </apex:actionFunction>
+            <apex:actionFunction name="doCancel" action="{!CancelChanges}" status="statusSaveTrip" rerender="listPanel" >
+            </apex:actionFunction>
+            <apex:actionFunction name="closePopupBox" action="{!closePopup}" reRender="listPanel" immediate="True"/>
+            
+            <div class="clr"></div>
+            <div class="clr"></div>
+            
+            <div class="mid-bg">
+                <div class="sub-warp">
+                    <apex:outputPanel id="listPanel">
+                        <div class="panel panel-default" >          
+                            <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4; ">
+                                <h3 style=" display:inline; " class="panel-title">Customer Info</h3>
+                                <span style=" padding-left:257px; ">    <label class="panel-title" id="Account_NameHeader">Account:</label>  </span>
+                                <label  class="panel-title" id="Account_Name">{!PassAccountName}</label>
+                                <span style="padding-left:20px; ">      <label class="panel-title" id="Service_NameHeader">Service:</label>  </span>
+                                <label  class="panel-title" id="Service_Name">{!PassServiceName}</label>  
+                                <span class="pull-right clickable" style=" margin-top: 0.2px;" ><i class="fa fa-chevron-up" aria-hidden="true"></i></span>     
+                            </div>   
+                            
+                            <div class="panel-body">
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-horizontal"> 
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Org Id<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input class="form-control" maxlength="18" id="Org_Id" name="OrgId" type="text" value="{!OrganizationID}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Salesforce AE Name<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input maxlength="50" class="form-control" id="Salesforce_AE_Name" name="SalesforceAEName" type="text" value="{!SalesforceAEName}" readonly ="true"/>
+                                                <!--<apex:inputField value="{!Account.Salesforce_AE_Name__c}"/> -->
+                                                <apex:commandButton action="{!showAEPopup}" value="..." reRender="aePopup" rendered="{!!ISBLANK(SalesforceAEName)}"
+                                                        style="position: absolute; right : 20px; top: 5px; border-radius: 6px; font-size: 8px; padding: 5px;" />
+     
+                                                   <apex:outputPanel id="aePopup">
+                                                        
+                                                        <apex:outputPanel styleClass="customPopup form-control" layout="block" rendered="{!displayAEPopup}">
+                                                            <apex:pageBlock >
+                                                                <apex:pageBlockSection columns="1">
+                                                                    
+                                                                    <apex:pageBlockSectionItem >
+                                                                        <apex:outputText value="Phone: "/>
+                                                                        <apex:outputText value="{!SalesforceAEDailerPhone}"/>
+                                                                    </apex:pageBlockSectionItem>
+                                                                   <apex:pageBlockSectionItem >
+                                                                        <apex:outputText value="Mobile: "/>
+                                                                        <apex:outputText value="{!SalesforceAEMobilePhone}"/>
+                                                                    </apex:pageBlockSectionItem>
+                                                                    <apex:pageBlockSectionItem >
+                                                                        <apex:outputText value="Email: "/> 
+                                                                        <apex:outputText value="{!SalesforceAEEmail}"/>
+                                                                    </apex:pageBlockSectionItem>
+                                                                </apex:pageBlockSection>
+                                                            </apex:pageBlock>
+                                                            <apex:commandButton value="X" action="{!closeAEPopup}" reRender="aePopup" style="position: absolute; top: 5px; right: 20px;"/>
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Customer Portal Access<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control Customer_Portal_Access" value="{!CustomerPortalAccess}" size="1"> 
+                                                    <apex:selectoptions value="{!getCustomerPortalAccessPicklist}"/> 
+                                                </apex:selectList>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Customer Portal Access Status Date<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input type="Date" name="CustomerPortalAccessStatusDate" class="Customer_Portal_Access_Status_Date" value="{!CustomerPortalAccessStatusDate}" placeholder="Portal Access Status Date" id="date_service" onkeypress="return isNumber(event)" autocomplete = "off" />              
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Setup Weekly &amp; Monthly Meeting<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control Weekly_Monthly_Meeting" value="{!WeeklyMonthlyMeeting}" size="1"> 
+                                                    <apex:selectoptions value="{!getWeeklyMonthlyMeetingPicklist}"/> 
+                                                </apex:selectList>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Setup Weekly &amp; Monthly Meeting Date<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input type="date" name="SetupWeeklyMonthlyMeetingDate" class="Setup_Weekly_Monthly_Meeting_Date" value="{!WeeklyMonthlyMeetingDate}" placeholder="Meeting Date" id="date_service1" onkeypress="return isNumber(event)" autocomplete = "off" />  
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Environment Access<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control Environment_Access" value="{!EnvironmentAccess}" size="1"> 
+                                                    <apex:selectoptions value="{!getEnvironmentAccessPicklist}"/> 
+                                                </apex:selectList>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Environment Access Status Date<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input type="date" name="EnvironmentAccessStatusDate" class="Environment_Access_Status_Date" value="{!EnvironmentAccessStatusDate}" placeholder="Environment Access Status Date" id="date_service2" onkeypress="return isNumber(event)" autocomplete = "off" />  
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Onboarding Document<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control Onboarding_Document" value="{!OnboardingDocument}" size="1"> 
+                                                    <apex:selectoptions value="{!getOnboardingDocumentPicklist}"/> 
+                                                </apex:selectList>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Onboarding Document Status Date<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input type="date" name="OnboardingDocumentStatusDate" class="Onboarding_Document_Status_Date" value="{!OnboardingDocumentStatusDate}" placeholder="Document Status Date" id="date_service3" onkeypress="return isNumber(event)" autocomplete = "off" />  
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Lightning Readiness Check<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control LRC" value="{!LRC}" size="1"> 
+                                                    <apex:selectoptions value="{!getLRCPicklist}"/> 
+                                                </apex:selectList>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Lightning Readiness Check Status Date<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input type="date" name="LRCStatusDate" class="LRC_Status_Date" value="{!LRCStatusDate}" placeholder="LRC Status Date" id="date_service4" onkeypress="return isNumber(event)" autocomplete = "off" />  
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Instance Name<span style="color:#ff9797; font-size:15px; cursor:default;" ></span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input class="form-control" id="Instance_Name" name="InstanceName" type="text" value="{!InstanceName}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Marketing Cloud Instance Name<span style="color:#ff9797; font-size:15px; cursor:default;" ></span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input class="form-control" id="Marketing_Cloud_Instance_Name" name="MarketingCloudInstanceName" type="text" value="{!MarketingCloudInstanceName}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Has Communities?<span style="color:#ff9797; font-size:15px; cursor:default;" ></span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                               <input type="checkbox" class="form-control" id="Has_Communities" name="HasCommunities" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Allow Future Timesheets<span style="color:#ff9797; font-size:15px; cursor:default;" ></span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                               <input type="checkbox" class="form-control" id="Future_Timesheet" name="AllowFutureTimesheets" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-horizontal"> 
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Salesforce Products<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="255" rows="3" id="Salesforce_Products" class="form-control width1 txtTask">{!SalesforceProducts}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Appexchange Apps<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="255" rows="3" id="Appexchange_Apps" class="form-control width1 txtTask" >{!AppexchangeApps}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Customer Service<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input maxlength="50" class="form-control" id="Customer_Service" name="CustomerService" type="text" value="{!CustomerService}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">CPQ Product<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input maxlength="50" class="form-control" id="CPQ_Product" name="CPQProduct" type="text" value="{!CPQProduct}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Marketing<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input maxlength="50" class="form-control" id="Marketing" name="Marketing" type="text" value="{!Marketing}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Middleware<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input maxlength="50" class="form-control" id="Middleware" name="Middleware" type="text" value="{!Middleware}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">ERP<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input maxlength="50" class="form-control" id="ERP" name="ERP" type="text" value="{!ERP}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Document generation<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input maxlength="50" class="form-control" id="Document_Generation" name="DocumentGeneration" type="text" value="{!DocumentGeneration}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">External Storage<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input maxlength="50" class="form-control" id="External_Storage" name="ExternalStorage" type="text" value="{!ExternalStorage}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Digital Signature<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input maxlength="50" class="form-control" id="Digital_Signature" name="DigitalSignature" type="text" value="{!DigitalSignature}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Analytics<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input maxlength="50" class="form-control" id="Analytics" name="Analytics" type="text" value="{!Analytics}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Backup<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input maxlength="50" class="form-control" id="Backup" name="Backup" type="text" value="{!Backup}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Project Management<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input maxlength="50" class="form-control" id="Project_Management" name="ProjectManagement" type="text" value="{!ProjectManagement}" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Development Tools<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="255" rows="3" id="Development_Tools" class="form-control width1 txtTask">{!DevelopmentTools}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Customer Engagement Score<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control Customer_Engagement_Score" value="{!CustomerEngagementScore}" size="1"> 
+                                                    <apex:selectoptions value="{!getCustomerEngagementScorePicklist}"/> 
+                                                </apex:selectList>
+                                            </div>
+                                            
+                                        </div>
+                                          <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Status Report Frequency <span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control Status_Report_Frequency" value="{!StatusReportFrequency}" size="1"> 
+                                                    <apex:selectoptions value="{!getStatusReportPickList}"/> 
+                                                </apex:selectList>
+                                            </div>
+                                            
+                                        </div> 
+                                        
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="panel panel-default" >   
+                         <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4; ">
+                                <h3 style=" display:inline; " class="panel-title">Onboarding Details</h3>
+                                                                     <span class="pull-right clickable" style=" margin-top: 0.2px;" ><i class="fa fa-chevron-up" aria-hidden="true"></i></span>     
+
+                            </div> 
+                             <div class="panel-body">
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-horizontal"> 
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Business Overview<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="6000" rows="10" id="Business_Overview" class="form-control width2 txtTasks">{!BusinessOverview}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Products/Services Offered<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="6000" rows="10" id="Products_Services_Offered" class="form-control width2 txtTasks">{!ProductsServicesOffered}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Customers<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="6000" rows="10" id="Customers" class="form-control width2 txtTasks">{!Customers}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Key Competitors<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="600" rows="5" id="Key_Competitors" class="form-control width3 txtTasks">{!KeyCompetitors}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Collaborators / Partners<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="6000" rows="10" id="Collaborators_Partners" class="form-control width2 txtTasks">{!CollaboratorsPartners}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Compliance Requirements<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="6000" rows="10" id="Compliance_Requirements" class="form-control width2 txtTasks">{!ComplianceRequirements}</textarea>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Salesforce Roadmap<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="6000" rows="10" id="Salesforce_Roadmap" class="form-control width2 txtTasks">{!SalesforceRoadmap}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Product Backlog<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="6000" rows="10" id="Product_Backlog" class="form-control width2 txtTasks">{!ProductBacklog}</textarea>
+                                            </div>
+                                        </div>
+                                           <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Current Painpoints<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="6000" rows="10" id="Current_Painpoints" class="form-control width2 txtTasks">{!CurrentPainpoints}</textarea>
+                                            </div>
+                                        </div>
+                                          
+                                    </div>
+                                                                 
+                                 </div>
+
+                        </div>
+                        </div>
+                        
+                        
+                            
+                   
+                        <div class="panel panel-default" >
+                            <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4; ">
+                                <h3 style=" display:inline; " class="panel-title">Incidents</h3>  
+                                <span class="pull-right clickable" style=" margin-top: 0.2px;" ><i class="fa fa-chevron-up" aria-hidden="true"></i></span> 
+                            </div> 
+                            <div class="panel-body">
+                                <apex:pageBlock >
+                                    <apex:pageBlockTable StyleClass="datatable timeline" id="pgTable" Style="cellpadding:0; cellspacing:0; width:100%;color:#4ECAF4;"  value="{!incidentEmails}" var="Email"
+                                                         rendered="{!(incidentEmails.size!=0 && incidentEmails !='' && incidentEmails !=null ) }">                        
+                                        
+                                        <apex:column headerValue="Subject"  style="text-align:left; ">
+                                            <apex:commandLink value="{!Email.Subject}" action="{!showpopup}" style="white-space: nowrap;" immediate="true" reRender="tstpopup">
+                                                <apex:param name="emailId" value="{!Email.id}"/>
+                                            </apex:commandLink>
+                                        </apex:column>
+                                        <apex:column headerValue="Created Date" value="{!Email.CreatedDate}" style="text-align:right !important; width:155px "/>
+                                    </apex:pageBlockTable>
+                                </apex:pageBlock>
+                                <apex:outputPanel id="tstpopup" >
+                                    <apex:outputPanel styleClass="BackGPopup" onclick="closePopupBox();" layout="block" rendered="{!displayPopUp}"></apex:outputPanel>
+                                    <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+                                        <!-- <apex:commandButton value="X" title="Close the Popup" action="{!closePopup}" immediate="true" reRender="listPanel" styleClass="closeButton" /> -->
+                                        <apex:commandLink action="{!closePopup}" title="Close" styleClass="closeButton" immediate="true" reRender="listPanel" >
+                                            <svg aria-hidden="true" style="margin-top: 10px;margin-right: 10px;" class="closeIcon">
+                                                <use xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                     xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#close">
+                                                </use>
+                                            </svg>
+                                        </apex:commandLink>
+                                        <div id="popupText">
+                                            <apex:outputText style=" font-weight: bold !important;" value="{!currentEmail.Subject}" escape="false" />
+                                            <br/><br/>
+                                            <apex:outputText id="htmlBody" value="{!currentEmail.HTMLBody}" escape="false" />
+                                            
+                                        </div>
+                                        <br/>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                
+                            </div>
+                        </div>
+                        <div Class = "pull-right">
+                            <br/>
+                            <input type="button" id="btnCancel" class="cancel" value="Cancel" onclick="return Cancel();"/>
+                            &nbsp;
+                            <input type="button" id="btnSave" class="save-submit" value="Save" onclick="return Save();" />    
+                        </div>
+                        <script>
+                            var checkBoxValue ='{!HasCommunities}';
+                            if(checkBoxValue == 'true')
+                            {
+                                $('#Has_Communities')[0].checked = true;
+                            }
+                            else
+                            {
+                                $('#Has_Communities')[0].checked = false;
+                            }
+                        var futureTimesheet='{!AllowFutureTimesheets}';
+                        if(futureTimesheet == 'true')
+                        {
+                            $('#Future_Timesheet')[0].checked = true;
+                        }
+                        else
+                        {
+                            $('#Future_Timesheet')[0].checked = false;
+                        }
+                        </script>
+                    </apex:outputPanel>
+                </div>
+            </div>
+            <c:ODS_FooterComponent />
+        </apex:form>
+        
+    </body>
+</apex:page>

@@ -1,0 +1,78 @@
+<template>
+
+    <lightning-card title="Subfeature Client Usage Manual Entry" icon-name="custom:custom14">
+
+      <div class="slds-m-around_medium">
+        <table class="slds-m-left_xx-large" style="width:50%;">
+            <tbody>
+                <tr>
+                    <th>Select Account/Client</th>
+                    <td>
+                        <lightning-combobox style="width: 300px;" name="progress" value={selectedAcc}
+                            placeholder="Select a account" options={accountList} onchange={handleAccountChange}>
+                        </lightning-combobox>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Select Salesforce Product</th>
+                    <td>
+                        <lightning-combobox class="productClass" style="width: 300px;" name="progress" value={productId}
+                            placeholder="Select salesforce product" options={productList} onchange={handleProductChange}>
+                        </lightning-combobox>
+                    </td>
+                </tr>
+                <tr >
+                    <th>Select Feature</th>
+                    <td>
+                        <lightning-combobox class="featureClass" style="width: 300px;" name="progress" value={featureId}
+                            placeholder="Select a feature" options={featureList} onchange={handleFeatureChange}>
+                        </lightning-combobox>
+                    </td>
+                </tr>
+            </tbody>
+        </table>    
+
+        <template if:true={displaySubFeatureList}>
+            <hr>
+            <lightning-card title={featureName} icon-name="utility:breadcrumbs">
+            <table style="width:50%;border-collapse: separate;border-spacing: 0 1em;" class="slds-m-left_xx-large slds-m-top_large">
+                <tbody>
+                    <tr>
+                        <th>Sub Feature Name</th>
+                        <th>Client Usage Percentage</th>
+                    </tr>
+                    <template for:each={subFeatureList} for:item="s">
+                        <tr key={s.Id}>
+                            <td>
+                                {s.Name}     <abbr title="required" class="slds-required">*</abbr>
+
+                            </td>
+                            <td >
+                                <lightning-input   variant="label-hidden" class={s.Id} min="0" max="100" value={s.Client_Usage_Percentage__c} data-id={s.Id} key={s.Id}
+                                    type="number" onfocusout={handleClientUsageUpdate} style="width: 300px;" required></lightning-input>
+                            </td>
+                        </tr>
+                    </template>
+                    <tr class="showbutton">
+                        <td ></td><td>
+                            <div class="slds-m-top_large slds-grid slds-grid_align-center slds-align–absolute-center slds-m-right_xx-large">
+                                <lightning-button variant="brand" label="Cancel" type="cancel" onclick={handleCancel}>
+                                </lightning-button>
+                                &nbsp;&nbsp;
+                                <lightning-button type="submit" variant="brand" label="Save" onclick={handleSave}></lightning-button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+
+              
+
+                </lightning-card>
+            </template>
+
+      </div>
+    </lightning-card>
+ 
+  </template>

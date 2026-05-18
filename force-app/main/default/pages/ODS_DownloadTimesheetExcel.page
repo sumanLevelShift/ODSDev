@@ -1,0 +1,203 @@
+<apex:page controller="ODS_DownloadTimsheetController" contentType="application/vnd.ms-excel#{!fileName}.xls" cache="true">
+    <apex:outputText value="{!xmlheader}"/>
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:html="http://www.w3.org/TR/REC-html40">
+        <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+            <Author></Author>
+            <LastAuthor></LastAuthor>
+            <Company></Company>
+            <Version>1</Version>
+        </DocumentProperties>
+        
+        <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+            <WindowHeight>16000</WindowHeight>
+            <WindowWidth>20480</WindowWidth>
+            <WindowTopX>400</WindowTopX>
+            <WindowTopY>400</WindowTopY>
+            <ProtectStructure>False</ProtectStructure>
+            <ProtectWindows>False</ProtectWindows>
+        </ExcelWorkbook>
+        <Styles>
+            <Style ss:ID="s1" >
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Bold="1" />
+                <Interior />
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="row1" >
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Interior ss:Color="#ddebf7" ss:Pattern="Solid"/>
+                <Protection/>
+                
+            </Style>
+            <Style ss:ID="row2" >
+                <Interior ss:Color="#ddebf7" ss:Pattern="Solid"/>
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Bold="1" />
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="row3" >
+                <Interior />
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="row4" >
+                <Interior ss:Color="#E0E0E0" ss:Pattern="Solid"/>
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="row5" >
+                <Interior ss:Color="#E0E0E0" ss:Pattern="Solid"/>
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Bold="1" />
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+        </Styles>
+        <Names>
+            <NamedRange ss:Name="Initiatives_List" ss:RefersTo="=Initiatives!R2C1:R{!initList.size+1}C1"/>
+            <NamedRange ss:Name="TPM_Names" ss:RefersTo="=TPM!R2C1:R{!TPMList.size+1}C1"/>
+        </Names>
+        <Worksheet ss:Name="Timesheet">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="100"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="280"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="60" />
+                <Column ss:Width="60"/>
+                <Column ss:Width="60"/>
+                <Column ss:Width="60"/>
+                <Column ss:Width="60"/>
+                <Column ss:Width="60"/>
+                <Column ss:Width="60"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Account</Data></Cell>
+                    <Cell  ss:StyleID="s1"><Data ss:Type="String" >{!accountName}</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">Mon</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">Tue</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">Wed</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">Thu</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">Fri</Data></Cell>
+                    <Cell ss:StyleID="row5"><Data ss:Type="String">Sat</Data></Cell>
+                    <Cell ss:StyleID="row5"><Data ss:Type="String">Sun</Data></Cell>
+                </Row>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Resource Name</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Role</Data></Cell>
+                    <Cell ss:StyleID="row2"><Data ss:Type="String" >Initiatives Name</Data></Cell>
+                    <Cell ss:StyleID="row2"><Data ss:Type="String" >Activity Description - USER STORY / TASK DESCRIPTION </Data></Cell>
+                    <Cell ss:StyleID="row2"><Data ss:Type="String" >Technical Project Manager</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">{!weekDateList[0]}</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">{!weekDateList[1]}</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">{!weekDateList[2]}</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">{!weekDateList[3]}</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">{!weekDateList[4]}</Data></Cell>
+                    <Cell ss:StyleID="row5"><Data ss:Type="String">{!weekDateList[5]}</Data></Cell>
+                    <Cell ss:StyleID="row5"><Data ss:Type="String">{!weekDateList[6]}</Data></Cell>
+                </Row>
+                <apex:repeat value="{!emptyRow}" var="i">
+                    <Row >
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row1"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row4"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row4"><Data ss:Type="String"></Data></Cell>                        
+                    </Row>
+                </apex:repeat>
+            </Table>
+            <DataValidation xmlns="urn:schemas-microsoft-com:office:excel">
+                <Range>R3C3:R{!emptyRow.size+2}C3</Range>
+                <Type>List</Type>
+                <Value>Initiatives_List</Value>
+            </DataValidation>
+            <DataValidation xmlns="urn:schemas-microsoft-com:office:excel">
+                <Range>R3C5:R{!emptyRow.size+2}C5</Range>
+                <Type>List</Type>
+                <Value>TPM_Names</Value>
+            </DataValidation>
+        </Worksheet>
+        
+        <Worksheet ss:Name="Initiatives">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="170"/>
+                <Column ss:Width="280"/>
+                <Column ss:Width="330"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Initiatives Name</Data></Cell>
+                </Row>
+                <apex:repeat value="{!initList}" var="i">
+                    <Row>
+                        <Cell><Data ss:Type="String">{!i.name}</Data><NamedCell ss:Name="Initiatives_List"/></Cell>                        
+                    </Row>
+                </apex:repeat>
+            </Table>
+        </Worksheet>
+        <Worksheet ss:Name="TPM">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="170"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Technical Project Manager</Data></Cell>
+                </Row>
+                <apex:repeat value="{!TPMList}" var="i">
+                    <Row>
+                        <Cell><Data ss:Type="String">{!i}</Data><NamedCell ss:Name="TPM_Names"/></Cell>                        
+                    </Row>
+                </apex:repeat>
+            </Table>
+        </Worksheet>
+    </Workbook>
+</apex:page>

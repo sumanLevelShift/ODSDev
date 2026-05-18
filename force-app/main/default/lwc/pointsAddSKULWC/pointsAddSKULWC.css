@@ -1,0 +1,45 @@
+.row-container {
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.row-container:last-child {
+    border-bottom: none;
+}
+
+.total-display {
+    background-color: #f3f3f3;
+    border: 1px solid #d8dde6;
+    border-radius: 0.25rem;
+    font-weight: bold;
+    min-height: 2.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.remove-button {
+    margin-top: 0.125rem;
+}
+
+/* Custom styling for the lookup component */
+c-item-master-custom-lookup {
+    width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .slds-grid {
+        flex-direction: column;
+    }
+    
+    .slds-col {
+        width: 100% !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    .total-display {
+        text-align: left !important;
+    }
+}

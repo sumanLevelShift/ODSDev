@@ -1,0 +1,107 @@
+.slds-button_neutral{
+    color: #fff !important;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px !important;
+    font-weight: normal !important;
+    text-align: center !important;
+    border: none !important;
+    padding: 7px 15px !important;
+    background: #4ECAF4 !important;
+    text-transform: uppercase !important;
+    border-radius: 5px !important;
+    margin-right: 10px !important;
+}
+.slds-button_brand{
+color: #fff !important;
+    font-family: 'Open Sans', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: normal !important;
+    text-align: center !important;
+    border: none !important;
+    padding: 7px 15px !important;
+    background: #999999 !important;
+    text-transform: uppercase !important;
+    border-radius: 5px !important;
+}
+div.slds-listbox{
+    font-size: 12px !important;
+	color:black !important;
+	position: absolute !important;
+}
+.textAreaCss textarea{
+    border: 2px solid #668cff !important;
+    background: #ecf9ec !important;
+	border-radius: 5px !important;
+}
+.pickList button{
+	border: 2px solid #668cff !important;
+    background: #ecf9ec !important;
+	border-radius: 6px !important;
+	padding: 5px !important;
+    height: 30px !important;
+}
+.entityTypeValue button{
+	width: 300px !important;
+}
+/*
+.platformValue button{
+	width: 156px !important;
+}
+.effortTypeValue button{
+	width: 140px !important;
+}
+.complexityValue button{
+	width: 160px !important;
+}*/
+.slds-input{
+	border: 2px solid #668cff !important;
+    background: #ecf9ec !important;
+    border-radius: 6px !important;
+    padding: 5px !important;
+}
+div.slds-dropdown{
+    
+	position: absolute !important;
+}
+
+.rationaleSDLCPhases textArea{
+	    height: 31px !important;
+}
+.commentsOthers textArea{
+	    height: 31px !important;
+}
+.commentsSpecific textArea{
+	    height: 31px !important;
+}
+.activityTextArea textArea{
+	    height: 31px !important;
+}
+.assumptionValue textArea{
+	    width: 123px !important;
+}
+.projectSpecificWiseClass input{
+	height:29px !important;
+}
+.projectSpecificOtherClass input{
+	height:29px !important;
+}
+.personMonthSpecificClass input{
+height:29px !important;	
+}
+
+.quantityValue input.slds-input{
+	text-align:right !important;
+}
+
+.recommendedEffortValue input.slds-input{
+	text-align:right !important;
+	width: 58px !important;
+}
+
+.revisedEffortValue input.slds-input{
+	text-align:right !important;
+	width: 58px !important;
+}
+body{
+	font-size: 12px !important;
+}

@@ -1,0 +1,11 @@
+div.slds-listbox{
+    font-size: 12px !important;
+color:black !important;
+}
+span.slds-checkbox_faux{
+    width: 20px !important;
+    height: 20px !important;
+}
+lightning-combobox{
+	font-size: 13px !important;
+}

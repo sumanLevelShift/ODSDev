@@ -1,0 +1,146 @@
+<apex:page docType="html-5.0" controller="ODSLoginController" sidebar="false" showHeader="false" standardStyleSheets="false">
+<apex:form >
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />       
+             
+        <title>ON DEMAND SERVICES </title>
+        
+        <!-- CSS Resources -->
+        <apex:stylesheet value="{!URLFOR($Resource.ods_mobile_assets,'css/bootstrap.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ods_mobile_assets,'css/jquery-ui.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets, 'css/style.css')}"/>        
+        <apex:stylesheet value="https://fonts.googleapis.com/css?family=Open+Sans:400,700"/>
+         
+        
+        <!-- Google Fonts -->
+        <apex:stylesheet value="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"/>
+        
+        <!--Font Awesome-->
+        <apex:stylesheet value="{!URLFOR($Resource.ods_mobile_assets,'fonts/css/font-awesome.css')}"/>   
+        
+        <!-- Custom CSS Reseources -->
+        <apex:stylesheet value="{!URLFOR($Resource.ods_mobile_assets,'css/theme.css')}"/>
+        
+        <!-- Google Captcha -->
+            <apex:includeScript value="https://www.google.com/recaptcha/api.js"/>
+        
+        <!-- Script Resources -->
+        <apex:includeScript value="{!URLFOR($Resource.ods_mobile_assets,'js/jquery-3.4.1.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ods_mobile_assets,'js/popper.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ods_mobile_assets,'js/bootstrap.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ods_mobile_assets,'js/jquery-ui.js')}"/>
+        <apex:includeScript value="http://code.jquery.com/jquery-latest.min.js"/>
+        
+        <style>
+            .login{
+                width:380px;
+            }
+            
+            .login-bg input[type=text], .login-bg input[type=password], .login-bg input[type=email]{
+                width:100%;
+            }
+            
+            .login-form .g-recaptcha{
+                margin:0 0 20px 0;
+            }
+            
+            .login-form .rc-anchor-normal .rc-anchor-content{
+                width:100%!important;
+                height:auto!important;
+            }
+            
+            .rc-anchor-light{
+                background:#FFFFFF;
+            }
+            @media (min-width:0px) and (max-width:767px){
+            .login-wrapper{height:100%;}
+            }
+            @media (min-width:768px) and (max-width:991px){
+            .login-bg{
+            padding-top:0;
+            }
+            .login-bg::after {
+            transform: skewY(45.5deg);
+            }
+            }
+            @media (min-width:992px) and (max-width:1024px){
+                .login-bg::after {
+                    transform: skewY(33.5deg);
+                }
+            }
+        </style>
+    </head>
+    <apex:pageBlock rendered="{!$User.UITheme == 'Theme4t'}">
+         
+    <body>
+        <!-- Mobile Code -->
+        <div class="login-wrapper">
+            <div class="logo-section">
+                <a href="#">
+                    <apex:image url="{!URLFOR($Resource.ods_mobile_assets, 'images/dblogin.svg')}" alt="logo"/>
+                </a>
+            </div>
+            <div class="login-section">
+                <p>
+                    You're trying to Log In to <strong>LevelShift</strong>. To make sure your <strong>LevelShift</strong> account is secure, we have to verify your identity.
+                </p>
+                <div class="login-form">
+                    <apex:outputPanel id="pnlMessages">
+                        <apex:pagemessages id="pgMsg"></apex:pagemessages>                    
+                    </apex:outputPanel>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <apex:inputText label="email" id="name1" styleClass="email form-control" value="{!username}"  required="true" html-placeholder="Username"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <apex:inputSecret label="password" id="password1" styleClass="password form-control"   value="{!password}" html-placeholder="Password"/>
+                            </div>
+                        </div>
+                    </div>
+                    <apex:pageBlockSection rendered="{!IsNotMobileSDK}" >
+                       <div class="g-recaptcha" data-sitekey="6LfGzTsaAAAAAJJ7tW2ZjL98EcV4e9D0pWqjJwut"></div>
+                    </apex:pageBlockSection>
+                    <apex:commandButton value="login" action="{!login}" styleClass="btnsubmit"/>
+                    <apex:commandLink action="{!ForgotPassword}" value="Forgot Password" styleClass="forgotlink"/>
+                    <!-- <apex:commandButton value="Forgot your password?" action="{!ForgotPassword}" styleClass="forgot-pass"/> -->
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Code -->
+    </body>
+    </apex:pageBlock>
+
+    <apex:pageBlock rendered="{!$User.UITheme == 'Theme3'}">
+  
+        <body class="login-bg">  
+        <div class="wrap">
+            <div class="login-logo"><a href="#">
+            <apex:image url="{!URLFOR($Resource.ODS_Assets, 'images/DB_Login.png')}" alt="logo"/>
+            </a></div>
+            <div class="login">
+                <h2>Log In</h2>
+                
+                 <apex:outputPanel id="pnlMessages" >
+                <apex:pagemessages id="pgMsg"></apex:pagemessages>
+            </apex:outputPanel>
+               
+                <apex:inputText label="email" id="name" styleClass="email" value="{!username}"  required="true" html-placeholder="Username"/>
+                <apex:inputSecret label="password" id="password" styleClass="password"   value="{!password}" html-placeholder="Password"/>
+                <apex:pageBlockSection rendered="{!IsNotMobileSDK}">
+                <div class="g-recaptcha" data-sitekey="6LfGzTsaAAAAAJJ7tW2ZjL98EcV4e9D0pWqjJwut"></div>
+                </apex:pageBlockSection>
+                <apex:commandButton value="login" action="{!login}" styleClass="submit"/>
+                <apex:commandButton value="Forgot Password" action="{!ForgotPassword}" styleClass="forgot-pass"/>
+            </div>            
+        </div> 
+        <c:ODS_FooterComponent />    
+    </body>
+   </apex:pageBlock>
+    </apex:form>
+    
+</apex:page>

@@ -1,0 +1,30 @@
+<template>
+    <lightning-card title="Edit Work Order Line Items">
+        <div class="slds-p-horizontal_medium slds-p-vertical_small">
+            <template if:true={showLicenseComponent}>
+                <c-edit-s-k-u-l-w-c work-order-line-item-id={workOrderLineItemId} is-aura={isAura}
+                    is-v-f-page={isVFPage}></c-edit-s-k-u-l-w-c>
+            </template>
+
+            <template if:true={showSlabRateComponent}>
+
+            </template>
+            <template if:true={showPointsComponent}>
+                <c-points-edit-s-k-u-l-w-c work-order-line-item-id={workOrderLineItemId} is-aura={isAura}
+                    is-v-f-page={isVFPage}></c-points-edit-s-k-u-l-w-c>
+            </template>
+            <template if:true={showKPOComponent}>
+                <c-k-p-o-consumption-edit-s-k-u-l-w-c work-order-line-item-id={workOrderLineItemId} is-aura={isAura}
+                    is-v-f-page={isVFPage}></c-k-p-o-consumption-edit-s-k-u-l-w-c>
+            </template>
+            <template if:true={showFixedUnitPriceComponent}>
+                <c-fixed-unit-price-edit-s-k-u-l-w-c work-order-line-item-id={workOrderLineItemId} is-aura={isAura}
+                    is-v-f-page={isVFPage}></c-fixed-unit-price-edit-s-k-u-l-w-c>
+            </template>
+            <template if:true={showStaffingComponent}>
+                <c-staffing-edit-s-k-u-l-w-c work-order-line-item-id={workOrderLineItemId} is-aura={isAura}
+                    is-v-f-page={isVFPage}></c-staffing-edit-s-k-u-l-w-c>
+            </template>
+        </div>
+    </lightning-card>
+</template>

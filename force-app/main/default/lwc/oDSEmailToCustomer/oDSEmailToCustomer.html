@@ -1,0 +1,220 @@
+<template>
+    <!--Customer Names 1st Section-->
+    <div class="sub-warp content-box">
+        <div class="cust-box">
+            <div class="mid-white">
+                <h1> Customer Names </h1>
+                <div class="slds-p-around_small" style="width: 60%;margin-left: 29%;">
+                    <lightning-dual-listbox name="CSM List" source-label="Available Customers"
+                        selected-label="Selected Customers" options={lstOptions} onchange={handleChange}
+                        class="dualBoxClass">
+                    </lightning-dual-listbox>
+                    <br />
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+
+    <!--Available Draft Emails 2nd Section-->
+    <div class="sub-warp content-box">
+        <div class="cust-box">
+            <div class="mid-white">
+
+                <template if:true={draftFlag}>
+                    <div>
+                        <strong>
+                            Available Draft Emails
+                        </strong>
+                    </div>
+
+                    <!-- Pagination buttons -->
+
+                    <div class="myDIV slds-grid slds-gutters">
+
+                        <div class="slds-m-around_medium mid-white">
+
+                            <table
+                                class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered timelineS">
+
+                                <!--Header of the table-->
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th class="slds-size_1-of-6 " scope="col" style="width: 10px;">
+                                            <div class="slds-truncate " title="SUBJECT"> SUBJECT</div>
+                                        </th>
+                                        <th class="slds-size_1-of-6 " scope="col">
+
+                                            <div class="slds-truncate " title="CREATED DATE">CREATED DATE
+                                            </div>
+                                        </th>
+                                        <th class="slds-size_1-of-6 " scope="col">
+                                            <div class="slds-truncate " title="LAST MODIFIED DATE">
+                                                LAST MODIFIED DATE
+                                            </div>
+                                        </th>
+                                        <th class="slds-size_1-of-6 " scope="col">
+                                            <div class="slds-truncate " title="STATUS">
+                                                STATUS
+                                            </div>
+                                        </th>
+
+                                        <th class="slds-size_1-of-6" scope="col">
+                                            <div class="slds-truncate " title="Action">Action
+                                            </div>
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template if:true={visibleDraftData}>
+                                        <template for:each={visibleDraftData} for:item="rec">
+                                            <tr class="dataRow" id={rec.Id} key={rec.Id} data-id={rec.Id}
+                                                style="background:#F4F4F4 !important;" onclick={clickOnDraftEmail} >
+
+                                                <td onclick={clickOnDraftEmail} data-id={rec.Id}
+                                                    >
+                                                    <div class="slds-truncate" style="text-align:left !important;">
+                                                        {rec.EmailSubject__c}
+                                                    </div>
+                                                </td>
+                                                <td onclick={clickOnDraftEmail} data-id={rec.Id}>
+                                                    <div class="slds-truncate">
+
+                                                        <lightning-formatted-date-time value={rec.CreatedDate}
+                                                            month="2-digit" day="2-digit" year="numeric" hour="2-digit"
+                                                            minute="2-digit" hour12="false">
+                                                        </lightning-formatted-date-time>
+                                                    </div>
+                                                </td>
+                                                <td onclick={clickOnDraftEmail} data-id={rec.Id}>
+                                                    <div class="slds-truncate">
+                                                        
+                                                        <lightning-formatted-date-time value={rec.LastModifiedDate}
+                                                        month="2-digit" day="2-digit" year="numeric" hour="2-digit"
+                                                        minute="2-digit" hour12="false">
+                                                    </lightning-formatted-date-time>
+                                                    </div>
+                                                </td>
+                                                <td onclick={clickOnDraftEmail} data-id={rec.Id}>
+                                                    <div class="slds-truncate">
+                                                        {rec.EmailStatus__c}
+                                                    </div>
+                                                </td>
+                                                <td onclick={clickOnDraftEmail} data-id={rec.Id}>
+                                                    <div class="slds-truncate">
+                                                        <lightning-icon icon-name="action:delete"
+                                                            alternative-text="Delete" data-id={rec.Id} title="Delete"
+                                                            class="slds-icon_medium" aria-hidden="true"
+                                                            onclick={delDraftEmail} style="cursor: pointer;">
+                                                        </lightning-icon>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </template>
+
+                                </tbody>
+
+                            </table>
+                            <br/>
+                            <div slot="footer">
+                                <c-email-pagination records={draftData} onupdate={updateDraftHandler}>
+                                </c-email-pagination>
+                            </div>
+                        </div>
+                    </div>
+
+                </template>
+
+
+                <template if:false={draftFlag}>
+                    <div class="my-text">
+                        <strong>
+                            Available Draft Emails
+                        </strong>
+                        <br/>
+                        <strong>
+                            There is no Available Draft Emails
+                        </strong>
+                        
+                    </div>
+                </template>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="sub-warp content-box">
+        <div class="newmail">
+            <lightning-button class="new-email" variant="brand" label="New Email" onclick={newEmail}>
+            </lightning-button>
+
+        </div>
+
+        <!--Compose Email 3rd Section -->
+        <template if:true={emailFlag}>
+
+            <div class="cust-box" >
+                <h4>Compose New Email</h4>
+                       <span >
+                        <template if:true={existDraftEmail}>
+                            <div class = "draftRecipient">
+                                <b>Recipients:</b><div class="recipient">{existDraftEmail.customerNames} </div>
+                                
+                            </div>
+                            
+                        </template>
+                    </span>
+
+                <div class="mid-user-sec"></div>
+                <br/>
+                <br/>
+                <div class="emailTemplate">
+                    <template if:true={existDraftEmail}>
+                        <label>
+                            Subject:
+                        </label>
+                        <div class="inputBox">
+                            <lightning-input type="text" data-name="subject" value={existDraftEmail.emailSub} class="subjectClass">
+                            </lightning-input>
+                        </div>
+                        <br/>
+                        <label class="mail-body">
+                            Body:
+                        </label>
+                        <lightning-input-rich-text data-name="body" value={existDraftEmail.emailBody} class="bodyClass">
+                        </lightning-input-rich-text>
+
+                    </template>
+                    <template if:false={existDraftEmail}>
+                        <label>
+                            Subject:
+                        </label>
+                        <div class="inputBox">
+                            <lightning-input type="text" data-name="subject" value="" class="subjectClass"></lightning-input>
+                        </div>
+                        <br/>
+                        <label class="mail-body">
+                            Body:
+                        </label>
+                        <lightning-input-rich-text data-name="body" value="" class="bodyClass" > </lightning-input-rich-text>
+                    </template>
+
+                </div>
+                <br/>
+                <div class="send-buttons">
+                    <lightning-button class="send" variant="brand" label="Send" onclick={sendEmail}>
+                    </lightning-button>
+                    <lightning-button class="save-draft" variant="brand" label="Save As Draft" onclick={saveAsDraft}>
+                    </lightning-button>
+                </div>
+
+
+            </div>
+
+        </template>
+    </div>
+</template>

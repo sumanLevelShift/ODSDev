@@ -1,0 +1,68 @@
+<apex:page controller="InitiativesReportExportController" renderAs="pdf"  showHeader="false" cache="true" >
+    <html>
+        <head>
+            <style>
+                @page
+                {   
+                size:landscape;
+                }                             
+            </style>
+        </head>
+        <body style="font-family: 'Open Sans', sans-serif; font-size:14px;">
+            <div class="mid-bg">
+                <div class="sub-warp">
+                    
+                    <div class="mid-white">
+                        <div class="logo">
+                            <a href=""><img src="{!URLFOR($Resource.ODS_Assets,'images/logo.png')}" alt="logo"  /></a>
+                        </div>
+                        <h1 style="float:left; font-size:18px;"> Initiative Report For - {!accountName} - {!serviceName}</h1>
+                        <div style="clear:both"></div>          
+                        
+                        <!--<apex:outputText value="{!tableHTML}" escape="false"></apex:outputText>-->
+                        <table border='1 px solid #d7d7d7' cellpadding='0' cellspacing='0' width='100%'>
+                            <tr>
+                                <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; font-size: 16px;  padding:5px; text-align: center;" ><strong>NAME</strong></th>
+                                <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; font-size: 16px;  padding:5px; text-align: center;" ><strong>APPROVED DATE</strong></th>
+                                <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; font-size: 16px;  padding:5px; text-align: center;" ><strong>ESTIMATED HOURS</strong></th>
+                                <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; font-size: 16px;  padding:5px; text-align: center;" ><strong>SUBMITED HOURS</strong></th>
+                                <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; font-size: 16px;  padding:5px; text-align: center;" ><strong>REMAINING HOURS</strong></th>
+                                <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; font-size: 16px;  padding:5px; text-align: center;" ><strong>STATUS</strong></th>
+                            </tr>
+                            <apex:repeat value="{!initiativeReportRecords}" var="a">
+                                
+                                <tr>
+                                    <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;text-align:left">
+                                        {!a.iniName}
+                                    </td>
+                                    <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;text-align:center">
+                                            <apex:outputText value="{0,date,MM'-'dd'-'YYYY}">
+                                            <apex:param value="{!a.approvedDate}" /> 
+                                        </apex:outputText>                                        
+                                    </td>
+                                    <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;text-align:right">
+                                        <apex:outputText value="{0, number, #,##0.00}">
+                                            <apex:param value="{!a.eHours}"/></apex:outputText>
+                                        
+                                    </td>
+                                    <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;text-align:right">
+                                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                            <apex:param value="{!a.sHours}"/></apex:outputText>
+                                    </td>
+                                    <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;text-align:right">
+                                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                            <apex:param value="{!a.rHours}"/></apex:outputText>
+                                    </td>
+                                    <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;text-align:center">
+                                        {!a.status}
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </table>
+                        <div class="clr"></div>
+                    </div>
+                </div>
+            </div>
+        </body> 
+    </html>
+</apex:page>

@@ -1,0 +1,63 @@
+.submitButton Button{
+    color: #fff !important;
+    font-family: 'Open Sans', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: normal !important;
+    text-align: center !important;
+    border: none !important;
+    padding: 7px 15px !important;
+    background: #4ECAF4 !important;
+    text-transform: uppercase !important;
+    border-radius: 5px !important;
+    margin-right: 10px !important;
+}
+.cancelButton Button{
+	color: #fff !important;
+    font-family: 'Open Sans', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: normal !important;
+    text-align: center !important;
+    border: none !important;
+    padding: 7px 15px !important;
+    background: #999999 !important;
+    text-transform: uppercase !important;
+    border-radius: 5px !important;
+}
+.slds-input{
+	font-size: 14px !important;
+height: 30px !important;
+}
+div.slds-listbox{
+    font-size: 12px !important;
+color:black !important;
+}
+span.slds-checkbox_faux{
+    width: 20px !important;
+    height: 20px !important;
+}
+.slds-datepicker{
+font-size: 13px !important;
+}
+lightning-datepicker > div > div > lightning-calendar > div.slds-dropdown{ font-size:12px !important; }
+.slds-datepicker td{
+    
+    font-size:12px !important;
+ }
+body{ font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;   
+    line-height: 1.42857143 !important;
+    color: #333 !important;
+}
+lightning-combobox{
+font-size:14px !important;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;   
+    line-height: 1.42857143 !important;
+    color: #333 !important;
+height: 30px !important;	
+}
+.slds-form-element__help{
+	font-size:12px !important;
+}
+span.slds-checkbox_faux::after{
+height: 5px !important;
+    width: 14px !important;
+}

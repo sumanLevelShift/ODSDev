@@ -1,0 +1,3088 @@
+<apex:page showHeader="false" sidebar="false" controller="ODS_InitiativeController">
+    <apex:form >
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE; IE=10; IE=11; " />
+            
+            
+            <apex:includeScript value="https://code.jquery.com/jquery-latest.min.js" /> 
+            <!-------- Bootstrap ----->
+            <script src="{!URLFOR($Resource.ODS_Assets,'js/amcharts.js')}"></script>
+            <script src="{!URLFOR($Resource.ODS_Assets,'js/serial.js')}"></script>
+            <script src="{!URLFOR($Resource.ODS_Assets,'js/light.js')}">
+            <script src="https://www.amcharts.com/lib/3/gauge.js"></script>
+            <script src="{!URLFOR($Resource.ODS_Assets,'guagejs/gauge.js')}"></script>
+            <link rel="stylesheet" href="{!URLFOR($Resource.ODS_Assets,'css/export.css')}" type="text/css" media="all" />
+                <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/bootstrap.css')}" />
+                    <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/bootstrap.js')}" />
+                        <apex:stylesheet value="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
+                            <apex:includeScript value="https://www.google.com/recaptcha/api.js" /> 
+                                <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/style.css')}" />
+                                    <apex:stylesheet value="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"  />
+                                        <apex:includeScript value="https://code.jquery.com/jquery-1.9.1.js" />
+                                            <apex:includeScript value="https://code.jquery.com/ui/1.10.3/jquery-ui.js" />
+                                                
+                                                <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'ckeditor/ckeditor.js')}"/>
+                                                    <!------- ChartJs ---->
+                                                    <apex:includeScript value="{!URLFOR($Resource.ChartJs,'chartjs-3.6.2/dist/chart.min.js')}" />
+                                                        <apex:includeScript value="{!URLFOR($Resource.ChartJs,'chartjs-3.6.2/helpers/helpers.esm.min.js')}" />
+                                                            <apex:includeScript value="{!URLFOR($Resource.ChartJs,'chartjs-3.6.2/dist/chart.esm.min.js')}" />
+                                                                <apex:includeScript value="{!URLFOR($Resource.ChartJs,'chartjs-3.6.2/dist/helpers.esm.min.js')}" />
+                                                                    
+                                                                    <apex:includeScript value="{!URLFOR($Resource.ChartJs,'chartjs-plugin-datalabels-2.0.0/dist/chartjs-plugin-datalabels.esm.js')}" />
+                                                                        <!--<apex:includeScript value="{!URLFOR($Resource.ChartJs,'chartjs-plugin-datalabels-2.0.0/dist/chartjs-plugin-datalabels.js')}" />-->
+                                                                            <apex:includeScript value="{!URLFOR($Resource.ChartJs,'chartjs-plugin-datalabels-2.0.0/dist/chartjs-plugin-datalabels.min.js')}" />
+                                                                                
+                                                                                
+                                                                                <link href="font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
+                                                                                    <link href="{!URLFOR($Resource.ODS_Assets,'css/style_dev.css')}" rel="stylesheet" type="text/css" />
+                                                                                        <style>
+                                                                                        body{
+                                                                                            font-family: 'Open Sans', sans-serif;
+                                                                                        }
+            .EstimatePanel{height:400px;}
+            .EstimatePanel .timeline-scroll{height:350px;}
+            .popupBackground {
+                /* Background color */
+                background-color: black;
+                opacity: 0.20;
+                filter: alpha(opacity=20);
+                
+                /* Dimensions */
+                width: 100%;
+                height: 500%;
+                top: 0;
+                left: 0;
+                z-index: 998;
+                position: absolute;
+                font-family: sans-serif;
+                /* Mouse */
+                cursor: wait;
+            }
+            /* This is for the message DIV */
+            <!-- For two coloumns - harish-->
+                /* #col1,#col2{width:49%;display:inline-block;} */
+                #Block1{padding-top:1px;}
+                
+                
+                .PopupPanel {
+                    /* Background color */
+                    border: solid 2px skyblue;
+                    background-color: white;
+                    font-family: sans-serif;
+                    /* Dimensions */
+                    left: 50%;
+                    width: 100px;
+                    margin-left: -100px;
+                    top: 50%;
+                    height: 100px;
+                    margin-top: -25px;
+                    z-index: 999;
+                    position: fixed;
+                    
+                    /* Mouse */
+                    cursor: pointer;
+                }
+            .time-submit{width:100%}
+            #hide{display:none;}
+            #chartdiv .amcharts-main-div{top:-40px;}
+            #chartdivnew .amcharts-main-div{top:-40px;}
+            .timeline{
+                margin-top: 5px;
+                float: left;
+                min-width: 100px;
+            }
+                         
+                         .panel-heading span {
+                             margin-top: -10px;
+                             font-size: 15px;
+                         }
+                         .clickable {
+                             cursor: pointer;
+                         }
+                         
+                         .mid-bg {
+                             background: #FFFFFF;
+                             width: 100%;
+                             padding: 30px 2% 15px 2%;
+                             float: left;
+                         }
+                         .timeline td input.width2 {
+                             width: 50px;
+                         }
+                         
+                         
+                         .ck_edit{
+                             width: 45%;
+                         }
+                         
+                         .col-md-7{
+                             width: 100%;
+                         } 
+                         
+                         
+                         .timeline td input.width1 {
+                             width: 700px;
+                             height: 40px;
+                         }     
+                         
+                         
+                         .width1.txtTask{
+                             width: 350px; 
+                             margin: 0px; 
+                             height: 39px;
+                         }
+                         
+                         .width3.txtTask{
+                             width: 350px; 
+                             margin: 0px; 
+                             height: 39px;
+                         }
+                         .brandSecondaryBrd {
+                             border-top-width: 0px !important;
+                             border-bottom-width: 0px !important;
+                             visibility: inherit !important;
+                         }
+                         
+                         /* Product Modal */
+                         .modal-productlist .pbHeader{
+                             display:none;
+                         }
+                         .modal-productlist .pbBody>div{
+                             border: 1px solid #CCCCCC;
+                             border-radius: 5px;
+                             margin-bottom:12px;
+                         }
+                         body .secondaryPalette.bPageBlock{
+                             background:#FFFFFF;
+                             border:0;
+                         }
+                         .modal-productlist .pbSubheader{
+                             background:#4bc9f4;
+                             border:0;
+                             color:#FFFFFF;
+                             font-size:14px;
+                             margin:0;
+                             padding:8px!important;
+                         }
+                         .apexp .bPageBlock.apexDefaultPageBlock .pbBody .pbSubheader .hideListButton{
+                             background-position: 1px -39px;
+                         }
+                         .apexp .bPageBlock.apexDefaultPageBlock .pbBody .pbSubheader .showListButton {
+                             background-position: 1px -25px;
+                         }
+                         .px-0{
+                             padding:0;
+                         }
+                         .pr-0{
+                             padding-right:0;
+                         }
+                         .pl-0{
+                             padding-left:0;
+                         }
+                         .bPageBlock .detailList .labelCol {
+                             width: 14%;
+                             padding-right: 0;
+                         }
+                         /* Product Modal */
+                         .chart-container{
+                             position: relative;
+                         }
+                         
+                         
+                         </style>
+                         
+                         <script type="text/javascript">
+                             
+                             j$ = jQuery.noConflict();
+                         
+                         j$(document).ready(function()  
+                                            {
+                                                
+                                                j$( "#date_service, #date_service1 , #date_service2").datepicker(
+                                                    {
+                                                        dateFormat : 'mm/dd/yy',
+                                                        changeMonth : true,
+                                                        changeYear : true,
+                                                        
+                                                    });
+                                                
+                                                j$("#date_service, #date_service1, #date_service2").bind('paste',function(e){
+                                                    e.preventDefault();  //disable paste in datePicker
+                                                });
+                                                var xLabel='{!chartLabelDate}';
+                                                xLabel = xLabel.replace('[','').replace(']','');
+                                                var arrList = xLabel.split(',');
+                                                var arrListLen = arrList.length;
+                                                var xDateLabel=[];
+                                                for (var i = 0; i < arrListLen; i++) {   
+                                                    if(arrList[i].trim() != ''){ 
+                                                        const xd = new Date(arrList[i].trim());
+                                                        xDateLabel.push(xd.toLocaleDateString());
+                                                    }
+                                                }
+                                                
+                                                var xAxes='{!xAxes}';
+                                                xAxes = xAxes.replace('[','').replace(']','');
+                                                var arrList1 = xAxes.split(',');
+                                                var xAxesValue=[];
+                                                for (var i = 0; i < arrList1.length; i++) {
+                                                    xAxesValue.push(arrList1[i].trim());
+                                                }
+                                                var yAxes='{!yAxes}';
+                                                yAxes = yAxes.replace('[','').replace(']','');
+                                                var arrList2 = yAxes.split(',');
+                                                var yAxesValue=[];
+                                                for (var i = 0; i < arrList2.length; i++) {
+                                                    yAxesValue.push(arrList2[i].trim());
+                                                }
+                                                var maxEstimatedHours='{!maxEstimateHour}';
+                                                
+                                                var rectangleSet = false;
+                                                var chartTest;
+                                                var ctx = document.getElementById('burnDownChart');
+                                                var config = {
+                                                    type: 'line',
+                                                    
+                                                    options: {
+                                                        animation: {
+                                                            onProgress: function () {
+                                                                if (rectangleSet === true) {
+                                                                    var copyWidth = chartTest.scales['y-axis-0'].width;
+                                                                    var copyHeight = chartTest.scales['y-axis-0'].height + chartTest.scales['y-axis-0'].top + 10;
+                                                                    
+                                                                    var sourceCtx = chartTest.chart.canvas.getContext('2d');
+                                                                    sourceCtx.clearRect(0, 0, copyWidth, copyHeight);
+                                                                }
+                                                            },
+                                                            duration: 1,
+                                                            onComplete:  (x) => {
+                                                                const chart = x.chart;
+                                                                var { ctx } = chart;
+                                                            ctx.textAlign = 'center';
+                                                            ctx.fillStyle = "rgba(0, 0, 0, 1)";
+                                                            ctx.textBaseline = 'bottom';
+                                                            // Loop through each data in the datasets
+                                                            const metaFunc = this.getDatasetMeta;
+                                                            chart.data.datasets.forEach((dataset, i) => {
+                                                            var meta = chart.getDatasetMeta(i);
+                                                            meta.data.forEach((bar, index) => {
+                                                            var data = dataset.data[index];
+                                                            ctx.fillText(`${data}`, bar.x, bar.y - 5);
+                                                    });
+                                                });
+                                            }
+                                            },
+                                            responsive: true,
+                                            maintainAspectRatio: true,
+                                            scales: {
+                                            y: {
+                                            max:parseInt(maxEstimatedHours),
+                             display: true,
+                                 stepSize: 9,
+                                     title: {
+                                         display: true,
+                                             text: 'Hours'
+                                     }
+                        },
+                            x:{
+                                title:{
+                                    display: true,
+                                        text: 'Timesheet Date'
+                                }
+                            }
+            },
+            },
+                data: {
+                    labels: xDateLabel,
+                        datasets: [{
+                            label: "Hours",
+                            type: "line",
+                            backgroundColor: "#0000FF",
+                            borderColor: "#0000FF",
+                            borderWidth: 1,
+                            fill: false,
+                            data: yAxesValue,
+                            pointBackgroundColor: "transparent"
+                        },{
+                            label: "Timesheet Date & Hours",
+                            type: "bar",
+                            backgroundColor: "#00B000",
+                            borderColor: "green",
+                            borderWidth: 1,
+                            fill: true,
+                            data: xAxesValue
+                        }]
+                },
+                    
+            };
+            
+            chartTest = new Chart(ctx, config);
+            
+            });
+            
+            
+            $(document).on('click', '.panel-heading span.clickable', function(e){
+                var $this = $(this);
+                if(!$this.hasClass('panel-collapsed')) {
+                    $this.parents('.panel').find('.panel-body').slideUp();
+                    $this.addClass('panel-collapsed');
+                    $this.find('i').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    $this.parents('.panel').find('.panel-body').slideDown();
+                    $this.removeClass('panel-collapsed');
+                    $this.find('i').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            })        
+            function downloadAttachment(attachmentId)
+            {
+                debugger;
+                var base_url = window.location.origin;
+                if (!window.location.origin) {
+                    base_url  = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+                }
+                var win = window.open(base_url +'/servlet/servlet.FileDownload?file='+attachmentId, '_blank');
+                win.focus();
+            }
+            
+            function validatePercentage(evt) {
+                var val1;
+                /*debugger;*/
+                if (!(evt.keyCode == 46 || (evt.keyCode >= 48 && evt.keyCode <= 57)))
+                    return false;
+                var parts = evt.srcElement.value.split('.');
+                if (parts.length > 2)
+                    return false;
+                
+                if (evt.keyCode != 46) {
+                    var currVal = String.fromCharCode(evt.keyCode);
+                    val1 = parseFloat(String(parts[0]) + String(currVal));
+                    if(parts.length == 2)
+                        val1 = parseFloat(String(parts[0])+ "." + String(currVal));
+                } 
+                
+                if (evt.keyCode == 46){
+                    var currVal = String.fromCharCode(evt.keyCode);
+                    val1 = parseFloat(String(parts[0]) + String(currVal));
+                    if(val1 == 100)
+                        return false;
+                    else
+                        return (parts.length == 1);                      
+                }
+                if (val1 > 100)
+                    return false;
+                if (parts.length == 2 && (parts[1].length) >= 2) 
+                    return false;                            
+            }
+            function validateoffshore(evt) {
+                var val11;
+                if (!(evt.keyCode == 46 || (evt.keyCode >= 48 && evt.keyCode <= 57)))
+                    return false;
+                var partss = evt.srcElement.value.split('.');
+                if (parts.length > 6)
+                    return false;
+                
+                if (evt.keyCode != 46) {
+                    var currVals = String.fromCharCode(evt.keyCode);
+                    val11 = parseFloat(String(parts[0]) + String(currVals));
+                    if(partss.length == 6)
+                        val11 = parseFloat(String(parts[0])+ "." + String(currVals));
+                } 
+                
+                if (evt.keyCode == 46){
+                    var currVals = String.fromCharCode(evt.keyCode);
+                    val11 = parseFloat(String(parts[0]) + String(currVals));
+                    if(val11 == 100)
+                        return false;
+                    else
+                        return (partss.length == 1);                      
+                }
+                if (val11 > 100)
+                    return false;
+                if (partss.length == 6 && (parts[1].length) >= 6) 
+                    return false;                            
+            }
+            </script>
+            
+            <script>
+            var StartDateOfWeek = new Date('{!CurrentDate}');
+            var EndDateOfWeek = new Date('{!CurrentDate}');
+            TuesdayDate = new Date('{!CurrentDate}');
+            WednesdayDate = new Date('{!CurrentDate}');
+            ThursdayDate = new Date('{!CurrentDate}');
+            FridayDate = new Date('{!CurrentDate}');
+            SaturdayDate = new Date('{!CurrentDate}');
+            SundayDate = new Date('{!CurrentDate}');
+            var PortalUserRole = '{!PortalUserRole}';
+            var showSaveCreateJira = '{!showSaveCreateJira}';
+            var IsDisableFields = false;
+            var timesheetstatus = '';
+            var DeliveryTeam = '{!deliveryTeam}';
+
+            //alert('{!CurrentDate}');
+            function getstartAndEndOfWeek(date) {
+                //If no date object supplied, use current date
+                // Copy date so dont modify supplied date
+                var now = date ? new Date(date) : new Date('{!CurrentDate}');
+                
+                // set time to some convenient value
+                now.setHours(0, 0, 0, 0);
+                
+                // Get the previous Monday
+                var monday = new Date(now);
+                monday.setDate(monday.getDate() - monday.getDay() + 1);
+                
+                // Get next Sunday
+                var sunday = new Date(now);
+                sunday.setDate(sunday.getDate() - sunday.getDay() + 7);
+                
+                // Return array of date objects
+                return [monday, sunday];
+            }            
+            
+            $(document).ready(function() {
+                /*debugger;*/
+                $("#initiative").addClass("active");
+                var AccountID = $(".ddlstAccount").val();
+                var ServiceID = $(".ddlstService").val();
+                if(AccountID  == 'All' || ServiceID  == 'All'){
+                    $('#ContactClient').hide();
+                }
+                
+                var myContent = CKEDITOR.instances.editor1.getData();
+                
+                //  $(".ddlstAccount").hide();
+                //  $(".ddlstService").hide();
+                $(".ApplyBtn").hide();
+                $("#j_id0:j_id1:exportaspdf").hide();
+                $("#j_id0:j_id1:exportasexcel").hide();
+                
+                $('#Status_new').show();
+                
+                $("#btnApprove").hide();
+                $("#btnReject").hide();
+                $('#Status').hide();
+                $('#Status_Value').html('New');
+                
+                document.getElementById("btnactivestatus").style.display = "none";
+                $(".hrs").attr('maxlength', '3');
+                $('#ActiveInitiative').hide();
+                var initiativeStatusCheck = '{!InitiativeStatus}';
+                //initiativeStatusCheck.length ==0 means for new initiative.
+                if(initiativeStatusCheck.length ==0 || initiativeStatusCheck =='Saved' || initiativeStatusCheck =='Re-evaluate' || initiativeStatusCheck =='Initiative Recalled'){
+                    $('#Bucket_Hours_Type').attr("disabled", false);
+                }else{
+                    $('#Bucket_Hours_Type').attr("disabled", true);
+                }  
+                if(initiativeStatusCheck  == 'Active Initiative'){
+                    $('#Status_Value').html(initiativeStatusCheck);
+                    $('#ActiveInitiative').show();
+                }
+                else if(initiativeStatusCheck  == 'Estimation Rejected'){
+                    $('#Status_Value').html('Re-evaluate Estimates');
+                }
+                    else{
+                        $('#Status_Value').html(initiativeStatusCheck);
+                    }
+                var IsCustomer = {!isCustomer};
+                var estimationSummary={!checkEstimationSummaryAvailable};
+                var NonABCType = {!NonABCType};
+                if (IsCustomer) {
+                    $(".initiativeBillingTypeClass").css("display", "None");
+                    $("#mnuMyAccount").css("display", "block");
+                    $(".InitiativeManage").hide();
+                    $("#BucketHoursDiv").css("display", "None");
+                    $(".estimationSummary").css("display", "None");                    
+                } else {
+                    $("#mnuCustomer").css("display", "block");
+                    $(".InitiativeManage").show();
+                }
+                if(estimationSummary){
+                    $(".estimationSummary").css("display", "None");
+                }
+                if(NonABCType){
+                    $(".initiativeBillingTypeClass").css("display", "None");     
+                    $(".initiativeType option[value='Other']").hide();
+                }
+                $("#txtComments").prop('disabled', true);
+                var portalRole = '{!PortalUserRole}';
+                var portalApprover = '{!IsPortalApprover}';
+                var timeshetStats = '{!CurrentTimeSheetStatus}';
+                var passdFromDate = '{!PassedWeekFromDate}';
+                
+                if (timeshetStats == '') {
+                    
+                    $("divStatus").hide();
+                    
+                }
+                PortalUserRole = '{!PortalUserRole}';
+                IsPortalApprover = '{!IsPortalApprover}';
+                
+                
+                /*debugger;*/
+                BindJSONDataToInitiativePage();
+                $("button.collapsed").click(function() {
+                    
+                    $(".header").toggleClass("header-fixed");
+                    $(".navbar-toggle").toggleClass("nav-btn-fixed");
+                    $(".mid-bg").toggleClass("mid-bg-fixed");
+                });
+                
+                if (passdFromDate == '') {
+                    PopulateWeekDays(new Date('{!CurrentDate}'));
+                } else {
+                    PopulateWeekDays(new Date(passdFromDate));
+                }
+                
+                $(".hrs").each(function() {
+                    
+                    var that = this;
+                    $(this).keyup(function() {
+                        
+                        this.value = this.value.replace(/[^0-9\.]/g, '');
+                        
+                        newSum.call(that);
+                        totalSum.call(that);
+                        
+                    });
+                });
+                
+                $(".hrs").blur(function() {
+                    this.value = this.value.replace(/[^0-9\.]/g, '');
+                    
+                    if (this.value != '') {
+                        
+                        //if((this.value > 24)||(this.value == 0))
+                        if (this.value > 24) {
+                            alert("Invalid Hours. It cannot be more than 24");
+                            //alert("Invalid Hours. It cannot be Zero or more than 24");
+                            this.value = "";
+                            
+                        }
+                    }
+                });
+                
+                $("#Tbltimesheet").on("click", "a.delete-icon", function(e) {
+                    e.preventDefault();
+                    $(this).closest("tr").remove();
+                    CalculateColumnTotal();
+                });
+                
+                $(".add-row").click(function(e) {
+                    e.preventDefault();
+                    
+                    var rowCount = $(".timesheet > tbody >tr").length;
+                    var RowNo = rowCount;
+                    
+                    AddRowToAdditionalTable(RowNo);
+                    var elementid = '#ddlResName_' + RowNo;
+                    var elementid = '#ddlInitiative_' + RowNo;
+                    populateDynamicResoureNameByRow(elementid);
+                    populateDynamicInitiativeByRow(elementid);
+                    DisableFields(timesheetstatus);
+                });
+                
+                
+                $("#btnApprove").on("click", function(e) {
+                    e.preventDefault();
+                });
+                
+                /*$("#btnReject").on("click", function(e){
+                         e.preventDefault();
+                    });*/
+                <!--      passWeekDateToController(FormatDate(new Date($("#weekStDate").html())), FormatDate(new Date($("#weekEndDate").html())))   -->
+                    
+            });
+            
+            //// Bind Resource Name dropdown
+            function populateDynamicResoureName() {
+                var jsonResourceName = $('#hdnResourceName').val();
+                resourceNameArray = $.parseJSON(jsonResourceName);
+                $(".ddlResource").append($("<option></option>").val('--Select--').html('--Select--'));
+                $.each(resourceNameArray, function(key, value) {
+                    $(".ddlResource").append($("<option></option>").val(value.ResourceId).html(value.ResourceName));
+                });
+            }
+            
+            function populateDynamicResoureNameByRow(elementid) {
+                var jsonResourceName = $('#hdnResourceName').val();
+                resourceNameArray = $.parseJSON(jsonResourceName);
+                $(elementid).append($("<option></option>").val('--Select--').html('--Select--'));
+                $.each(resourceNameArray, function(key, value) {
+                    $(elementid).append($("<option></option>").val(value.ResourceId).html(value.ResourceName));
+                });
+            }
+            
+            function populateDynamicInitiativeByRow(elementid) {
+                var jsonInitiative = $('#hdnInitiativeName').val();
+                InitiativeArray = $.parseJSON(jsonInitiative);
+                $(elementid).append($("<option></option>").val('--Select--').html('--Select--'));
+                $.each(InitiativeArray, function(key, value) {
+                    $(elementid).append($("<option></option>").val(value.InitiativeId).html(value.InitiativeName));
+                });
+            }
+            
+            function CommentValidation() {
+                var cmnts = $('.Comments').val();
+                if (cmnts.trim() == '')
+                    
+                {
+                    alert('Please enter comments');
+                    return false;
+                } else {
+                    HidePopup();
+                    RejectAction(cmnts);
+                    return true;
+                }
+                
+            }
+            
+            function reloadpage() {
+                window.location.reload(false);
+            }
+            function reloadPageOnReCall() {
+                alert('Initiative has been recalled');
+                window.location.reload(false);
+            }
+            function reloadpageOnPopupClose() {
+                window.scrollTo(0,0);
+                setTimeout(function() {window.location.reload(false);}, 4000); 
+            }
+            
+            function fnUpdateStatus(Statustype) {
+                //alert(Statustype);
+                if (Statustype == 'Approve') {
+                    HidePopup();
+                    ApproveAction();
+                } else {
+                    
+                    var cmnts = $('.Comments').val();
+                    if (cmnts.trim() == '') {
+                        alert('Please enter comments');
+                        return false;
+                    } else {
+                        HidePopup();
+                        RejectAction(cmnts);
+                        return true;
+                    }
+                }
+            }
+            
+            function fnSendEscalationEmail() {
+                var cmnts = $('.escalationComments').val();
+                if (cmnts.trim() == '') {
+                    alert('Please enter escalation details');
+                    return false;
+                } else {
+                    HideEscalationPopup();
+                    EscalateAction(cmnts);
+                    return true;
+                }
+            }
+            
+            function ClearTimeSheetComments(actiontype) {                    
+                if (actiontype == 'Approve') {
+                    $('.btnApprove').show();
+                    $('.btnReject').hide();
+                    $('#lblHeading').html("Approve");
+                    
+                } else {
+                    $('.btnReject').show();
+                    $('.btnApprove').hide();
+                    $('#lblHeading').html("Reject");
+                }
+                $("#myModal").find("textarea").val('').end();
+                HidePopup();
+            }
+            
+            function ClearEscalationDetails()
+            {
+                $("#escalationMyModal").find("textarea").val('').end();
+                HideEscalationPopup();
+            }
+            
+            //Updated by Mani and Team
+            function CustomizePageByInitiativeStatus(status, PortalUserRole, IsPortalApprover) {                           
+                if(PortalUserRole === 'Customer' || PortalUserRole == 'Partner'){ 
+                    
+                    $('#productnamesarea').hide(); //added by Harish 18-05-21
+                    $('#Status_new').show();
+                    $('#Status_Value').show();
+                    $('#Status_root').hide();
+                    $('#Test').hide();
+                    
+                    $(".panel-body :input").attr("disabled", true);
+                    $("#Description_Assumption :input").attr("disabled", true);  
+                    $("#description_content :input").attr("disabled", true);                            
+                    $(".actiontd").hide(); 
+                    $(".panel-body.EstimatePanel :input").attr("disabled", true);                                
+                    $(".add-row").hide(); 
+                    $('#btnSave').hide();
+                    $('#btnSubmit').hide();
+                    $('#btnReSend').hide();
+                    $('#btnRecall').hide();
+                    $('#btnCancel').hide();
+                    $('#btnCancelInit').hide();
+                    $('#btnEscalate').hide();
+                    $('#escalationPanel').hide();
+                    $("#btnApprove").hide();
+                    $("#btnReject").hide(); 
+                    $('#OnHold').hide();
+                    $('#ChangeStatus').hide();
+                    $('#ActiveInitiative').hide();
+                    
+                    $("#btnSaveCreateJira").hide();
+                    $('#optMsg').hide();
+                    
+                    $('#hide').show();                                                           
+                    $('#btnSavePostSubmit').hide();                         
+                    var IsInitiativeApprover = '{!IsInitiativeApprover}';                      
+                    if(status == 'Initiative Submitted' && IsInitiativeApprover == 'true'){                                                                                        
+                        $('#btnselectproducts').hide(); //Added by Harish
+                        $("#btnApprove").show();
+                        $("#btnReject").show();  
+                        $('#hide').hide();                                                 
+                    }  
+                    if(status == 'Initiative Cancelled'){
+                        document.getElementById("j_id0:j_id1:exportasexcel").style.display = 'none';
+                        $('#exportasexcel').hide();
+                    }                                                                                                                                                                                         
+                }
+                else{
+                    $('#Status_new').hide();
+                    $('#Test').hide();
+                    $("#btnApprove").hide();
+                    $("#btnReject").hide();
+                    $('#btnCancelInit').show();
+                    $('#hide').hide();       
+                    $("#description_content :input").attr("disabled", true); 
+                    $('#editor1').attr("disabled", true);
+                    $('#btnSavePostSubmit').hide();
+                    $('#btnReSend').hide();
+                    $('#btnRecall').hide();
+                    
+                    if(showSaveCreateJira=='true'){
+                        $("#btnSaveCreateJira").show();
+                        $('#optMsg').show();                              
+                    }
+                    else{
+                        $("#btnSaveCreateJira").hide();
+                        $('#optMsg').hide();
+                    }                          
+                    
+                    if(status == 'Initiative Submitted' && (PortalUserRole == 'Technical Account Manager' || PortalUserRole == 'Practice Head') ){
+                        $('#btnselectproducts').hide(); //Added by Harish
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $("#initiative_name :input").attr("disabled", true); 
+                        $("#jiraId").attr("disabled", true);
+                        $("#OffshoreEstimate").attr("disabled", false);
+                        $(".col-md-8.col-sm-8.col-xs-12 :input").attr("disabled", true);      
+                        $("#description_content :input").attr("disabled", true);                                                                  
+                        $(".panel-body.EstimatePanel :input").attr("disabled", true); 
+                        $("#ProbablePercent:input").attr("disabled", false); 
+                        $("#date_service:input").attr("disabled", false);                               
+                        $("#date_service1:input").attr("disabled", false); 
+                        $("#date_service2:input").attr("disabled", false); 
+                        $('.time-submit').show();                           
+                        $('.actiontd').hide();
+                        $('.add-row').hide();
+                        $('#btnSave').hide();
+                        $('#btnSavePostSubmit').show();
+                        $('#btnSubmit').hide();
+                        $('#btnReSend').show();
+                        $('#btnRecall').show();
+                        $('#btnCancel').hide();
+                        $('#btnCancelInit').show();
+                        $("#btnBack :input").attr("disabled", false); 
+                        $('#btnBack').show();
+                        $('#OnHold').hide();
+                        $('#hide').hide();                                  
+                        $("#btnApprove").show();
+                        $("#btnReject").show(); 
+                        $("#btnSaveCreateJira").hide();
+                        $('#optMsg').hide();
+                    }
+                    
+                    
+                    else if(status == 'Initiative Approved' || status == 'Initiative Submitted' && (PortalUserRole != 'Technical Account Manager' || PortalUserRole != 'Practice Head') || status ==  'Initiative Delivered' || status == 'Approved After Re-evaluation'){                                 
+                        $('#btnselectproducts').hide(); //Added by Harish
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $("#initiative_name :input").attr("disabled", true);  
+                        $("#jiraId").attr("disabled", true);
+                        
+                        $("#OffshoreEstimate :input").attr("disabled", true);
+                        $("#date_service :input").attr("disabled", true);                               
+                        $("#date_service1 :input").attr("disabled", true); 
+                        $("#date_service2 :input").attr("disabled", true);      
+                        
+                        $(".col-md-8.col-sm-8.col-xs-12 :input").attr("disabled", true);      
+                        $("#description_content :input").attr("disabled", true);                                                   
+                        $(".panel-body.EstimatePanel :input").attr("disabled", true);                              
+                        $('.time-submit').show();                           
+                        $('.actiontd').hide();
+                        $('.add-row').hide();
+                        $('#btnSave').hide();
+                        $('#btnSubmit').hide();
+                        $('#btnCancel').hide();
+                        $("#btnBack :input").attr("disabled", false); 
+                        $('#btnBack').show();
+                        $('#OnHold').hide();
+                        $('#hide').show();
+                        $('#exportasexcel').show();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $("#btnSaveCreateJira").hide();
+                        $('#optMsg').hide();
+                        
+                    }
+                    if(status == 'Active Initiative'){
+                        $('#btnselectproducts').hide(); //Added by Harish
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $("#Description_Assumption :input").attr("disabled", true);
+                        $(".form-horizontal :input").attr("disabled", true);
+                        $("#ActiveInitiative :input").attr("disabled", false);      
+                        $(".form-group :input").attr("disabled", true);
+                        $(".panel-body.EstimatePanel :input").attr("disabled", true); 
+                        $("#description_content :input").attr("disabled", true);                                                                                              
+                        $("#Description_Assumption :input").attr("disabled", true);    
+                        $(".timeline-scroll :input").attr("disabled", true);
+                        $('#btnSave').hide();
+                        $('.actiontd').hide();
+                        $('.add-row').hide();
+                        $('#btnSubmit').hide();
+                        $('#btnCancel').hide();
+                        $('#btnCancelInit').show();
+                        $('#OnHold').hide();
+                        $('#ActiveInitiative').show();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $('#btnEscalate').show();
+                        $("#btnSaveCreateJira").hide();
+                        $('#optMsg').hide();
+                    }
+                    if(status == 'Initiative Delivered'){
+                        $('#btnselectproducts').hide(); //Added by Harish
+                        $("#ProbablePercent:input").attr("disabled", true);
+                        $('#btnCancelInit').hide();
+                        $('#btnEscalate').hide();
+                        $("#btnSaveCreateJira").hide();
+                        $('#optMsg').hide();
+                    }
+                    if(status == 'Initiative Approved'){
+                        $('#btnselectproducts').hide(); //Added by Harish
+                        $("#ProbablePercent:input").attr("disabled", true);
+                        $('#btnCancelInit').hide();
+                        $('#btnEscalate').show();
+                        $("#btnSaveCreateJira").hide();
+                        $('#optMsg').hide();
+                    }
+                    if(status == 'Initiative Cancelled'){
+                        $('#btnselectproducts').hide(); //Added by Harish
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $("#initiative_name :input").attr("disabled", true);    
+                        $("#jiraId").attr("disabled", true);  
+                        $("#OffshoreEstimate :input").attr("disabled", true);
+                        $("#date_service :input").attr("disabled", true);                               
+                        $("#date_service1 :input").attr("disabled", true);  
+                        $("#date_service2 :input").attr("disabled", true);                               
+                        
+                        $(".col-md-8.col-sm-8.col-xs-12 :input").attr("disabled", true);      
+                        $("#description_content :input").attr("disabled", true);                                                   
+                        $(".panel-body.EstimatePanel :input").attr("disabled", true);  
+                        $("#ProbablePercent:input").attr("disabled", true);                            
+                        $('.time-submit').show();                           
+                        $('.actiontd').hide();
+                        $('.add-row').hide();
+                        $('#btnSave').hide();
+                        $('#btnSubmit').hide();
+                        $('#btnCancel').hide();
+                        $("#btnBack :input").attr("disabled", false); 
+                        $('#btnBack').show();
+                        $('#OnHold').hide();
+                        $('#hide').hide();
+                        $('#btnCancelInit').hide();
+                        $('#exportasexcel').hide();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $('#btnEscalate').hide();
+                        $("#btnSaveCreateJira").hide();
+                        $('#optMsg').hide();
+                    }
+                    if(status == 'On Hold'){
+                        $('#btnselectproducts').hide(); //Added by Harish 
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $(".form-horizontal :input").attr("disabled", true);
+                        $("#OnHold :input").attr("disabled", false);      
+                        $("#Description_Assumption :input").attr("disabled", true);
+                        $(".form-group :input").attr("disabled", true);
+                        $(".panel-body.EstimatePanel :input").attr("disabled", true);      
+                        $("#description_content :input").attr("disabled", true);                                                                                              
+                        $(".timeline-scroll :input").attr("disabled", true);
+                        $("#OffshoreEstimate :input").attr("disabled", true);
+                        $("#ProbablePercent:input").attr("disabled", true);
+                        $('#btnSave').hide();
+                        $('#btnSubmit').hide();
+                        $('#btnCancel').hide();
+                        $('#btnCancelInit').show();
+                        $('.actiontd').hide();
+                        $('.add-row').hide();
+                        $('#OnHold').show();
+                        $('#btnactivestatus').show();   
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $('#btnEscalate').show();
+                        $("#btnSaveCreateJira").hide();
+                        $('#optMsg').hide();
+                    }
+                    if(status == 'Initiative Rejected'){
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $('#OnHold').hide();
+                        $("#Description_Assumption :input").attr("disabled", true);
+                        $("#description_content :input").attr("disabled", false);   
+                        $("#ProbablePercent:input").attr("disabled", true); 
+                        $("#OffshoreEstimate:input").attr("disabled", true);
+                        $('#ActiveInitiative').hide();
+                        $('#Status_root').html('Status');
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide();
+                        $('#btnCancelInit').show();   
+                        $('#btnEscalate').hide();
+                        $("#btnSaveCreateJira").hide();
+                        $('#optMsg').hide();
+                        
+                    }  
+                    if(status == 'Saved' || status == 'Initiative Recalled'){
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $('#OnHold').hide();
+                        $('#ActiveInitiative').hide();
+                        $("#description_content :input").attr("disabled", false); 
+                        $("#ProbablePercent:input").attr("disabled", false); 
+                        //  $("#date_service2:input").attr("disabled", false);
+                        $("#OffshoreEstimate:input").attr("disabled", false);
+                        $('#Status_root').html('Status');
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $('#hide').show();
+                        $('#btnCancelInit').hide();
+                        $('#btnEscalate').hide();
+                        $('#escalationPanel').hide();
+                        $("#btnSaveCreateJira").hide();
+                        $('#optMsg').hide();
+                    }                       
+                    if(status == 'Re-evaluate'){
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_root').hide();
+                        $('#OnHold').hide();
+                        $("#description_content :input").attr("disabled", false);   
+                        $("#ProbablePercent:input").attr("disabled", true); 
+                        
+                        $("#OffshoreEstimate:input").attr("disabled", true);
+                        $('#ActiveInitiative').hide();
+                        $('#Status_root').html('Status');
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $('#btnCancelInit').show(); 
+                        $('#btnEscalate').hide(); 
+                        $("#btnSaveCreateJira").hide(); 
+                        $('#optMsg').hide();
+                    } 
+                    if(status == ''){
+                        $('#Status_new').show();
+                        $('#Status_Value').show();
+                        $('#Status_Value').html('New');
+                        $('#Status_root').hide();
+                        $("#btnApprove").hide();
+                        $("#btnReject").hide(); 
+                        $('#btnCancelInit').hide();
+                        $("#description_content :input").attr("disabled", false); 
+                        $("#ProbablePercent:input").attr("disabled", false);
+                        $("#OffshoreEstimate:input").attr("disabled", false);
+                        $('#btnEscalate').hide();
+                        $('#escalationPanel').hide();
+                        
+                        if(showSaveCreateJira=='true'){
+                            $("#btnSaveCreateJira").show(); 
+                            $('#optMsg').show();
+                        }
+                        else{
+                            $("#btnSaveCreateJira").hide();
+                            $('#optMsg').hide();
+                        }
+                        
+                    }
+                    
+                } 
+                //DCO - 109
+                if(status =='New' || status =='' || status == 'Initiative Submitted' || status =='Re-evaluate' || status == 'Saved' || 
+                   status == 'Initiative Recalled' || status == 'Initiative Approved' || status == 'Active Initiative' ){
+                    $(".textAreaBusinessImpact :input").attr("disabled", false);   
+                }else{
+                    $(".textAreaBusinessImpact :input").attr("disabled", true);      
+                }
+                if(status == 'Initiative Approved' || status == 'Active Initiative'){
+                    $('#btnSavePostSubmit').show();
+                }
+                
+                if((status == 'Initiative Recalled' || status =='Re-evaluate' || status == 'Initiative Submitted') && (PortalUserRole === 'Customer' || PortalUserRole == 'Partner')){
+                    $('#btnSavePostSubmit').show();
+                }
+                if(PortalUserRole == 'Technical Account Manager' || PortalUserRole == 'Practice Head')
+                {
+                    if(status == '')
+                    {
+                        $('#documentSection').hide();
+                    }
+                    else
+                    {
+                        $('#documentSection').show();
+                    }
+                    if(status !='Re-evaluate' && status != 'Saved' && status != 'Initiative Recalled')
+                    {
+                        $('#attachment').hide();
+                    }
+                    else
+                    {
+                        $('#attachment').show();
+                    }    
+                    
+                }
+                else
+                {
+                    $("#documentSection").hide();
+                    $('#attachment').hide();
+                }
+                $("#btnClone").hide();
+                if((PortalUserRole == 'Technical Account Manager' || PortalUserRole == 'Practice Head')&&(status != ''))
+                {
+                    $("#btnClone").show();
+                }
+                 if(DeliveryTeam=='true'){
+                    $("#btnSubmit").hide();
+                }
+            }
+            
+            function validateNewRows(element) {
+                var elementvalue = $(element).val();
+                var newelementvalue = elementvalue.replace(/[^0-9\.]/g, '');
+                $(element).val(newelementvalue);
+                if ($(element).val() > 24) {
+                    alert("Hours cannot be more than 24");
+                    $(element).val("");
+                }
+            }
+            
+            function newSum() {
+                var sum = 0;
+                var thisRow = $(this).closest("tr");
+                thisRow.find("td .hrs").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        sum += parseFloat($(this).val());
+                    }
+                });
+                thisRow.find("td.total").html(sum); // It is an <input>, right?
+            }
+            
+            function newSumInAddRow(element) {
+                var sum = 0;
+                var thisRow = $(element).closest("tr");
+                thisRow.find("td .hrs").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        sum += parseFloat($(this).val());
+                        
+                    }
+                });
+                thisRow.find("td.total").html(sum); // It is an <input>, right?
+            }
+            
+            function totalSum() {
+                var sum = 0;
+                var table = $(".timesheet");
+                table.find("td.total").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).html()))) {
+                        sum += parseFloat($(this).html());
+                    }
+                });
+                $("#tdTotalSum").html(sum);
+            }
+            
+            
+            function CalculateColumnTotalTimesheet() {
+                var MonSum = 0;
+                var TueSum = 0;
+                var WedSum = 0;
+                var ThuSum = 0;
+                var FriSum = 0;
+                var SatSum = 0;
+                var SunSum = 0;
+                
+                var table = $(".timesheet");
+                
+                table.find("td .mondate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        MonSum += parseFloat($(this).val());
+                    }
+                });
+                table.find("td .tuedate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        TueSum += parseFloat($(this).val());
+                    }
+                });
+                table.find("td .weddate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        WedSum += parseFloat($(this).val());
+                    }
+                });
+                table.find("td .thudate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        ThuSum += parseFloat($(this).val());
+                    }
+                });
+                table.find("td .fridate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        FriSum += parseFloat($(this).val());
+                    }
+                });
+                table.find("td .satdate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        SatSum += parseFloat($(this).val());
+                    }
+                });
+                table.find("td .sundate").each(function(i, el) {
+                    if (!isNaN(parseFloat($(this).val()))) {
+                        SunSum += parseFloat($(this).val());
+                    }
+                });
+                
+                $("#tdMonSum").html(MonSum);
+                $("#tdTueSum").html(TueSum);
+                $("#tdWedSum").html(WedSum);
+                $("#tdThuSum").html(ThuSum);
+                $("#tdFriSum").html(FriSum);
+                $("#tdSatSum").html(SatSum);
+                $("#tdSunSum").html(SunSum); 
+            }
+            
+            function PopulateWeekDays(DateValue) {
+                var shortMonth = new Array();
+                shortMonth[0] = "JAN";
+                shortMonth[1] = "FEB";
+                shortMonth[2] = "MAR";
+                shortMonth[3] = "APR";
+                shortMonth[4] = "MAY";
+                shortMonth[5] = "JUN";
+                shortMonth[6] = "JUL";
+                shortMonth[7] = "AUG";
+                shortMonth[8] = "SEP";
+                shortMonth[9] = "OCT";
+                shortMonth[10] = "NOV";
+                shortMonth[11] = "DEC";
+                var startEndDateofWeek = [];
+                
+                
+                startEndDateofWeek = getstartAndEndOfWeek(new Date(DateValue));
+                WeekDay1 = "";
+                WeekDay2 = "";
+                WeekDay3 = "";
+                WeekDay4 = "";
+                WeekDay5 = "";
+                WeekDay6 = "";
+                WeekDay7 = "";
+                WeekStartDayYear = "";
+                WeekEndDayYear = "";
+                locale = "en-us"
+                $.each(startEndDateofWeek, function(index, value) {
+                    eachDate = new Date(value);
+                    if (index == 0) {
+                        StartDateOfWeek = eachDate;
+                        //WeekDay1 = eachDate.toLocaleString(locale, { month: "short" }) +" " +eachDate.getDate();   
+                        WeekDay1 = shortMonth[eachDate.getMonth()] + " " + eachDate.getDate();
+                        //alert(shortMonth[eachDate.getMonth()]);                   
+                        WeekStartDayYear = shortMonth[eachDate.getMonth()] + " " + eachDate.getDate() + " " + eachDate.getFullYear();
+                    } else if (index == 1) {
+                        EndDateOfWeek = eachDate;
+                        WeekDay7 = shortMonth[eachDate.getMonth()] + " " + eachDate.getDate();
+                        WeekEndDayYear = shortMonth[eachDate.getMonth()] + " " + eachDate.getDate() + " " + eachDate.getFullYear();
+                    }
+                });
+                TuesdayDate = new Date(StartDateOfWeek);
+                WednesdayDate = new Date(StartDateOfWeek);
+                ThursdayDate = new Date(StartDateOfWeek);
+                FridayDate = new Date(StartDateOfWeek);
+                SaturdayDate = new Date(StartDateOfWeek);
+                SundayDate = new Date(StartDateOfWeek);
+                
+                TuesdayDate.setDate(StartDateOfWeek.getDate() + 1);
+                WednesdayDate.setDate(StartDateOfWeek.getDate() + 2);
+                ThursdayDate.setDate(StartDateOfWeek.getDate() + 3);
+                FridayDate.setDate(StartDateOfWeek.getDate() + 4);
+                SaturdayDate.setDate(StartDateOfWeek.getDate() + 5);
+                SundayDate.setDate(StartDateOfWeek.getDate() + 6);
+                
+                
+                
+                WeekDay2 = shortMonth[TuesdayDate.getMonth()] + " " + TuesdayDate.getDate(); // AssignWeekValueToSet(StartDateOfWeek.getDate()+ 1,StartDateOfWeek,EndDateOfWeek); 
+                WeekDay3 = shortMonth[WednesdayDate.getMonth()] + " " + WednesdayDate.getDate(); //  AssignWeekValueToSet(StartDateOfWeek.getDate()+ 2,StartDateOfWeek,EndDateOfWeek);
+                WeekDay4 = shortMonth[ThursdayDate.getMonth()] + " " + ThursdayDate.getDate(); //  AssignWeekValueToSet(StartDateOfWeek.getDate()+ 3,StartDateOfWeek,EndDateOfWeek);
+                WeekDay5 = shortMonth[FridayDate.getMonth()] + " " + FridayDate.getDate(); //  AssignWeekValueToSet(StartDateOfWeek.getDate()+ 4,StartDateOfWeek,EndDateOfWeek);
+                WeekDay6 = shortMonth[SaturdayDate.getMonth()] + " " + SaturdayDate.getDate(); // AssignWeekValueToSet(StartDateOfWeek.getDate()+ 5,StartDateOfWeek,EndDateOfWeek);
+                //alert(WeekDay2)
+                
+                $("#HdrDay1").html(WeekDay1 + "<br/> MON");
+                $("#weekStDate").html(WeekStartDayYear);
+                $("#HdrDay2").html(WeekDay2 + "<br/> TUE");
+                $("#HdrDay3").html(WeekDay3 + "<br/> WED");
+                $("#HdrDay4").html(WeekDay4 + "<br/> THU");
+                $("#HdrDay5").html(WeekDay5 + "<br/> FRI");
+                $("#HdrDay6").html(WeekDay6 + "<br/> SAT");
+                $("#HdrDay7").html(WeekDay7 + "<br/> SUN");
+                
+                $("#weekEndDate").html(WeekEndDayYear);
+                $(".mondate").attr("DateValue", FormatDate(StartDateOfWeek));
+                $(".tuedate").attr("DateValue", FormatDate(TuesdayDate));
+                $(".weddate").attr("DateValue", FormatDate(WednesdayDate));
+                $(".thudate").attr("DateValue", FormatDate(ThursdayDate));
+                $(".fridate").attr("DateValue", FormatDate(FridayDate));
+                $(".satdate").attr("DateValue", FormatDate(SaturdayDate));
+                $(".sundate").attr("DateValue", FormatDate(SundayDate));
+            }
+            
+            
+            
+            function AssignMonthValueToSet(valToSet, dateVal) {
+                var days = getDaysInMonth(dateVal.getMonth() + 1, dateVal.getFullYear());
+                if (valToSet > days) {
+                    return dateVal.getMonth() + 2;
+                } else {
+                    return dateVal.getMonth() + 1;
+                }
+            }
+            
+            function AssignWeekValueToSet(valToSet, dateVal, dateSetVal) {
+                var shortMonth = new Array();
+                shortMonth[0] = "JAN";
+                shortMonth[1] = "FEB";
+                shortMonth[2] = "MAR";
+                shortMonth[3] = "APR";
+                shortMonth[4] = "MAY";
+                shortMonth[5] = "JUN";
+                shortMonth[6] = "JUL";
+                shortMonth[7] = "AUG";
+                shortMonth[8] = "SEP";
+                shortMonth[9] = "OCT";
+                shortMonth[10] = "NOV";
+                shortMonth[11] = "DEC";
+                
+                var days = getDaysInMonth(dateVal.getMonth() + 1, dateVal.getFullYear());
+                if (valToSet <= days) {
+                    //return (new Date(dateVal) ).toLocaleString(locale, { month: "short" }) +" " +valToSet;
+                    return shortMonth[dateVal.getMonth()] + " " + valToSet;
+                } else {
+                    //return (new Date(dateSetVal)).toLocaleString(locale, { month: "short" }) +" " +(valToSet - days);
+                    return shortMonth[dateSetVal.getMonth()] + " " + (valToSet - days);
+                }
+            }
+            
+            
+            
+            var getDaysInMonth = function(month, year) {
+                return new Date(year, month, 0).getDate();
+            }
+            
+            function FormatDate(datevalue) {
+                var dd = datevalue.getDate();
+                var mm = datevalue.getMonth() + 1;
+                var y = datevalue.getFullYear();
+                var FormattedDate = mm + "/" + dd + "/" + y;
+                return FormattedDate;
+            }
+            
+            function ValidateInitiativeRows(status){
+                var initiativename =  $('#initiative_name').val().trim();
+                var jiraId = $('#jiraId').val().trim();
+                if(initiativename.length < 2){
+                    alert("Initiative Name is mandatory");
+                    return false;
+                }
+                //Validation not required for Jira Id for Save & Create Jira 
+                if(status != 'SaveCreateJira'){
+                    if(jiraId.length == 0){
+                        alert("JIRA Id is mandatory");
+                        return false;
+                    }
+                }
+                <!-- DCO-155 on 28/09/2022-->
+                    if(status == 'Submitted' || status == 'btnSavePostSubmit'){
+                        
+                        var Total_hrs = parseFloat($('#tdColTotal').html());
+                        var businessChallange = $("#BusinessChallenge").val().trim();
+                        var personasInvolved = $("#PersonasInvolved").val().trim();
+                        var technologyDetails = $("#TechnologyDetails").val().trim();
+                        var outcomeOfOurSolution = $("#OutcomeOfOurSolution").val().trim();
+                        
+                        if(Total_hrs >= {!$Label.Estimated_Hr_Threshold}){
+                            
+                            if(businessChallange.length<{!$Label.Content_Entry}){
+                                alert('Business Challenge should not be empty and must be greater than ' + {!$Label.Content_Entry} + ' characters!!');
+                                return false;
+                            }
+                            else if(personasInvolved.length<{!$Label.Content_Entry}){
+                                alert('Personas Involved should not be empty and must be greater than ' + {!$Label.Content_Entry} + ' characters!!');
+                                return false;
+                            }
+                                else if(technologyDetails.length<{!$Label.Content_Entry}){
+                                    alert('Technology Details should not be empty and must be greater than ' + {!$Label.Content_Entry} + ' characters!!');
+                                    return false;
+                                }
+                                    else if(outcomeOfOurSolution.length<{!$Label.Content_Entry}){
+                                        alert('Outcome Of Our Solution should not be empty and must be greater than ' + {!$Label.Content_Entry} + ' characters!!');
+                                        return false;
+                                    }
+                            
+                        }
+                    }
+                
+                
+                
+                //added by Indhu on 28/08/2019
+                // Initative name field validation
+                if(initiativename.length > 80){
+                    alert("Initiative Name should not be greater than 80 character");
+                    return false;
+                }
+                var firstValue = $('#date_service').val().split('/');
+                var secondValue = $('#date_service1').val().split('/');
+                var thirdValue = $('#date_service2').val().split('/');
+                
+                var StartDate = $('#date_service').val();
+                var EndDate = $('#date_service1').val();
+                var UATExpectedDate = $('#date_service2').val();
+                
+                if(StartDate.length == 0){
+                    alert('Probable Start Date should not be empty');
+                    return false;
+                }
+                
+                if(EndDate.length == 0){
+                    alert('Probable End Date should not be empty');
+                    return false;
+                }
+                
+                var probableStart = new Date(StartDate);
+                var probableEnd = new Date(EndDate);
+                
+                if(probableStart > probableEnd){ 
+                    alert('Probable End date should be more than Probable Start date');
+                    return false;
+                }
+                if(UATExpectedDate != '' && (PortalUserRole == 'Technical Account Manager' || PortalUserRole == 'Practice Head')){
+                    var UATExpected = new Date(UATExpectedDate);
+                    if(UATExpected < probableStart){ 
+                        alert('UAT Expected Date should be later than Probable Start date.');
+                        return false;
+                    }
+                }
+                
+                
+                var initiativeType = $('.initiativeType').val();
+                var programmingReason = $('.programmingReason').val().trim();
+                if(initiativeType == 'None'){
+                    alert('Initiative Type is Mandatory');
+                    return false;
+                }
+                if(initiativeType == 'Programming' && programmingReason == ''){
+                    alert('Specify the reason the Initiative can’t be done in a declarative way');
+                    return false;
+                }                     
+                var initiativeTrig = $('.initiativeTrig').val();
+                var initiativeTag = $('.initiativeTag').val();
+                if(initiativeTrig == 'None'){
+                    alert('Trigger for Initiative is Mandatory');
+                    return false;
+                }
+                if(initiativeTag == null){
+                    alert('Tags about Initiative is Mandatory');
+                    return false;
+                }
+                
+                var total_Count = parseFloat($('#tdColTotal').html());
+                
+                if(status != 'Saved' && status != 'SaveCreateJira'){
+                    if(total_Count == 0){
+                        alert('Estimates Should not be Empty');
+                        return false;
+                    }
+                }
+                
+                if(status == 'Submitted'){
+                    var OffshoreEstimate = $('#OffshoreEstimate').val();
+                    
+                    if(OffshoreEstimate == 0){
+                        alert('Delivery estimate field should have the estimate provided by the delivery team.');
+                        return false;
+                    }
+                }
+                
+                //Added by Harish for TPM  - submit button validation
+                
+                if(status == 'Submitted'){
+                    var technicalProjectManager = $('.technicalProjectManager').val();
+                    
+                    if(technicalProjectManager =='None'){
+                        alert('Please assign a Technical Project Manager to this initiative.');
+                        return false;
+                    }
+                }
+                
+                return true;
+            }
+            
+            
+            function ActiveStatus(status){
+                ActiveStatusMethod(status);
+            }
+            
+            
+            function FetchInitiativeValues(stats){
+                
+                var InitiativeEstimateJSON = {};
+                $("#hdnAction").val(stats);
+                InitiativeEstimateJSON.Estimate = [];
+                var initiative_Removequotes = $('#initiative_name').val().trim().replace(/\'/g, "");
+                var Initiative_Name = initiative_Removequotes.replace(/\"/g, ""); 
+                var UATExpectedDate = $('#date_service2').val();
+                var StartDate = $('#date_service').val();
+                var EndDate = $('#date_service1').val();
+                var ContactAccService = document.getElementById("j_id0:j_id1:ContactClient").value;
+                var BriefDescription;
+                var Content_BriefDescription = CKEDITOR.instances.editor1.getData();
+                var ContentDescription_len = Content_BriefDescription.length;
+                if(ContentDescription_len  > 0 ){
+                    BriefDescription = Content_BriefDescription.slice(3,ContentDescription_len-5);}
+                else{
+                    BriefDescription = Content_BriefDescription;
+                }
+                
+                var Assumption;
+                var Content_Assumption =  CKEDITOR.instances.editor2.getData();
+                var Assumption_len = Content_Assumption.length;
+                if(Assumption_len  > 0){
+                    Assumption = Content_Assumption.slice(3,Assumption_len-5);}
+                else{
+                    Assumption = Content_Assumption;
+                }
+                var InitiativeType = $('.initiativeType').val();
+                var InitiativeProgrammingReason = $('.programmingReason').val().trim().replace(/\'/g, "");
+                InitiativeProgrammingReason = InitiativeProgrammingReason.replace(/\"/g, "");
+                
+                var InitiativeBusinessChallenge = $('.businessChallenge').val().trim().replace(/\'/g, "");
+                InitiativeBusinessChallenge = InitiativeBusinessChallenge.replace(/\"/g, "");
+                var InitiativePersonasInvolved = $('.personasInvolved').val().trim().replace(/\'/g, "");
+                InitiativePersonasInvolved = InitiativePersonasInvolved.replace(/\"/g, "");
+                var InitiativeTechnologyDetails = $('.technologyDetails').val().trim().replace(/\'/g, "");
+                InitiativeTechnologyDetails = InitiativeTechnologyDetails.replace(/\"/g, "");
+                var InitiativeOutcomeOfOurSolution = $('.outcomeOfOurSolution').val().trim().replace(/\'/g, "");
+                InitiativeOutcomeOfOurSolution = InitiativeOutcomeOfOurSolution.replace(/\"/g, "");
+                
+                <!--added by harish product-->
+                    var Initiativeproductnames = $('.productnames').val().trim().replace(/\'/g, "");
+                Initiativeproductnames = Initiativeproductnames.replace(/\"/g, "");
+                
+                var InitiativeTrigger = $('.initiativeTrig').val();
+                var ArchitectOrEngineer = $('.solArchitectOrEngineer').val();
+                var TechnicalProjectManager = $('.technicalProjectManager').val();//Added by Harish - TPM
+                var InitiativeTag = $('.initiativeTag').val();
+                var jiraId = $('#jiraId').val();
+                var OffshoreEstimate = $('#OffshoreEstimate').val();
+                var Status = $('#Status').val();              
+                var probablePercent = $('#ProbablePercent').val();
+                var InitiativeBillingType = $('.initiativeBillingType').val();
+                //alert(InitiativeBillingType);
+                // debugger;
+                InitiativeEstimateJSON.InitiativeName =  Initiative_Name;
+                
+                InitiativeEstimateJSON.StartDate  = StartDate;
+                InitiativeEstimateJSON.UATExpectedDate =UATExpectedDate;
+                InitiativeEstimateJSON.EndDate  = EndDate;
+                InitiativeEstimateJSON.ContactAccService = ContactAccService;
+                InitiativeEstimateJSON.BriefDescription = BriefDescription;
+                InitiativeEstimateJSON.Assumption = Assumption;
+                InitiativeEstimateJSON.Status = Status ;
+                InitiativeEstimateJSON.InitiativeType = InitiativeType;
+                InitiativeEstimateJSON.InitiativeProgrammingReason = InitiativeProgrammingReason;
+                InitiativeEstimateJSON.BusinessChallenge = InitiativeBusinessChallenge;
+                InitiativeEstimateJSON.PersonasInvolved = InitiativePersonasInvolved;
+                InitiativeEstimateJSON.TechnologyDetails = InitiativeTechnologyDetails;
+                InitiativeEstimateJSON.OutcomeOfOurSolution = InitiativeOutcomeOfOurSolution;
+                
+                <!--Added by Harish product-->
+                    InitiativeEstimateJSON.Initiativeproductnames = Initiativeproductnames; 
+                
+                InitiativeEstimateJSON.InitiativeTrigger = InitiativeTrigger;
+                InitiativeEstimateJSON.ArchitectOrEngineer = ArchitectOrEngineer;
+                InitiativeEstimateJSON.InitiativeTag = InitiativeTag;
+                InitiativeEstimateJSON.stats = stats;
+                InitiativeEstimateJSON.JiraId = jiraId;
+                InitiativeEstimateJSON.BucketHoursType=$('#Bucket_Hours_Type').prop('checked');
+                InitiativeEstimateJSON.InitiativeBillingType = InitiativeBillingType;
+                
+                
+                if(OffshoreEstimate == ""){
+                    OffshoreEstimate = 0;
+                }
+                InitiativeEstimateJSON.OffshoreEstimate = OffshoreEstimate;
+                if(probablePercent == ""){
+                    probablePercent = 0;
+                }
+                InitiativeEstimateJSON.ProbablePercent = probablePercent;
+                
+                InitiativeEstimateJSON.TechnicalProjectManager = TechnicalProjectManager; // Added by Harish
+                
+                
+                var validation = ValidateInitiativeRows(stats);
+                var confirmresult = false;
+                var table = $('#addtionalTable'); 
+                var checkTask = 0;    
+                var checkHours = 0;  
+                var checkContact = 1;                              
+                table.find(".width1.txtTask").each(function(i,el){                          
+                    if($(el).val().trim().length == 0){
+                        checkTask ++;
+                        return false;
+                    }
+                });                
+                table.find(".width2.txtTask").each(function(i,el){                          
+                    if($(el).val().trim().length == 0 || $(el).val() == null || $(el).val() == '' || $(el).val() == 0){
+                        checkHours++;
+                        return false;
+                    }
+                });                
+                if(checkTask > 0){
+                    alert('Task/Components should not be empty!!');
+                }
+                
+                if(checkHours > 0){
+                    alert('Hours should be greater than 0!!');
+                    return false;
+                }
+                
+                if($('select.qq option').length == 0){
+                    alert('Client side contact should not be empty!!');
+                    checkContact = 0;
+                }
+                if(ContactAccService.length==0){
+                    alert('Please select the approver!!');
+                    return false;
+                }
+                <!--DCO-110-->
+                    if($('#jiraId').prop('disabled') == false && stats != 'SaveCreateJira'){
+                        var accId=$(".ddlstAccount").val();
+                        accId=accId.substr(0,15);
+                        var byPassAccId='0014000001l1e6BAAQ';
+                        byPassAccId=byPassAccId.substr(0,15);
+
+                        if(byPassAccId != accId){
+                            var jiraFromController = '{!targetValues}';
+                            var jiravalues = jiraId.toLowerCase().replace(/(sprint|task|epic|bug|user(\s)*story)(\W)*(\d|,|\W)+/g, '').trim();
+                            const jiraIds = [...jiravalues.matchAll(/\d+/g)];/*numbers only*/
+                            const jiraPrefix = [...jiravalues.matchAll(/[a-zA-Z]+/g)];/*alphabets only*/
+                            const jiraIdRange = [...jiravalues.matchAll(/\d+[\s]*\-[\s]*\d+/g)];/*number range*/
+                            for(var i=0;i<jiraIdRange.length;i++){
+                                var rangeInfo = jiraIdRange[i]["0"].replace(' ','').split('-');
+                                var rangeStart = parseInt(rangeInfo[0]);
+                                var rangeEnd = parseInt(rangeInfo[1]);
+                                for(var n=rangeStart;n<=rangeEnd;n++){
+                                    jiraIds.push(n);
+                                }
+                            }
+                            
+                            if(jiraIds.length == 0){
+                                var searchStr = '';
+                                for(var i=0;i<jiraPrefix.length;i++){
+                                    searchStr += jiraPrefix[i];
+                                }
+                                if(jiraFromController.indexOf(searchStr) >= 0){
+                                    alert('An Initiative already exits for this Jira Id. Please enter a different Jira Id.');
+                                    return true;
+                                }
+                            }
+                            
+                            var matchFound = false;
+                            for(var i=0;i<jiraIds.length;i++){
+                                var searchStrId = jiraIds[i];
+                                var searchStr = jiraIds[i];
+                                if(jiraPrefix.length != 0){
+                                    for(var j=0;j<jiraPrefix.length;j++){
+                                        searchStr = jiraPrefix[j]["0"] + '-' + searchStrId;
+                                        if(jiraFromController.indexOf(searchStr) >= 0){
+                                            matchFound = true;
+                                        }
+                                    }
+                                }else{
+                                    if(jiraFromController.indexOf(searchStr) >= 0){
+                                        matchFound = true;
+                                    }
+                                }
+                            }
+                            if(matchFound){
+                                alert('An Initiative already exits for this Jira Id. Please enter a different Jira Id.');
+                                return true;
+                            }
+                        }
+                    }
+                if (validation && checkTask == 0 && checkContact != 0) {
+                    if (stats == "Submitted") {                                  
+                        confirmresult = confirm("Are you sure want to submit the Initiative Page");                                  
+                    } else {
+                        confirmresult = true;
+                    }
+                    if (confirmresult) {
+                        
+                        var table = $(".timesheet");
+                        table.find("tr").each(function(i, el) {
+                            var RowNo = $(this).attr("RowNo");
+                            var EstimateJsonValue = {};
+                            if (RowNo > 0) {
+                                var Phase = $("#ddlInitiative_" + RowNo).find('option:selected').val();                                      
+                                var remove_Lines = $("#txtTask_" + RowNo).val().trim().replace(/\n/g, "");
+                                var remove_space = remove_Lines.replace(/'/g, '\'');
+                                var remove_doublespace = remove_space.replace(/"/g, '\"'); 
+                                var remove_taskbackslash = remove_doublespace.replace(/\\/g, '/');
+                                var remove_exceptcharanddigits = remove_doublespace.replace(/[^\w\s]/g,''); 
+                                var remove_tabs = remove_taskbackslash.replace(/\t/g, '');                                                            
+                                var TaskName = remove_tabs.replace('~', '-') ;                                      
+                                var remove_assumLines = $("#assumption_" + RowNo).val().trim().replace(/\n/g, "");
+                                var remove_assumbackslash = remove_assumLines.replace(/\\/g, '/');    
+                                var remove_assumspace = remove_assumbackslash.replace(/'/g, '\'');
+                                var remove_assumdoublespace = remove_assumspace.replace(/"/g, '\"');
+                                var remove_assumexceptcharanddigits = remove_assumdoublespace.replace(/[^\w\s]/g,''); 
+                                var remove_assumtabs = remove_assumdoublespace.replace(/\t/g, '');                                      
+                                var assumption = remove_assumtabs.replace('~', '-');
+                                var Hours = $("#txtTask1_" + RowNo).val();                                                   
+                                EstimateJsonValue.Phase = Phase;
+                                EstimateJsonValue.TaskName = TaskName;
+                                EstimateJsonValue.Assumption = assumption;
+                                EstimateJsonValue.Hours = Hours;
+                                InitiativeEstimateJSON.Estimate.push(EstimateJsonValue);
+                                //Save Object as a value for the key - row no
+                            }
+                        });
+                        var strUpdatedList = JSON.stringify(InitiativeEstimateJSON);
+                        console.log('@@@@strUpdatedList'+strUpdatedList);
+                        PassJSONToInitiativeController(strUpdatedList); 
+                        
+                    }
+                }
+                
+                
+            } 
+            function ConfirmCloneAction()
+            {
+                confirmresult = confirm("Are you sure want to clone the Initiative Record and Estimates?");   
+                if(confirmresult)
+                {
+                    CloneAction();
+                }
+            }
+            
+            function populatePreviousWeekDates() {
+                $(".total").html('');
+                $(".ColTotal").html('');
+                $(".spanTotal").html('');
+                $("#tdTotalSum").html('');
+                var currDate = $("#weekStDate").html();
+                var currDateSplit = currDate.split(" ");
+                var shortMonth = currDateSplit[0];
+                var monthstring = getMonthFromString(shortMonth) + 1;
+                var dayString = parseFloat(currDateSplit[1]) - 7;
+                var yearString = currDateSplit[2];
+                if (dayString <= 0) {
+                    monthstring = monthstring - 1;
+                    //var days = Math.round(((new Date(yearString, monthstring))-(new Date(yearString, monthstring-1)))/86400000);
+                    var days = new Date(yearString, monthstring, 0).getDate();
+                    dayString = dayString + days;
+                    if (monthstring == 0) {
+                        monthstring = 12;
+                        yearString = yearString - 1;
+                    }
+                }
+                var currWeekDate = monthstring + '/' + dayString + '/' + yearString;
+                var datecurr = new Date(currWeekDate);
+                var WeekDate = FormatDate(datecurr);
+                
+                PopulateWeekDays(WeekDate);
+                $("#Tbltimesheet").find("input").val('');
+                //DisableFields();
+                passWeekDateToController(FormatDate(new Date($("#weekStDate").html())), FormatDate(new Date($("#weekEndDate").html())))
+            }
+            
+            //To Disable the Previous Month Fields
+            function DisableFields(tstatus) {
+                
+                //To get the Current and Previous Month
+                
+                
+                var currentMonthdate = new Date('{!CurrentDate}');
+                
+                
+                var previousMonth = new String(currentMonthdate.getMonth());
+                var currentMonth = new String(currentMonthdate.getMonth() + 1);
+                var currentYear = new String(currentMonthdate.getFullYear());
+                if (previousMonth == "0") {
+                    previousMonth = 12;
+                }
+                
+                $(".timesheet").children("tr").each(function() {
+                    
+                    $('td', this).each(function() {
+                        var timeValue = $(this).find(":input").attr("Datevalue");
+                        var currentRowDate = new Date(timeValue);
+                        // alert(currentRowDate);             
+                        //$(this).find(":input").prop('disabled', true);
+                        if (typeof timeValue !== "undefined") {
+                            var splitTimeValue = timeValue.split("/");
+                            
+                            if (currentRowDate > currentMonthdate) {
+                                if (tstatus == '' || tstatus == 'Saved') {
+                                    $(this).find(":input").prop('disabled', true);
+                                    $(this).find(":input").parent().prop('disabled', true);
+                                }
+                                
+                            }
+                            if (previousMonth == 12) {
+                                if ((splitTimeValue[0] != previousMonth.valueOf() && splitTimeValue[0] != currentMonth.valueOf())) {
+                                    if (tstatus == '' || tstatus == 'Saved') {
+                                        $(this).find(":input").prop('disabled', true);
+                                        $(this).find(":input").parent().prop('disabled', true);
+                                    }
+                                }
+                                
+                            } else if ((splitTimeValue[0] != previousMonth.valueOf() && splitTimeValue[0] != currentMonth.valueOf()) || (splitTimeValue[2] != currentYear.valueOf())) {
+                                if (tstatus == '' || tstatus == 'Saved') {
+                                    $(this).find(":input").prop('disabled', true);
+                                    $(this).find(":input").parent().prop('disabled', true);
+                                }
+                            } else {
+                                if (tstatus == '' || tstatus == 'Saved') {
+                                    $(this).find(":input").prop('disabled', false);
+                                    $(this).find(":input").parent().prop('disabled', false);
+                                }
+                            }
+                            
+                        }
+                        
+                    })
+                    
+                    //TO Check whether all the hours entry fields are disabled. If disabled then we are disabling the task and resource fields  
+                    if ($(".mondate").prop("disabled") == true && $(".tuedate").prop("disabled") == true && $(".weddate").prop("disabled") == true && $(".thudate").prop("disabled") == true && $(".fridate").prop("disabled") == true && $(".satdate").prop("disabled") == true && $(".sundate").prop("disabled") == true) {
+                        if (tstatus == '' || tstatus == 'Saved') {
+                            $(".txtTask").prop('disabled', true);
+                            $(".ddlResource").prop('disabled', true);
+                        }
+                        
+                    } else {
+                        if (tstatus == '' || tstatus == 'Saved') {
+                            $(".txtTask").prop('disabled', false);
+                            $(".ddlResource").prop('disabled', false);
+                        }
+                    }
+                })
+            }
+            
+            function populateNextWeekDates() {
+                var currDate = $("#weekEndDate").html();
+                var currDateSplit = currDate.split(" ");
+                var shortMonth = currDateSplit[0];
+                var monthstring = getMonthFromString(shortMonth) + 1;
+                var dayString = parseFloat(currDateSplit[1]) + 1;
+                var yearString = currDateSplit[2];
+                var days = new Date(yearString, monthstring, 0).getDate();
+                if (dayString > days) {
+                    dayString = dayString - days;
+                    monthstring = monthstring + 1;
+                    if (monthstring == 13) {
+                        yearString = yearString + 1;
+                    }
+                }
+                var currWeekDate = monthstring + '/' + dayString + '/' + yearString;
+                var datecurr = new Date(currWeekDate);
+                var TodayDate = new Date('{!CurrentDate}');
+                if (datecurr > TodayDate) {
+                    
+                    return false;
+                }
+                
+                $(".total").html('');
+                $(".ColTotal").html('');
+                $("#tdTotalSum").html('');
+                var WeekDate = FormatDate(datecurr);
+                //alert(WeekDate);
+                PopulateWeekDays(WeekDate);
+                $("#Tbltimesheet").find("input").val('');
+                passWeekDateToController(FormatDate(new Date($("#weekStDate").html())), FormatDate(new Date($("#weekEndDate").html())));
+            }
+            
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if (!(charCode > 31 && (charCode < 48 || charCode > 57) && charCode ==91 )) {
+                    return false;
+                }
+                return true;
+            }
+            
+            //To Get the Month Value from Short Month Name
+            function getMonthFromString(mon) {
+                var months = new Array("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC");
+                var result = getPosition(mon.toUpperCase(), months);
+                return result;
+            }
+            
+            //To get the Position of the Month
+            function getPosition(elementToFind, arrayElements) {
+                var i;
+                for (i = 0; i < arrayElements.length; i += 1) {
+                    
+                    var strarrayElements = arrayElements[i];
+                    var strelementToFind = elementToFind;
+                    
+                    if (strarrayElements.localeCompare(strelementToFind) == 0) {
+                        return i;
+                    }
+                }
+                return null; //not found
+            }
+            
+            
+            function CancelTimesheet() {
+                location.reload();
+            }
+            
+            function HidePopup() {
+                $("#myModal").hide();
+                $(".modal-backdrop").removeClass("modal-backdrop");
+            }
+            
+            function HideEscalationPopup() {
+                $("#escalationMyModal").hide();
+                $(".modal-backdrop").removeClass("modal-backdrop");
+            }
+            
+            function ApplySearch() {
+                var AccountID = $(".ddlstAccount").val();
+                var ServiceID = $(".ddlstService").val();
+                
+                ApplySearchAction(AccountID, ServiceID)
+            }
+            
+            function SetVisiblityForNextWeek(CurrentWeekEndDate) {
+                var nextWeekEndDate = new Date('{!CurrentDate}');
+                var TodayDate = new Date('{!CurrentDate}');
+                nextWeekEndDate.setDate(CurrentWeekEndDate.getDate() + 6);
+                if (TodayDate < nextWeekEndDate) {
+                    $("#nextWeekID").hide();
+                } else {
+                    $("#nextWeekID").show();
+                }
+            }
+            
+            </script>
+            
+            <apex:outputPanel id="jsPanel">
+                <script>
+                
+                function PostSaveInitiative(){
+                    window.location.href = "ViewInitiative";
+                }
+                
+                var toMmDdYy = function(input) {
+                    var ptrn = /(\d{4})\-(\d{2})\-(\d{2})/;
+                    if (!input || !input.match(ptrn)) {
+                        return null;
+                    }
+                    return input.replace(ptrn, '$2/$3/$1');
+                };
+                
+                function AddRowToAdditionalTable(RowNo) {
+                    var table = $('#addtionalTable');
+                    
+                    var table_length = $("#addtionalTable tr").length;
+                    
+                    $("#addtionalTable").append("<tr class='staticRows'    RowNo=" + RowNo + ">  <td class = 'Rescol'><select id='ddlInitiative_" + RowNo + "' class='' style='width:165px' > <option value='Analysis'>Analysis</option> <option value='Design'>Design</option> <option value='Development'>Development</option> <option value='System Testing'>System Testing</option> <option value='Deployment'>Deployment</option> <option value='Data Migration'>Data Migration</option> <option value='Consulting / Advisory Hours'>Consulting / Advisory Hours</option> <option value='UAT Support'>UAT Support</option> <option value='Post Production Support'>Post Production Support</option> <option value='Sandbox Refresh'>Sandbox Refresh</option> <option value='Scrum Activities'>Scrum Activities</option> <option value='Others'>Others</option></select></td> <td><textarea type='text' maxlength = '1500' title = 'Max chars 150' id='txtTask_" + RowNo + "' class='width1 txtTask'  /></td> <td><textarea type='text' maxlength = '1500' title = 'Max chars 150' id='assumption_" + RowNo + "' class='width3 txtTask'  /></td> <td><input type='text' maxlength = '4' title = 'Max chars 150' id='txtTask1_" + RowNo + "' class='width2 txtTask'  onkeyup='CalculateColumnTotal()' /></td> <td class='actiontd'> <a href='#' class='delete-icon'><i class='fa fa-trash-o' aria-hidden='true'></i></a> </td>  </tr>");
+                    
+                    
+                    
+                }
+                
+                function CalculateColumnTotal() {
+                    var table = $('#addtionalTable');
+                    
+                    var count = 0;
+                    
+                    table.find(".width2.txtTask").each(function(i,el){  
+                        if($(el).val().trim().length != 0){    
+                            count += parseFloat($(el).val());
+                        }
+                    });
+                    
+                    
+                    var total_Count= parseFloat(count).toFixed( 2 );
+                    
+                    
+                    $('#tdColTotal').html(total_Count);
+                }
+                
+                function logout() {
+                    window.location.replace("{!$Site.Prefix}/secur/logout.jsp");
+                }
+                
+                function Redirect() {
+                    window.location.href = "ViewTimesheet";
+                }
+                </script>
+            </apex:outputPanel>
+            
+            
+            
+            <apex:outputPanel id="jsInitiativePanel">
+                <script>
+                function BindJSONDataToInitiativePage() {
+                    /*debugger;*/
+                    var jInitiativeResponse = '{!Initiative_JSONtoBind}';                                                
+                    //jInitiativeResponse = jInitiativeResponse.replace(/'/g, "\\'");
+                    var jEstimateResponse = '{!EstimateJSONtoBind}';
+                    jEstimateResponse = jEstimateResponse.replace(/'/g, "\\'");
+                    var jsonFromInitiativeCtrl = '';
+                    var jsonFromEstimateCtrl = '';
+                    var initiativestatus = '';
+                    var estimatestatus = '';
+                    var splitDate  = '';
+                    var formatDate = '';
+                    var RowNo = 2;
+                    if(jInitiativeResponse != ''){
+                        jsonFromInitiativeCtrl = jInitiativeResponse.split('~')[0];
+                        console.log('@@@@jsonFromInitiativeCtrl '+jsonFromInitiativeCtrl);       
+                        jsonFromInitiativeCtrl = '['+jsonFromInitiativeCtrl+']'
+                        initiativestatus = jInitiativeResponse.split('~')[1];
+                    }
+                    
+                    if(jEstimateResponse  != ''){
+                        jsonFromEstimateCtrl = jEstimateResponse.split('~')[0];
+                        jsonFromEstimateCtrl = jsonFromEstimateCtrl.replace(/`/g, "\'");
+                        console.log('@@@@jsonFromEstimateCtrl  '+jsonFromEstimateCtrl);
+                        estimatestatus =  jEstimateResponse.split('~')[1];
+                    }
+                    if(jsonFromInitiativeCtrl != ''){
+                        var initiativeArray = $.parseJSON(jsonFromInitiativeCtrl);     
+                        //alert(initiativeArray[0].Is_a_bucket_of_hours_type__c);
+                        $('#Bucket_Hours_Type')[0].checked=initiativeArray[0].Is_a_bucket_of_hours_type__c;
+                        $('#initiative_name').val(initiativeArray[0].Name);
+                        $('#jiraId').val(initiativeArray[0].JIRA_ID__c);
+                        $('#OffshoreEstimate').val(initiativeArray[0].Offshore_Estimate__c);
+                        var startDate = initiativeArray[0].Probable_Start_Date__c;                                         
+                        splitDate = startDate.split('-');
+                        formatDate = splitDate[1]+"/"+splitDate[2]+"/"+splitDate[0];
+                        $('#date_service').val(formatDate);
+                        var endDate = initiativeArray[0].Probable_End_Date__c;
+                        splitDate = '';
+                        splitDate = endDate.split('-');
+                        formatDate = '';
+                        formatDate = splitDate[1]+"/"+splitDate[2]+"/"+splitDate[0];
+                        $('#date_service1').val(formatDate);
+                        var uatExpectedDate = initiativeArray[0].UAT_Expected_Date__c;
+                        if(typeof(uatExpectedDate) !== "undefined"){
+                            splitDate = '';
+                            splitDate = uatExpectedDate.split('-');
+                            formatDate = '';
+                            formatDate = splitDate[1]+"/"+splitDate[2]+"/"+splitDate[0];
+                            $('#date_service2').val(formatDate);
+                        }
+                        
+                        
+                        $('.ContactClient').val(initiativeArray[0].Client_side_Contact__r.Name);
+                        
+                        $('#ProbablePercent').val(initiativeArray[0].Probability_Percentage__c);
+                        $('#Status').val(initiativeArray[0].Status__c);
+                        $('.initiativeType').val(initiativeArray[0].Initiative_Type__c);
+                        $('.programmingReason').val(initiativeArray[0].Initiative_Programming_Reason__c);
+                        //$('.productnames').val(initiativeArray[0].Product__c);
+                        $('.businessChallenge').val(initiativeArray[0].Business_Challenge__c);
+                        $('.personasInvolved').val(initiativeArray[0].Persona_s_Involved__c);
+                        $('.technologyDetails').val(initiativeArray[0].Technology_Details__c);
+                        $('.outcomeOfOurSolution').val(initiativeArray[0].Outcome_of_our_solution__c);
+                        if(initiativeArray[0].Initiative_Billing_Type__c !=undefined || initiativeArray[0].Initiative_Billing_Type__c !=null){
+                            $('.initiativeBillingType').val(initiativeArray[0].Initiative_Billing_Type__c);
+                        }else{
+                            //$('.initiativeBillingType').val('Build');
+                        }
+                        
+                        $('.initiativeTrig').val(initiativeArray[0].Trigger_For_Initiative__c);    
+                        
+                        if(typeof initiativeArray[0].Solution_Architect_Engineer__c !== 'undefined'){
+                            $('.solArchitectOrEngineer').val(initiativeArray[0].Solution_Architect_Engineer__c);  
+                        }
+                        
+                        if(typeof initiativeArray[0].Technical_Project_Manager__c !== 'undefined'){
+                            $('.technicalProjectManager').val(initiativeArray[0].Technical_Project_Manager__c);
+                        }
+                        
+                        
+                        if(initiativeArray[0].Tags_About_Initiative__c != null){
+                            var selectList = document.getElementById('j_id0:j_id1:TagInitiative');
+                            var selectedOptions = (initiativeArray[0].Tags_About_Initiative__c).split(';');
+                            for(var i=0; i<selectList.length; i++){
+                                if(selectedOptions.includes(selectList.options[i].value)){
+                                    selectList.options[i].selected = true;
+                                }
+                                else{
+                                    selectList.options[i].selected = false;
+                                }
+                            }
+                            //initiativeArray[0].Tags_About_Initiative__c
+                        }
+                        
+                        
+                        CKEDITOR.instances.editor1.setData('{!JSENCODE(Initiative_Description)}'); 
+                        
+                        CKEDITOR.instances.editor2.setData('{!JSENCODE(Initiative_Assumption)}'); 
+                        
+                    }
+                    
+                    if(jsonFromEstimateCtrl  != ''){
+                        var estimateArray = $.parseJSON(jsonFromEstimateCtrl);
+                        console.log('@@@@@@@estimateArray'+estimateArray);
+                        $.each(estimateArray, function(key, value) {
+                            AddRowToAdditionalTable(RowNo);
+                            $('#ddlInitiative_'+RowNo).val(estimateArray[key].Phase__c); 
+                            $('#txtTask_'+RowNo).val(estimateArray[key].Task_Components__c);                                            
+                            $('#assumption_'+RowNo).val(estimateArray[key].Assumptions__c);                                               
+                            $('#txtTask1_'+RowNo).val(estimateArray[key].Hours__c);
+                            
+                            RowNo++;
+                        });
+                    }
+                    
+                    CustomizePageByInitiativeStatus(initiativestatus, PortalUserRole, IsPortalApprover);
+                    CalculateColumnTotal();
+                }
+                </script>          
+            </apex:outputPanel>
+            <style>
+                #left {
+                width: 50%;
+                float: left;
+                }
+                #right {
+                width: 50%;
+                float: right;
+                }
+                #chartdiv {
+                width: 100%;
+                height: 420px;
+                float: right;            
+                } 
+                #chartdivnew {
+                width: 100%;
+                height: 420px;
+                float: right;            
+                } 
+                
+            </style>
+            <script>
+            var utilizationHurs=0.0; 
+            var consumedHrs = 0.0;
+            var unUtilizedHrs=0.0;
+            var remainingHrs=0.0;
+            window.onload=function(){
+                hrs();
+                toHide();
+                /*debugger;*/
+                var approvalType = getParameterByName('Type');
+                if(approvalType == 'Reject'){
+                    $('#btnReject').click();
+                    
+                }
+            }
+            
+            
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, '\\$&');
+                var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            }
+            </script>   
+            
+            
+            <script>    
+            function hrs(){
+                var crntInvId =  '{!$CurrentPage.parameters.CurrenInitiativeId}';
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.ODS_InitiativeController.GetUtilizedHours}', 
+                    crntInvId,
+                    function(result, event){
+                        if(result === null)
+                        {
+                            utilizationHurs = 0.0;
+                            consumedHrs = 0.0;
+                            unUtilizedHrs=0.0;
+                            remainingHrs=0.0;
+                        }
+                        else
+                        {                   
+                            var hrsArray = result.split("|");                                     
+                            utilizationHurs = hrsArray[0];
+                            consumedHrs = hrsArray[1];
+                            unUtilizedHrs=hrsArray[2];
+                            remainingHrs=hrsArray[3];
+                        }
+                    });
+                
+            }
+            
+            var chart = AmCharts.makeChart("chartdiv", {
+                "theme": "light",
+                "type": "gauge",
+                "axes": [{
+                    "topTextFontSize": 20,
+                    "topTextYOffset": 70,
+                    "axisColor": "#31d6ea",
+                    "axisThickness": 1,
+                    "endValue": 100,
+                    "gridInside": true,
+                    "inside": true,
+                    "radius": "50%",
+                    "valueInterval": 10,
+                    "tickColor": "#67b7dc",
+                    "startAngle": -90,
+                    "endAngle": 90,
+                    "unit": "%",
+                    "bandOutlineAlpha": 0,
+                    "bands": [{
+                        "color": "#4ECAF4",
+                        "endValue": 100,
+                        "innerRadius": "105%",
+                        "radius": "130%",
+                        "gradientRatio": [0, 0, 0],
+                        "startValue": 0
+                    }, {
+                        "color": "#4ECAF4",
+                        "endValue": 0,
+                        "innerRadius": "105%",
+                        "radius": "130%",
+                        "gradientRatio": [0.5, 0, -0.5],
+                        "startValue": 0
+                    }]
+                }],
+                "arrows": [{
+                    "alpha": 1,
+                    "innerRadius": "35%",
+                    "nailRadius": 0,
+                    "radius": "130%"
+                }]
+            });
+            
+            setInterval(randomValue, 50);
+            
+            // set random value
+            function randomValue() {
+                var value = utilizationHurs;
+                var consumedValue = consumedHrs;
+                chart.arrows[0].setValue(value);
+                
+                chart.axes[0].setTopText(consumedValue + " Hours");
+                // adjust darker band to new value
+                chart.axes[0].bands[1].setEndValue(value);
+            }
+            var chartnew = AmCharts.makeChart("chartdivnew", {
+                "theme": "light",
+                "type": "gauge",
+                "axes": [{
+                    "topTextFontSize": 20,
+                    "topTextYOffset": 70,
+                    "axisColor": "#31d6ea",
+                    "axisThickness": 1,
+                    "endValue": 100,
+                    "gridInside": true,
+                    "inside": true,
+                    "radius": "50%",
+                    "valueInterval": 10,
+                    "tickColor": "#67b7dc",
+                    "startAngle": -90,
+                    "endAngle": 90,
+                    "unit": "%",
+                    "bandOutlineAlpha": 0,
+                    "bands": [{
+                        "color": "#4ECAF4",
+                        "endValue": 100,
+                        "innerRadius": "105%",
+                        "radius": "130%",
+                        "gradientRatio": [0, 0, 0],
+                        "startValue": 0
+                    }, {
+                        "color": "#4ECAF4",
+                        "endValue": 0,
+                        "innerRadius": "105%",
+                        "radius": "130%",
+                        "gradientRatio": [0.5, 0, -0.5],
+                        "startValue": 0
+                    }]
+                }],
+                "arrows": [{
+                    "alpha": 1,
+                    "innerRadius": "35%",
+                    "nailRadius": 0,
+                    "radius": "130%"
+                }]
+            });
+            
+            setInterval(randomValueNew, 50);
+            
+            // set random value
+            function randomValueNew() {
+                var value = unUtilizedHrs;
+                var remainingValue = remainingHrs;
+                chartnew.arrows[0].setValue(value);
+                
+                chartnew.axes[0].setTopText(remainingValue + " Hours");
+                // adjust darker band to new value
+                chartnew.axes[0].bands[1].setEndValue(value);
+            }
+            function toHide(){
+                var status =  '{!$CurrentPage.parameters.Status}'; 
+                if(status == '' ||status == 'Re-evaluate' || status == 'New' || status == 'Initiative Submitted' || status == 'Saved'  ){
+                    $('#chartdiv').hide();
+                    $('#chartdivnew').hide();
+                    $('#chartdiv2').hide(); 
+                    
+                }
+            }
+            </script>
+            
+            
+            <!-------- Fonts Awesome ----->
+            <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'font-awesome/css/font-awesome.css')}" />
+            <title>ON DEMAND SERVICES </title>
+        </head>
+        
+        <body>
+            <apex:pageMessages id="showmsg"></apex:pageMessages>
+            
+            <apex:actionFunction name="PassJSONToInitiativeController" action="{!SaveInitativeAndEstimate}" status="statusSaveTrip" rerender="showmsg" >
+                <apex:param name="PassedInitiativeEstimateJSON" assignTo="{!PassedInitiativeEstimateJSON}" value="InitiativeController"/>
+            </apex:actionFunction>
+            
+            
+            
+            <apex:actionFunction name="ActiveStatusMethod" action="{!SaveActiveInitiativeStatus}" status="statusSaveTrip" rerender="showmsg" oncomplete="javascript: if({!SaveActiveInitiativeStatusError==false})location.reload();">
+                <apex:param name="PassedActiveStatus" assignTo="{!PassedActiveStatus}" value="ActiveStatusVariable"/>
+            </apex:actionFunction>   
+            <apex:actionFunction name="ReSendInitiativeAction" action="{!ReSendInitiativeEmail}" status="statusSaveTrip" rerender="showmsg" onComplete="javascript: if({!ReSendInitiativeEmailError==false})alert('Initiative email resent successfully');"/> 
+            <apex:actionFunction name="ReCallInitiativeAction" action="{!ReCallInitiativeEmail}" status="statusSaveTrip" rerender="showmsg" onComplete="javascript: if({!ReCallInitiativeEmailError==false})reloadPageOnReCall();"/>   
+            <apex:actionFunction name="CloneAction" action="{!CloneInitiative}" status="statusSaveTrip" rerender="showmsg" oncomplete="javascript : if({!CloneInitiativeError==false})alert('Initiative cloned successfully!!!');"/>
+            
+            <apex:actionFunction name="ApproveRejectAction" action="{!GetTimeSheetIdFromAction}" rerender="SearchResultsPanel, myModal" immediate="true">
+                <apex:param name="CurrentTimesheetId" value="" assignTo="{!CurrenTimesheetId}" />
+            </apex:actionFunction>
+            
+            <apex:actionFunction name="RejectAction" action="{!RejectInitiative}" reRender="SearchResultsPanel,showmsg" status="statusSaveTrip" oncomplete="javascript: if({!RejectInitiativeError==false}){reloadpage();}else{reloadpageOnPopupClose();}">
+                <apex:param name="timeshtCmnts" value="" assignTo="{!TimesheetComments}" />
+            </apex:actionFunction>
+            <apex:actionFunction name="ApproveAction" action="{!ApproveInitiative}" reRender="SearchResultsPanel,showmsg" status="statusSaveTrip" oncomplete="javascript: if({!ApproveInitiativeError==false}){reloadpage();}else{reloadpageOnPopupClose();}" />
+            <apex:actionFunction name="CancelAction" action="{!CancelInitiative}" reRender="showmsg"/>
+            <apex:actionFunction name="EscalateAction" action="{!EscalateInitiative}" reRender="SearchResultsPanel,showmsg" status="statusSaveTrip" oncomplete="javascript: if({!EscalateInitiativeError==false}){reloadpage();}else{reloadpageOnPopupClose();}">
+                <apex:param name="escalationComments" value="" assignTo="{!EscalationComments}" />
+            </apex:actionFunction>
+            
+            <!--  This ActionFunction will inovke when we change values in the Global filters  -->
+            <apex:actionFunction name="ApplySearchAction" action="{!ReDirectToViewIntitiativepage}" status="statusSaveTrip" rerender="listPanel,jsPanel,SearchResultsPanel,CustomerPanel,showmsg" oncomplete="javascript: if({!ReDirectToViewIntitiativepageError==false})loadPagination();" immediate="true">
+                <apex:param name="SelectedAccountId" value="" assignTo="{!AccountId}" />
+                <apex:param name="SelectedServiceID" value="" assignTo="{!ServiceID}" />
+            </apex:actionFunction>
+            <apex:actionFunction name="sendAttachmentToController" action="{!saveAttachment}" status="statusSaveTrip" reRender="showmsg" >
+                <apex:param name="attachmentName" value=""/>
+                <apex:param name="attachmentBody" value=""/>
+            </apex:actionFunction>
+            <div class="shadow-show"></div>
+            <c:ODS_HeaderComponent />
+            <apex:actionStatus id="statusSaveTrip" stopText="">
+                <apex:facet name="start">
+                    <div>
+                        <div class="popupBackground" />
+                        <div class="PopupPanel">
+                            <table border="0" width="100%" height="100%">
+                                <tr>
+                                    <td align="center"><b>Please Wait</b></td>
+                                </tr>
+                                <tr>
+                                    <td align="center"><img src="{!$Resource.ODS_Statussign}" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionStatus>
+            
+            
+            
+            <div class="clr"></div>
+            
+            <div class="clr"></div>
+            
+            
+            
+            <div class="mid-bg">
+                <div class="sub-warp">
+                    <apex:outputPanel rendered="{!inActiveApprover}" style="color: red; text-align: center; margin: 10px 0;">
+                        <p><strong>{!currentClientName}</strong> is inactive as an approver in the system. Please select an active approver.</p>
+                    </apex:outputPanel>
+                    <div class="panel panel-default">        
+                     
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4">
+
+                            <h3 class="panel-title">INITIATIVE</h3>
+                            <span style="padding-left:257px">    <label class="panel-title" id="Account_NameHeader">Account:</label>  </span>
+                            <label class="panel-title" id="Account_Name">{!PassAccountName}</label>
+                            <span style="padding-left:20px">      <label class="panel-title" id="Service_NameHeader">Service:</label>  </span>
+                            <label class="panel-title" id="Service_Name">{!PassServiceName}</label>
+                            
+                            
+                            <span class="pull-right clickable" style="margin-top: 0.2px;" ><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                        </div>   
+                        <div class="panel-body">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-horizontal"> 
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Initiative Name<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span>
+                                        </label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <input class="form-control" id="initiative_name" name="initiativename" type="text" value="" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">JIRA ID<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span>
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input class="form-control" id="jiraId" name="JIRAID" type="text" value="" /><span class ="optionalmsg" id = "optMsg">[* optional for Save &amp; Create Jira action]</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Probable Start Date<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">                                                   
+                                            <input type="text" name="txt_from" class="tfrom_date" placeholder="From Date" id="date_service" onkeypress="return isNumber(event)" autocomplete = "off" />                                                                 
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Probable End Date<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">                     
+                                            <input type="text" name="txt_to" class="tto_date" placeholder="To Date" id="date_service1" onkeypress="return isNumber(event)" autocomplete = "off"/>                                                                
+                                        </div> 
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Approver<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:selectList styleClass="form-control qq ContactClient"  id="ContactClient" value="{!ClientContact}" size="1"> 
+                                                <apex:selectOptions value="{!ContactAccountServices}"></apex:selectOptions>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                    <apex:outputPanel styleClass="InitiativeManage" id="pnlInitiativeType">
+                                        <apex:outputPanel styleClass="InitiativeManage" id="pnlInitiativeBillingType">
+                                            <div class="form-group initiativeBillingTypeClass">
+                                                <label class="col-md-4 col-sm-4 col-xs-12 control-label">Initiative Category</label>
+                                                <div class="col-md-8 col-sm-8 col-xs-12">
+                                                    <apex:selectList styleClass="form-control qq initiativeBillingType"  id="InitiativeBillingTypePicklist" size="1" value="{!InitiativeBillingType}"> 
+                                                        <apex:selectoptions value="{!getInitiativeBillingType}"/> 
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Initiative Type<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control qq initiativeType"  id="InitiativeType" value="{!InitiativeType}" size="1"> 
+                                                    <apex:selectOption itemValue="None" itemLabel="--None--"/>
+                                                    <apex:selectoptions value="{!getInitiativeType}"/>                                                      
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Reasons for Programming</label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <textarea type="text" maxlength="1500" rows="5" id="ProgrammingReason" class="form-control programmingReason width1 txtTask"/>                                
+                                            </div>
+                                        </div>                        
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Trigger For Initiative<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control qq initiativeTrig"  id="TrigInitiative" value="{!InitiativeTrigger}" size="1"> 
+                                                    <apex:selectOption itemValue="None" itemLabel="--None--"/>
+                                                    <apex:selectoptions value="{!getTriggerForInitiative}"/>  
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">    
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Solution Architect/ Engineer<span style="color:#ff9797; font-size:15px; cursor:default;"></span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control qq solArchitectOrEngineer" value="{!ArchitectOrEngineer}" size="1"> 
+                                                    <apex:selectoptions value="{!getArchitectOrEngineer}"/> 
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                        
+                                        <!--Added by Harish --TPM 04-06-21-  --> 
+                                        <div class="form-group">    
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Technical Project Manager<span style="color:#ff9797; font-size:15px; cursor:default;"></span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control qq technicalProjectManager" value="{!TechnicalProjectManager}" size="1"> 
+                                                    <apex:selectoptions value="{!getTechnicalProjectManager}"/>
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Tags About Initiative<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control qq initiativeTag"  id="TagInitiative" value="{!InitiativeTags}" size="4" multiselect="true">                   
+                                                    <apex:selectoptions value="{!getInitiativeTagPicklist}"/>      
+                                                </apex:selectList>                               
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Probability Percentage</label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input class="width3" id="ProbablePercent" name="ProbablePercent" type="text" placeholder="Probable Percentage" maxlength="5" onkeypress="javascript:return validatePercentage(event);"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">UAT Expected Date<span style="color:#ff9797; font-size:15px; cursor:default;" ></span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">                                                   
+                                                <input type="text" name="txt_UAT" class="UATfrom_date" placeholder="UAT Expected Date" id="date_service2" onkeypress="return isNumber(event)" autocomplete = "off" />                                                                 
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Delivery Estimate
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input class="form-control" id="OffshoreEstimate" name="OffshoreEstimate" type="text"  maxlength="6" placeholder="Offshore Estimate" style="width: 200px" onkeypress="javascript:return validateoffshore(event);"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" id="BucketHoursDiv">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label">Is a bucket of hours type?<span style="color:#ff9797; font-size:15px; cursor:default;" ></span></label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <input type="checkbox" id="Bucket_Hours_Type" style="width: 20px !important;height: 20px !important;" />
+                                            </div>
+                                        </div>
+                                        
+                                    </apex:outputPanel>
+                                    <div class="form-horizontal">
+                                        
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label " id="Status_new">Status:</label>
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label " id="Status_root" style="left: -150px;">Status</label>
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label " id="Status_Value" style="text-align: left !important;" ></label>  
+                                            
+                                        </div>
+                                        
+                                        
+                                    </div>    
+                                    <div id = "ActiveInitiative" style="position: relative;left: 226px;display: block;">
+                                        <input type="button" id="btnOnhold" class="save-submit" value="Mark As On Hold" onclick="return ActiveStatus('On Hold')" />
+                                        <input type="button" id="btnDelivered" class="save-submit" value="Mark As Delivered" onclick="return ActiveStatus('Initiative Delivered')" />
+                                    </div>     
+                                    <div id = "OnHold" style = "position: relative;left: 226px;display: block;">
+                                        <input type="button" id="btnactivestatus"  class="save-submit" value="Make Active" onclick="return ActiveStatus('Active Initiative')" />
+                                    </div>   
+                                    
+                                    
+                                    
+                                </div>
+                            </div>
+                            <div id= "Initiative_Description">
+                                <div class="col-md-6 col-sm-6 col-xs-12">                                 
+                                    <div id="brief_description">
+                                        <p id = "description_content">
+                                            <b>               Brief Description: </b><br />
+                                            <textarea id="editor1" name="editor1"></textarea>
+                                            <script type="text/javascript">
+                                            CKEDITOR.replace( 'editor1' );
+                                            </script>
+                                        </p>
+                                    </div>     
+                                </div>      
+                            </div>
+                            
+                            <!--Added by harish Sankaran For "product List" start 05-05-21--->
+                            
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group" id="productnamesarea">
+                                    <div class="clearfix">
+                                        <div class="pull-left">
+                                            <label class="control-label">Products</label>
+                                        </div>
+                                        <div class="pull-right">
+                                            
+                                            <span data-toggle="modal" data-target="#productmodal"><apex:commandlink value="Select" action="{!showPopup}" rerender="tstpopup"/></span>
+                                        </div>
+                                    </div>                            
+                                    <apex:inputtextarea value="{!productnames}" rows="5" id="productnames" styleClass="form-control productnames txtTask"  readonly="true"  />                                                                 
+                                    
+                                </div>
+                            </div>                  
+                            
+                        </div>     
+                        
+                    </div>
+                    
+                    <div id= "Test">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="color: white;background-color: #3399cc;">
+                                <h3 class="panel-title">BRIEF DESCRIPTION AND ASSUMPTION</h3>                            
+                                <span class="pull-right clickable" style="margin-top: 0.2px;" ><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                            </div>
+                            
+                            <div class="panel-body">
+                                <div id = "Description_Assumption">
+                                    <div class="col-md-6">
+                                        <div id="brief_description1">
+                                            <p id = "description_content1">
+                                                <b>Brief Description: </b><br />
+                                                <textarea id="editor3" name="editor3"></textarea>
+                                                <script type="text/javascript">
+                                                CKEDITOR.replace( 'editor3' );
+                                                </script>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div id="assumption">
+                                            <p id = "assumption_content">                               
+                                                <b>Assumption: </b><br />
+                                                <textarea id="editor2" name="editor2"></textarea>
+                                                <script type="text/javascript">
+                                                CKEDITOR.replace( 'editor2' );
+                                                </script>
+                                            </p>
+                                        </div>            
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="BusinessImpact" class="panel panel-default">          
+                        <div  class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4;">
+                            <h3 class="panel-title">BUSINESS IMPACT</h3>
+                            <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                        </div>
+                        <div class="panel-body"> 
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-horizontal"> 
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%" style="padding-top: 7px;margin-bottom: 0;text-align: right;">
+                                            Business Challenge
+                                            <img src="/s.gif" alt="Help" class="helpIcon" title="{!$ObjectType.Initiatives__c.fields.Business_Challenge__c.inlineHelpText}"/>
+                                        </label>
+                                        <div class="textAreaBusinessImpact">
+                                            <textarea type="text" maxlength="500" rows="5" id="BusinessChallenge" class="form-control businessChallenge width1 txtTask"/>                                
+                                        </div>
+                                    </div> 
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%" style="padding-top: 7px;margin-bottom: 0;text-align: right;">
+                                            Persona’s Involved
+                                            <img src="/s.gif" alt="Help" class="helpIcon" title="{!$ObjectType.Initiatives__c.Fields.Persona_s_Involved__c.InlineHelpText}"/>
+                                        </label>
+                                        <div class="textAreaBusinessImpact">
+                                            <textarea type="text" maxlength="500" rows="5" id="PersonasInvolved" class="form-control personasInvolved width1 txtTask"/>                                
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">   
+                                <div class="form-horizontal"> 
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%" style="padding-top: 7px;margin-bottom: 0;text-align: right;">
+                                            Technology Details
+                                            <img src="/s.gif" alt="Help" class="helpIcon" title="{!$ObjectType.Initiatives__c.Fields.Technology_Details__c.InlineHelpText}"/>
+                                        </label>
+                                        <div class="textAreaBusinessImpact">
+                                            <textarea type="text" maxlength="500" rows="5" id="TechnologyDetails" class="form-control technologyDetails width1 txtTask" />                                
+                                        </div>
+                                    </div> 
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%" style="padding-top: 7px;margin-bottom: 0;text-align: right;">
+                                            <span>Outcome Of Our Solution</span>
+                                            <img src="/s.gif" alt="Help" class="helpIcon" title="{!$ObjectType.Initiatives__c.Fields.Outcome_of_our_solution__c.InlineHelpText}"/>
+                                        </label>
+                                        <div class="textAreaBusinessImpact">
+                                            <textarea type="text" maxlength="500" rows="5" id="OutcomeOfOurSolution" class="form-control outcomeOfOurSolution width1 txtTask"/>                                
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    
+                    
+                    
+                    <div class="" >
+                        <div class="panel panel-default">   
+                            <div class="panel-heading" style="color: white;background-color: #4ECAF4;">
+                                <h3 class="panel-title">ESTIMATE</h3>
+                                <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                            </div>                  
+                            <div class="panel-body EstimatePanel" >                                        
+                                <div class="mid-white">
+                                    <div class="estimationSummary">
+                                        <apex:commandLink action="{!getEstimationDetails}" target="_blank" value="View Estimation Sheet" style="float:right;color:#333333;font-size:12px;margin-right: 120px"/>
+                                    </div>
+                                    <div class="timeline-scroll">
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <table class="timeline timesheet" id="Tbltimesheet" cellpadding="0" cellspacing="0" width="190%">
+                                                <tr RowNo="0">                                 
+                                                    <th Class="Rescol"><strong>Phase <span style="color:#ff9797; font-size:15px;" > </span> </strong>
+                                                    </th>
+                                                    <th ><strong>Task/Components <span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span></strong>
+                                                    </th>
+                                                    <th ><strong>Assumptions<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory"></span></strong>
+                                                    </th>
+                                                    
+                                                    <th  Class="Rescol"><strong>Hours <span style="color:#ff9797; font-size:15px;" title="Mandatory">*</span> </strong>
+                                                    </th>
+                                                    
+                                                    <th  class="actiontd"><strong>ACTION</strong>
+                                                    </th>
+                                                </tr>
+                                                
+                                                <tbody id="addtionalTable" class="timesheet"> </tbody>
+                                                <tr class="total-bg">
+                                                    <td colspan="3" style="text-align:left" id="addRowTd">
+                                                        <a href="#" id="add-row1" class="add-row"><i class="fa fa-plus" aria-hidden="true"></i> Add Row</a>  
+                                                        
+                                                        <span style="text-align: right"> TOTAL </span>
+                                                    </td>
+                                                    <td  colspan="3" id="tdColTotal" ></td>                                                                      
+                                                </tr>
+                                                <div class="col-md-6 col-sm-6 col-xs-12"> </div>                         
+                                            </table>
+                                        </div>                            
+                                        <textarea id="txtComments" style="display:none" class="edit-timesheet-com" placeholder="Comments"></textarea>
+                                    </div>
+                                </div>                          
+                            </div>    
+                        </div>   
+                        
+                    </div>
+                    
+                    <div style="{!IF(CurrentInitiativeStatus='Saved', 'display:block', 'display:none')}"  >
+                        <div class="panel panel-default">   
+                            <div class="panel-heading" style="color: white;background-color: #4ECAF4;">
+                                <h3 class="panel-title">UPLOAD ESTIMATES</h3>
+                                <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                            </div> 
+                            <div class="panel-body">
+                                <c:UploadExcelFile initiative="{!CurrenInitiativeId}"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="attachment" >
+                        <div class="panel panel-default">   
+                            <div class="panel-heading" style="color: white;background-color: #4ECAF4;">
+                                <h3 class="panel-title">UPLOAD ATTACHMENT</h3>
+                                <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                            </div> 
+                            <div class="panel-body">
+                                <div style="float:left; ">
+                                    <input id="uploadFile" type="file"  name="files"/> 
+                                    
+                                </div>
+                                <div style="float:right;">
+                                    <input class="savebutton" type="button" value="UPLOAD" onclick="saveAttachment();" />  
+                                    <apex:outputPanel >
+                                        <img src="/img/loading32.gif" width="25" height="25" id="uploadStatus" style="visibility:hidden;"/>
+                                    </apex:outputPanel>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div id="documentSection">
+                        <div class="panel panel-default">   
+                            <div class="panel-heading" style="color: white;background-color: #4ECAF4;">
+                                <h3 class="panel-title">DOCUMENTS</h3>
+                                <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                            </div> 
+                            <div class="panel-body">
+                                <apex:pageBlock >
+                                    <apex:pageBlockTable StyleClass="datatable timeline" id="pgTable" Style="cellpadding:0; cellspacing:0; width:100%;color:#4ECAF4;"  value="{!initiativeAttachment}" var="Attachment"
+                                                         rendered="{!(initiativeAttachment.size!=0 && initiativeAttachment !='' && initiativeAttachment !=null ) }">                        
+                                        
+                                        <apex:column headerValue="Name" value="{!Attachment.Name}"  style="text-align:left; border-right-width: 1px;"/>
+                                        <apex:column headerValue="Action" style="text-align:left; border-left-width: 1px;">
+                                            <apex:commandLink styleClass="time_view" title="Delete" status="statusSaveTrip" action="{!DeleteAttachment}" reRender="showmsg">                                            
+                                                <apex:param name="AttachmentToDelete" value="{!Attachment.Id}" assignTo="{!AttachmentToDelete}"/>  
+                                                <strong><i class="fa fa-trash" aria-hidden="true"></i></strong>
+                                            </apex:commandLink>
+                                            <apex:commandLink styleClass="time_view" title="Download" html-data-toggle="#" html-data-target="#myModal" onClick="downloadAttachment('{!Attachment.Id}'); return false">                                            
+                                                <apex:param name="AtachmentId" value="{!Attachment.Id}"/>    
+                                                <strong><i class="fa fa-download" aria-hidden="true"></i></strong>
+                                            </apex:commandLink> 
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                </apex:pageBlock>
+                                
+                            </div>
+                        </div>
+                    </div>   
+                    
+                    
+                    <div id="chartdiv2" class="panel panel-default">          
+                        <div  class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4;">
+                            <h3 class="panel-title">PROGRESS</h3>
+                            <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                        </div>
+                        
+                        
+                        <div class="panel-body"> 
+                            <div id="left">
+                                <h4 class="panel-title">CONSUMED HOURS</h4>
+                                <div id="chartdiv"></div> 
+                            </div>
+                            <div id="right">
+                                <h4 class="panel-title">REMAINING HOURS</h4>
+                                <div id="chartdivnew"></div>
+                            </div>
+                        </div>
+                    </div> 
+                    
+                    <div id="chartBurnDown" class="panel panel-default" style="{!IF(CurrentInitiativeStatus='Active Initiative' || CurrentInitiativeStatus='Initiative Delivered', 'display:block', 'display:none')}">          
+                        <div  class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4;">
+                            <h3 class="panel-title">BURNDOWN CHART</h3>
+                            <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                        </div>
+                        <div class="panel-body"> 
+                            <div style="overflow-x: scroll">
+                                <div class="chart-container" style="{!chartDivWidth}">
+                                    <canvas id="burnDownChart" style="display: block; box-sizing: border-box; height: 436.19px; width: 1267.94px;"></canvas>
+                                </div>
+                            </div>
+                            
+                            <div style="float: right;margin-top: 20px;font-size: 11px;">
+                                <p>
+                                    * burndown chart includes only submitted &#38; approved hours and does not include the hours pending for submission.
+                                </p>
+                            </div>
+                        </div>
+                        
+                    </div> 
+                    
+                    <div id="escalationPanel" class="panel panel-default"> 
+                        <div class="panel-heading" style="color: white;background-color: #4ECAF4;">
+                            <h3 class="panel-title"> ESCALATION DETAILS</h3>
+                            <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                        </div>            
+                        <div class="panel-body">
+                            <apex:outputText rendered="{!(escalationList.size ==0 || escalationList ==null ) }"><strong>None</strong></apex:outputText>
+                            <apex:dataTable StyleClass="timeline timesheet" id="pgTable" Style="cellpadding:0; cellspacing:0; width:100%;color:#4ECAF4;"  value="{!escalationList}" var="escalations"
+                                            rendered="{!(escalationList.size!=0 && escalationList !='' && escalationList !=null ) }" html-cid="accountsTable">              
+                                
+                                
+                                <apex:column headerValue="Escalated Date" styleClass="icon-table" style="width:20%;">
+                                    <apex:outputText value="{0,date,MM/dd/yyyy}">
+                                        <apex:param value="{!escalations.EscalationDateTime__c}" />
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column headerValue="Escalation Content" value="{!escalations.EscalationDetails__c} " styleClass="icon-table" style="width:40%;"/>
+                                <apex:column headerValue="Email Recipients" value="{!escalations.InitiativeEscalationRecipients__c}" styleClass="icon-table" style="width:40%;"/>  
+                            </apex:dataTable>
+                        </div>
+                    </div>
+                    <div class="time-submit">
+                        <div class="pull-right">                          
+                            <input type="button" id="btnSave" class="save-submit" value="Save" onclick="return FetchInitiativeValues('Saved')"  />                            
+                            <input type="button" id="btnSavePostSubmit" class="save-submit" value="Save" onclick="return FetchInitiativeValues('btnSavePostSubmit')"  />
+                            <input type="button" id="btnSubmit" class="save-submit" value="Submit" onclick="return FetchInitiativeValues('Submitted')" />
+                            <input type="button" id="btnReSend" class="save-submit" value="Re-Send" onclick="return ReSendInitiativeAction();" />
+                            <input type="button" id="btnRecall" class="save-submit" value="Re-Call" onclick="return ReCallInitiativeAction();"  style="background: #ee2c2c;" />
+                            <input type="hidden" id="hdnAction" value="" />
+                            <input type="button" id="btnApprove" class="save-submit" value="Approve Initiative" onclick="ClearTimeSheetComments('Approve')" data-toggle="modal" data-target="#myModal" />
+                            <input type="button" id="btnReject" class="save-submit" value="Re-evaluate Estimates" onclick="ClearTimeSheetComments('Reject')" data-toggle="modal" data-target="#myModal" style="background: #ee2c2c;" />
+                            <input type="button" id="btnEscalate" class="save-submit" value="Escalate" onclick="ClearEscalationDetails();" data-toggle="modal" data-target="#escalationMyModal" />
+                            <input type="button" id="btnCancelInit" class="save-submit" value="Cancel Initiative" style="background: #ee2c2c;" onclick="CancelAction();"/>
+                            <!--<input type="button" id="btnCancel" class="cancel" value="Cancel" onclick="CancelTimesheet();" />-->
+                            <input type="button" id="btnClone" class="save-submit" value="Clone" onclick="CloneAction();"  />                                        
+                            <input type="button" id="btnSaveCreateJira" class="save-submit" value="Save & Create Jira" onclick="return FetchInitiativeValues('SaveCreateJira')"  />
+                        </div>                             
+                        <div id="hide"  class="pull-right">
+                            <apex:commandButton id="exportasexcel" value="Export TO Excel" styleclass="save-submit" action="{!exportAsExcel}" immediate="True" reRender="redirectToTimeSheet,showmsg" /> 
+                        </div>
+                        <div class="pull-right">
+                            <apex:commandLink action="{!redirectToInitiative}" reRender="showmsg">
+                                <input type="button" id="btnBack" class="cancel" value="Back" style="margin-right: 10px;" />
+                            </apex:commandLink>
+                            
+                        </div>                  
+                    </div>
+                    
+                </div>  
+                
+            </div>
+            <script>
+            document.getElementById('uploadFile').addEventListener('change', handleFileSelect);
+            var fileToUpload;
+            var blobfile;
+            function handleFileSelect(evt) { 
+                var files = evt.target.files;
+                fileToUpload = files[0];
+            }
+            function saveAttachment() { 
+                
+                if(fileToUpload.size <= 1073741824)
+                {
+                    var reader = new FileReader();
+                    reader.readAsDataURL(fileToUpload);
+                    document.getElementById('uploadStatus').style.visibility = 'visible';
+                    reader.onload = function(e) 
+                    {
+                        var fileString = e.target.result;
+                        blobfile = fileString;
+                        sendAttachmentToController(fileToUpload.name,blobfile);
+                    }
+                }
+                else
+                {
+                    alert('The maximum allowed file size is 1GB.');
+                }
+            }
+            
+            function expandAllProducts(v){
+                if(v == true){
+                    $('.pbSubsection').css('display','block');
+                    $('.showListButton').addClass('hideListButton').removeClass('showListButton');
+                }else{
+                    $('.pbSubsection').css('display','none');
+                    $('.hideListButton').addClass('showListButton').removeClass('hideListButton');
+                }
+                return false;
+            }
+            </script>  
+            
+            
+            
+            <c:ODS_FooterComponent />
+            
+            
+            
+        </body>
+        
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+                
+                <div class="modal-content">
+                    <h1><span id="lblHeading">Approve </span> </h1>
+                    <apex:inputTextarea html-placeholder="Comments" id="Comments" styleclass="Comments" value="{!TimesheetComments}" />
+                    <div class="clr"></div>
+                    <div class="popup-btn">
+                        <input type="button" id="btnApprove" class="popup-add btnApprove" value="Approve Initiative" onclick="return fnUpdateStatus('Approve')" />
+                        <input type="button" id="btnReject" class="popup-cancel btnReject" value="Re-evaluate Estimates" style="background:#ee2c2c;" onclick="return fnUpdateStatus('Reject')" />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal fade" id="escalationMyModal" role="dialog">
+            <div class="modal-dialog">
+                
+                <div class="modal-content">
+                    <h1><span id="lblHeading">Escalation Details </span> </h1>
+                    <apex:inputTextarea html-placeholder="Escalation Comments" id="escalationComments" styleclass="escalationComments" value="{!EscalationComments}" />
+                    <div class="clr"></div>
+                    <div class="popup-btn">
+                        <input type="button" id="btnEscalationMail" class="popup-add btnApprove" value="Escalate" onclick="return fnSendEscalationEmail();" />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>
+                    </div>
+                </div>
+            </div>
+        </div>  
+        
+        <!-- Product list Modal Added by  Annamalai-11-05-21 -->
+        
+        
+        
+        <div class="modal fade" id="productmodal" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content modal-productlist">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">What products will this initiative use?</h4><br/><br/><br/>
+                        <div align="center" draggable="false" >
+                            <apex:commandLink value="Expand All" onclick="return expandAllProducts(true);" />&nbsp;|&nbsp;
+                            <apex:commandLink value="Collapse All" onclick="return expandAllProducts(false);" />
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <apex:outputPanel id="tstpopup">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 pr-0">                                
+                                    <div id="col1">                                    
+                                        <apex:pageBlock id="Block1" title=" " >                  
+                                            <apex:repeat value="{!productMap1}" var="pc">                                        
+                                                <apex:pageBlockSection id="ProductSection" title="{!pc}" columns="1" collapsible="true" >
+                                                    <apex:repeat value="{!productMap1[pc]}" var="p" >
+                                                        <apex:pageblockSectionItem >                                                    
+                                                            <apex:inputCheckbox value="{!p.ischecked}"/>
+                                                            <apex:outputText value="{!p.pname}" ></apex:outputText>
+                                                        </apex:pageblockSectionItem>
+                                                    </apex:repeat>                                            
+                                                </apex:pageBlockSection>
+                                                
+                                            </apex:repeat> 
+                                            
+                                            <!-- Collapsing all the Page Block Sections by default-->
+                                            <script>
+                                            if('{!collapsedItems}'=='true'){
+                                                
+                                                for ( let i = 0; i < 20; i++ ) {
+                                                    twistSection(document.getElementById('{!$Component.Block1}').getElementsByTagName('img')[i]);
+                                                    //document.getElementById('{!$Component.Block1}').getElementsByTagName('img')[i].toggle();
+                                                }
+                                            }
+                                            
+                                            
+                                            </script>
+                                            
+                                        </apex:pageBlock>     
+                                    </div>   
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 px-0">
+                                    <div id="col2">
+                                        <apex:pageBlock title=" " id="Block2">                                            
+                                            <apex:repeat value="{!productMap2}" var="pc">                                                
+                                                <apex:pageBlockSection title="{!pc}" columns="1" >                                                    
+                                                    <apex:repeat value="{!productMap2[pc]}" var="p" >
+                                                        <apex:pageblockSectionItem >                                                            
+                                                            <apex:inputCheckbox value="{!p.ischecked}"/>
+                                                            <apex:outputText value="{!p.pname}" ></apex:outputText>
+                                                        </apex:pageblockSectionItem>
+                                                    </apex:repeat>                                                    
+                                                </apex:pageBlockSection>                                                
+                                            </apex:repeat>
+                                            <!-- Collapsing all the Page Block Sections by default -->
+                                            <script>
+                                            if('{!collapsedItems}'=='true'){
+                                                
+                                                for ( let i = 0; i < 20; i++ ) {
+                                                    twistSection(document.getElementById('{!$Component.Block2}').getElementsByTagName('img')[i]);
+                                                }
+                                            }
+                                            </script>
+                                        </apex:pageBlock>
+                                    </div> 
+                                </div>
+                                
+                                <!-- added by haish  Thrid coloumn  -->
+                                
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 pl-0">
+                                    <div id="col2">
+                                        <apex:pageBlock title=" " id="Block3">                                            
+                                            <apex:repeat value="{!productMap3}" var="pc">                                                
+                                                <apex:pageBlockSection title="{!pc}"  columns="1" >                                                    
+                                                    <apex:repeat value="{!productMap3[pc]}" var="p" >
+                                                        <apex:pageblockSectionItem >                                                            
+                                                            <apex:inputCheckbox value="{!p.ischecked}"/>
+                                                            <apex:outputText value="{!p.pname}" ></apex:outputText>
+                                                        </apex:pageblockSectionItem>
+                                                    </apex:repeat>                                                    
+                                                </apex:pageBlockSection>                                                
+                                            </apex:repeat>
+                                            <!-- Collapsing all the Page Block Sections by default -->
+                                            
+                                            
+                                            <script>
+                                            if('{!collapsedItems}'=='true'){
+                                                
+                                                for ( let i = 0; i < 20; i++ ) {
+                                                    twistSection(document.getElementById('{!$Component.Block3}').getElementsByTagName('img')[i]);
+                                                }
+                                            }
+                                            </script> 
+                                            
+                                            
+                                        </apex:pageBlock>
+                                    </div> 
+                                </div>
+                                
+                                <!-- added by haish  Thrid coloumn  -->
+                                
+                                
+                            </div>
+                        </apex:outputPanel>   
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">CLOSE</button>                   
+                        <span type="button" id="btnselectproducts" data-dismiss="modal"> <apex:commandButton value="SELECT" styleClass="popup-add btnApprove" action="{!closePopup}" rerender="tstpopup,productnames"/></span>
+                        <!--<span type="button" class="btn btn-default" data-dismiss="modal"><apex:commandButton value="CLOSE" styleClass="btn btn-default" action="{!closePopup1}"/></span>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product list Modal -->
+        
+    </apex:form>
+    
+    <!--harish style-->
+    <style type="text/css">
+        .custPopup{
+        background-color: white;
+        border-width: 2px;
+        border-style: solid;
+        z-index: 9999;
+        left: 50%;
+        padding:10px;
+        position: absolute;
+        /* These are the 3 css properties you will need to change so the popup 
+        displays in the center of the screen. First set the width. Then set 
+        margin-left to negative half of what the width is. You can add 
+        the height property for a fixed size pop up if you want.*/
+        hight:500px;    
+        width: 500px;
+        margin-left: -250px;
+        top:100px;
+        }
+        .popupBackground{
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 9998;
+        }
+    </style>
+</apex:page>

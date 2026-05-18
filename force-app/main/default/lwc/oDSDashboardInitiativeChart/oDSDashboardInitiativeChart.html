@@ -1,0 +1,22 @@
+<template>
+      <template if:true={displayInitiativeChart}>
+            <div>
+                  <h2 style="margin-top:5px;">Initiatives by Status</h2>
+            </div>
+            <div class="chartBox" style="width:428px;height:290px;" >
+                  <canvas class="doughnut-chart" lwc:dom="manual" ></canvas>
+            </div>
+      </template>
+      <template if:false={displayInitiativeChart}>
+            <div>
+                  <h2 style="margin-top:5px;">Initiatives by Status</h2>
+            </div>
+            <div>
+                  <p>
+                        Chart Not Available
+                  </p>
+                  
+            </div>
+      </template>
+      
+</template>

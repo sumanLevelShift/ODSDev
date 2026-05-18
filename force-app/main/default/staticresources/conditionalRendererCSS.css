@@ -1,0 +1,40 @@
+button[type="submit"]{
+color: #fff !important;
+    font-family: 'Open Sans', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: normal !important;
+    text-align: center !important;
+    border: none !important;
+    padding: 7px 15px !important;
+    background: #4ECAF4 !important;
+    text-transform: uppercase !important;
+    border-radius: 5px !important;
+    margin-right: 10px !important;
+	    margin-top: -6px !important;
+
+}
+.cancelButton{
+color: #fff !important;
+    font-family: 'Open Sans', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: normal !important;
+    text-align: center !important;
+    border: none !important;
+    padding: 7px 15px !important;
+    background: #999999;
+    text-transform: uppercase !important;
+    border-radius: 5px !important;
+    margin-right: 0 !important; 
+}
+.actionClass .slds-combobox__form-element{
+	width:100px !important;
+}
+.dataTypeClass  .slds-combobox__form-element{
+	width:130px !important;
+}
+.controllingFieldClass .slds-combobox__form-element{
+	width:250px !important;
+}
+.valueClass .slds-input{
+	width:150px !important;
+}

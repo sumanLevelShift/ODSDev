@@ -1,0 +1,23 @@
+<template>
+  <template if:true={displayTimesheetChart}>
+    <div>
+      <h2>Timesheets by Status</h2>
+    </div >
+    <div class="chartBox" style="height:288px; width:335px;">
+    <canvas class="doughnut-chart" lwc:dom="manual"></canvas>
+    </div>
+  </template>
+  <template if:false={displayTimesheetChart}>
+    <div>
+      <h2>Timesheets by Status</h2>
+    </div>
+    <div>
+          <p>
+                Chart Not Available
+          </p>
+          
+    </div>
+</template>
+
+      
+</template>

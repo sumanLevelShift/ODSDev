@@ -1,0 +1,104 @@
+<template>
+	<!-- modal start -->
+	<template if:true={isShowModal}>
+		<div class="model">
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+				aria-describedby="modal-content-id-1"
+				class="slds-modal slds-fade-in-open slds-modal_large sds-c-modal-shadow"
+				style=" background-color: rgba(0,0,0,0.4);">
+				<div class="slds-modal__container ">
+					<!-- modal header start -->
+					<header class="slds-modal__header" style="height: 50px;">
+						<h2 style="font-size: larger;" id="modal-heading-01"
+							class="slds-text-heading_medium slds-hyphenate">INSTALL DEMANDBLUE HEAT
+							MAP CONNECTED APP</h2>
+					</header>
+
+					<!-- modal body start -->
+					<div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1"
+						style="height: 255px;">
+						<ol class="slds-list_ordered">
+							<li>Please click the following URL to install the DemandBlue Heat Map connected app:
+								<ol class="slds-is-nested">
+									<li> Production: <a target="_blank" href={hmInstallURL}>{hmInstallURL}</a>
+										</br>
+										Sandbox: <a target="_blank" href={sandboxHMInstallURL}>{sandboxHMInstallURL}</a>
+									</li>
+								</ol>
+							</li>
+							<li>Install it for Admin Users.</li>
+							<li>Please ignore the following message that appears on the installation page of the
+								DemandBlue Heat Map managed package. "You're installing a Non-Salesforce Application
+								that is not authorized for distribution as part of Salesforce's AppExchange Partner
+								Program."</li>
+							<li>Once the installation is completed, please launch the “DemandBlue Heat Map Setup” app on
+								your Salesforce Instance to activate the Heat Map app.
+
+							</li>
+						</ol>
+
+					</div>
+
+					<!-- modal footer start-->
+					<footer class="slds-modal__footer">
+						<button class="slds-button ytp-button slds-align_absolute-center"
+                            onclick={hideModalBox}>Close</button>
+					</footer>
+
+				</div>
+			</section>
+		</div>
+	</template>
+	<!-- modal end -->
+	<div class="slds-p-around_medium">
+		<div class="slds-clearfix bordbtm slds-p-bottom_small">
+			<div class="slds-float_left">
+				<h1 class="navtitle">Salesforce Affinity Heat Map</h1>
+			</div>
+			<div class="slds-float_right">
+				<div class="slds-clearfix">
+					<div class="slds-float_left">
+						<template if:true={handleHeatmapButton}>
+							<button class="slds-button ytp-button1 slds-align_absolute-center" onclick={showModalBox}>Install
+                        DemandBlue Heat Map</button>
+						</template>
+					</div>
+					<div class="slds-float_right">
+						<img src={questionMarkIcon} title="About Heat Map" alt="About Heat Map" onclick={handleAboutHeatMap} style="width:28px;cursor: pointer;"/>
+                    </div>
+				</div>
+			</div>
+			</div>
+			<div class="alert slds-m-vertical_small" style="display: none;">
+				<span class="closebtn" onclick={closeButton}>&times;</span>
+				<strong>Warning!</strong> Please select the account to proceed...
+			</div>
+
+
+			<p class="msg slds-m-vertical_small">select customer to generate the chart.</p>
+			<div class="slds-m-around_medium">
+				<div class="slds-grid slds-m-vertical_medium">
+					<div class="slds-col mainchart">
+						<canvas class="stepped" lwc:dom="manual" width="500" height="400"></canvas>
+					</div>
+				</div>
+				<div class="bordbtm"></div>
+				<div class="slds-grid slds-m-top_medium">
+					<div class="slds-col chartDivList">
+						<div class="chartContainer" lwc:dom="manual"></div>
+						<canvas class="sales" lwc:dom="manual" width="500" height="400"></canvas>
+					</div>
+				</div>
+				<div class="bordbtm"></div>
+				<div class="slds-grid slds-m-top_medium">
+					<div class="slds-col subDiv">
+						<canvas class="subFeature" lwc:dom="manual" width="500" height="400"></canvas>
+					</div>
+				</div>
+			</div>
+			<template if:true={error}>
+				{error}
+			</template>
+		</div>
+
+</template>

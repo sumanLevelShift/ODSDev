@@ -1,0 +1,556 @@
+<apex:page controller="ODS_TimeSheetToolPageController" showHeader="false" sidebar="false" standardStyleSheets="false" id="PageId">
+    <apex:form id="formId">
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE; IE=10; IE=11; " />
+            
+            <apex:includeScript value="https://code.jquery.com/jquery-latest.min.js" />
+            <!-------- Bootstrap ----->
+            <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/bootstrap.css')}" />
+            <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/bootstrap.js')}" />
+            <apex:stylesheet value="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
+            <apex:includeScript value="https://www.google.com/recaptcha/api.js" />
+            <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/style.css')}" />            
+            <apex:includeScript value="{!URLFOR($Resource.ODS_Cloudflare,'ODS_Cloudflare/xlsx.full.min.js')}" />           
+            <apex:includeScript value="{!URLFOR($Resource.ODS_Cloudflare,'ODS_Cloudflare/jszip.js')}" />
+            <apex:includeScript value="{!URLFOR($Resource.ODS_Cloudflare,'ODS_Cloudflare/lodash.js')}" />
+            
+            
+            <link href="{!URLFOR($Resource.ODS_Assets,'css/style_dev.css')}" rel="stylesheet" type="text/css" />
+            <style>
+                .popupBackground {
+                /* Background color */
+                background-color: black;
+                opacity: 0.20;
+                filter: alpha(opacity=20);
+                
+                /* Dimensions */
+                width: 100%;
+                height: 500%;
+                top: 0;
+                left: 0;
+                z-index: 998;
+                position: absolute;
+                font-family: sans-serif;
+                /* Mouse */
+                cursor: wait;
+                }
+                /* This is for the message DIV */
+                
+                .PopupPanel {
+                /* Background color */
+                border: solid 2px skyblue;
+                background-color: white;
+                font-family: sans-serif;
+                /* Dimensions */
+                left: 50%;
+                width: 100px;
+                margin-left: -100px;
+                top: 50%;
+                height: 100px;
+                margin-top: -25px;
+                z-index: 999;
+                position: fixed;
+                
+                /* Mouse */
+                cursor: pointer;
+                }
+                .fileup{
+                margin: 6px;
+                margin-right: -45px;
+                }
+                
+                
+            </style>
+            <script>
+            var StartDateOfWeek = new Date('{!CurrentDate}');
+            var EndDateOfWeek = new Date('{!CurrentDate}');
+            TuesdayDate = new Date('{!CurrentDate}');
+            WednesdayDate = new Date('{!CurrentDate}');
+            ThursdayDate = new Date('{!CurrentDate}');
+            FridayDate = new Date('{!CurrentDate}');
+            SaturdayDate = new Date('{!CurrentDate}');
+            SundayDate = new Date('{!CurrentDate}');
+            var IsDisableFields = false;
+            var timesheetstatus = '';
+            //alert('{!CurrentDate}');
+            
+            $(document).ready(function() {
+                var passdFromDate = '{!PassedWeekFromDate}';
+                
+                if (passdFromDate == '') {
+                    PopulateWeekDays(new Date('{!CurrentDate}'));
+                } else {
+                    PopulateWeekDays(new Date(passdFromDate));
+                }                
+            });	  
+            //To Get the Month Value from Short Month Name
+            function getMonthFromString(mon) {
+                var months = new Array("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC");
+                var result = getPosition(mon.toUpperCase(), months);
+                return result;
+            }
+            
+            function FormatDate(datevalue) {
+                //alert('datevalue--'+datevalue);
+                var dd = datevalue.getDate();
+                var mm = datevalue.getMonth() + 1;
+                var y = datevalue.getFullYear();
+                //alert(y);
+                var FormattedDate = mm + "/" + dd + "/" + y;
+                return FormattedDate;
+            }
+            function populatePreviousWeekDates() {
+                var currDate = $("#weekStDate").html();
+                var currDateSplit = currDate.split(" ");
+                var shortMonth = currDateSplit[0];
+                var monthstring = getMonthFromString(shortMonth) + 1;
+                var dayString = parseFloat(currDateSplit[1]) - 7;
+                var yearString = currDateSplit[2];
+                if (dayString <= 0) {
+                    monthstring = monthstring - 1;
+                    //var days = Math.round(((new Date(yearString, monthstring))-(new Date(yearString, monthstring-1)))/86400000);
+                    var days = new Date(yearString, monthstring, 0).getDate();
+                    dayString = dayString + days;
+                    if (monthstring == 0) {
+                        monthstring = 12;
+                        yearString = yearString - 1;
+                    }
+                }
+                var currWeekDate = monthstring + '/' + dayString + '/' + yearString;
+                var datecurr = new Date(currWeekDate);
+                var WeekDate = FormatDate(datecurr);
+                PopulateWeekDays(WeekDate);
+            }
+            
+            
+            function populateNextWeekDates() {
+                var currDate = $("#weekEndDate").html();
+                var currDateSplit = currDate.split(" ");
+                var shortMonth = currDateSplit[0];
+                var monthstring = getMonthFromString(shortMonth) + 1;
+                var dayString = parseFloat(currDateSplit[1]) + 1;
+                var yearString = currDateSplit[2];
+                var days = new Date(yearString, monthstring, 0).getDate();
+                if (dayString > days) {
+                    dayString = dayString - days;
+                    monthstring = monthstring + 1;
+                    if (monthstring == 13) {
+                        yearString = yearString + 1;
+                    }
+                }
+                var currWeekDate = monthstring + '/' + dayString + '/' + yearString;
+                var datecurr = new Date(currWeekDate);
+                var TodayDate = new Date('{!CurrentDate}');
+                if (datecurr > TodayDate) {
+                    
+                    //return false;
+                }
+                var WeekDate = FormatDate(datecurr);
+                PopulateWeekDays(WeekDate);
+                $("#Tbltimesheet").find("input").val('');
+            }
+            
+            function PopulateWeekDays(DateValue) {
+                var shortMonth = new Array();
+                shortMonth[0] = "JAN";
+                shortMonth[1] = "FEB";
+                shortMonth[2] = "MAR";
+                shortMonth[3] = "APR";
+                shortMonth[4] = "MAY";
+                shortMonth[5] = "JUN";
+                shortMonth[6] = "JUL";
+                shortMonth[7] = "AUG";
+                shortMonth[8] = "SEP";
+                shortMonth[9] = "OCT";
+                shortMonth[10] = "NOV";
+                shortMonth[11] = "DEC";
+                var startEndDateofWeek = [];
+                
+                
+                startEndDateofWeek = getstartAndEndOfWeek(new Date(DateValue));
+                WeekDay1 = "";
+                WeekDay2 = "";
+                WeekDay3 = "";
+                WeekDay4 = "";
+                WeekDay5 = "";
+                WeekDay6 = "";
+                WeekDay7 = "";
+                WeekStartDayYear = "";
+                WeekEndDayYear = "";
+                locale = "en-us"
+                $.each(startEndDateofWeek, function(index, value) {
+                    
+                    eachDate = new Date(value);
+                    if (index == 0) {
+                        StartDateOfWeek = eachDate;
+                        //WeekDay1 = eachDate.toLocaleString(locale, { month: "short" }) +" " +eachDate.getDate();   
+                        WeekDay1 = shortMonth[eachDate.getMonth()] + " " + eachDate.getDate();
+                        //alert(shortMonth[eachDate.getMonth()]);                   
+                        WeekStartDayYear = shortMonth[eachDate.getMonth()] + " " + eachDate.getDate() + " " + eachDate.getFullYear();
+                    } else if (index == 1) {
+                        EndDateOfWeek = eachDate;
+                        WeekDay7 = shortMonth[eachDate.getMonth()] + " " + eachDate.getDate();
+                        WeekEndDayYear = shortMonth[eachDate.getMonth()] + " " + eachDate.getDate() + " " + eachDate.getFullYear();
+                    }
+                });
+                TuesdayDate = new Date(StartDateOfWeek);
+                WednesdayDate = new Date(StartDateOfWeek);
+                ThursdayDate = new Date(StartDateOfWeek);
+                FridayDate = new Date(StartDateOfWeek);
+                SaturdayDate = new Date(StartDateOfWeek);
+                SundayDate = new Date(StartDateOfWeek);
+                
+                TuesdayDate.setDate(StartDateOfWeek.getDate() + 1);
+                WednesdayDate.setDate(StartDateOfWeek.getDate() + 2);
+                ThursdayDate.setDate(StartDateOfWeek.getDate() + 3);
+                FridayDate.setDate(StartDateOfWeek.getDate() + 4);
+                SaturdayDate.setDate(StartDateOfWeek.getDate() + 5);
+                SundayDate.setDate(StartDateOfWeek.getDate() + 6);
+                
+                
+                
+                WeekDay2 = shortMonth[TuesdayDate.getMonth()] + " " + TuesdayDate.getDate(); // AssignWeekValueToSet(StartDateOfWeek.getDate()+ 1,StartDateOfWeek,EndDateOfWeek); 
+                WeekDay3 = shortMonth[WednesdayDate.getMonth()] + " " + WednesdayDate.getDate(); //  AssignWeekValueToSet(StartDateOfWeek.getDate()+ 2,StartDateOfWeek,EndDateOfWeek);
+                WeekDay4 = shortMonth[ThursdayDate.getMonth()] + " " + ThursdayDate.getDate(); //  AssignWeekValueToSet(StartDateOfWeek.getDate()+ 3,StartDateOfWeek,EndDateOfWeek);
+                WeekDay5 = shortMonth[FridayDate.getMonth()] + " " + FridayDate.getDate(); //  AssignWeekValueToSet(StartDateOfWeek.getDate()+ 4,StartDateOfWeek,EndDateOfWeek);
+                WeekDay6 = shortMonth[SaturdayDate.getMonth()] + " " + SaturdayDate.getDate(); // AssignWeekValueToSet(StartDateOfWeek.getDate()+ 5,StartDateOfWeek,EndDateOfWeek);
+                //alert(WeekDay2)
+                
+                $("#weekStDate").html(WeekStartDayYear);
+                $("#weekEndDate").html(WeekEndDayYear);
+                
+                $("#HdrDay1").html(WeekDay1 + "<br/> MON");
+                $("#HdrDay2").html(WeekDay2 + "<br/> TUE");
+                $("#HdrDay3").html(WeekDay3 + "<br/> WED");
+                $("#HdrDay4").html(WeekDay4 + "<br/> THU");
+                $("#HdrDay5").html(WeekDay5 + "<br/> FRI");
+                $("#HdrDay6").html(WeekDay6 + "<br/> SAT");
+                $("#HdrDay7").html(WeekDay7 + "<br/> SUN");
+                
+            }
+            function getPosition(elementToFind, arrayElements) {
+                var i;
+                for (i = 0; i < arrayElements.length; i += 1) {
+                    
+                    var strarrayElements = arrayElements[i];
+                    var strelementToFind = elementToFind;
+                    
+                    if (strarrayElements.localeCompare(strelementToFind) == 0) {
+                        return i;
+                    }
+                }
+                return null; //not found
+            }
+            function getstartAndEndOfWeek(date) {
+                
+                //If no date object supplied, use current date
+                // Copy date so dont modify supplied date
+                var now = date ? new Date(date) : new Date('{!CurrentDate}');
+                
+                // set time to some convenient value
+                now.setHours(0, 0, 0, 0);
+                
+                // Get the previous Monday
+                var monday = new Date(now);
+                monday.setDate(monday.getDate() - monday.getDay() + 1);
+                
+                // Get next Sunday
+                var sunday = new Date(now);
+                sunday.setDate(sunday.getDate() - sunday.getDay() + 7);
+                
+                // Return array of date objects
+                return [monday, sunday];
+            }
+            </script>
+            
+            <apex:outputPanel id="jsPanel">
+                <script>
+                function formateDateFromSheet(wkdate){
+                    /*console.log('date -'+wkdate);
+					var weekDate = new Date(wkdate);
+                    console.log('@@date formate new--'+weekDate.getMonth());
+                    console.log('@@date formate new--'+weekDate.getDate());
+                    console.log('@@date formate new--'+weekDate.getFullYear());*/
+                    var day=wkdate.split('-')[0];
+                    var month=wkdate.split('-')[1];
+                    var year=wkdate.split('-')[2];
+                    
+                    return day+' '+month+' '+year;
+                }
+                function uploadFiles() {
+                    //Reference the FileUpload element.
+                    var fileUpload = document.getElementById("fileUpload");
+                    
+                    //Validate whether File is valid Excel file.
+                    //var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx|.csv)$/;
+                    var regex = /(.xls|.xlsx|.csv)$/;
+                    if (regex.test(fileUpload.value.toLowerCase())) {
+                        if (typeof (FileReader) != "undefined") {
+                            var reader = new FileReader();
+                            
+                            if (reader.readAsBinaryString) {
+                                reader.onload = function (e) {
+                                    ProcessExcel(e.target.result);
+                                };
+                                reader.readAsBinaryString(fileUpload.files[0]);
+                            } else {
+                                reader.onload = function (e) {
+                                    var data = "";
+                                    var bytes = new Uint8Array(e.target.result);
+                                    for (var i = 0; i < bytes.byteLength; i++) {
+                                        data += String.fromCharCode(bytes[i]);
+                                    }
+                                    ProcessExcel(data);
+                                };
+                                reader.readAsArrayBuffer(fileUpload.files[0]);
+                            }
+                        } else {
+                            alert("This browser does not support HTML5.");
+                        }
+                    } else {
+                        alert("Please upload a valid Excel file.");
+                    }
+                };
+                function ProcessExcel(data) {
+                    var workbook = XLSX.read(data, {
+                        type: 'binary'
+                    });
+                    //Fetch the name of First Sheet.
+                    var firstSheet = workbook.SheetNames[0];
+                    //Read all rows from First Sheet into an JSON array.
+                    var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+                    var iniName=[];
+                    var date1,date2,date3,date4,date5,date6,date7;
+                    var accName;
+                    var customerMismatch=false;
+                    var dateMismatch=false;
+                    var inName;
+                    var desValue;
+                    var TPMValue;
+                    //alert(excelRows.length);
+                    const weekday = new Array(7);
+                    weekday[0] = "Sunday";
+                    weekday[1] = "Monday";
+                    weekday[2] = "Tuesday";
+                    weekday[3] = "Wednesday";
+                    weekday[4] = "Thursday";
+                    weekday[5] = "Friday";
+                    weekday[6] = "Saturday";
+                    var mondayDate,tuesdayDate,wednesdayDate,thursdayDate,fridayDate,saturdayDate,sundayDate;
+                    
+                    for (var i = 0; i < excelRows.length; i++) {
+                        if(i==0){
+                            console.log(JSON.stringify(excelRows[i]));
+                            
+                            inName=Object.keys(excelRows[i])[3];
+                            desValue=Object.keys(excelRows[i])[4];
+                            accName=Object.keys(excelRows[i])[0];
+                            TPMValue=Object.keys(excelRows[i])[5];
+                            date1=excelRows[i][Object.keys(excelRows[i])[6]];
+                            date2=excelRows[i][Object.keys(excelRows[i])[7]];
+                            date3=excelRows[i][Object.keys(excelRows[i])[8]];
+                            date4=excelRows[i][Object.keys(excelRows[i])[9]];
+                            date5=excelRows[i][Object.keys(excelRows[i])[10]];
+                            date6=excelRows[i][Object.keys(excelRows[i])[11]];
+                            date7=excelRows[i][Object.keys(excelRows[i])[12]];
+                            //alert('date1-'+date1);
+                            
+                            mondayDate= new Date(formateDateFromSheet(date1));
+                            tuesdayDate= new Date(formateDateFromSheet(date2));
+                            wednesdayDate= new Date(formateDateFromSheet(date3));
+                            thursdayDate= new Date(formateDateFromSheet(date4));
+                            fridayDate= new Date(formateDateFromSheet(date5));
+                            saturdayDate= new Date(formateDateFromSheet(date6));
+                            sundayDate= new Date(formateDateFromSheet(date7));
+                            
+                            if(weekday[mondayDate.getDay()] !='Monday'){
+                                dateMismatch=true;
+                                break;
+                            }
+                            var tues=new Date(mondayDate.getFullYear(),mondayDate.getMonth(),mondayDate.getDate()+1);
+                            var wed=new Date(mondayDate.getFullYear(),mondayDate.getMonth(),mondayDate.getDate()+2);
+                            var thu=new Date(mondayDate.getFullYear(),mondayDate.getMonth(),mondayDate.getDate()+3);
+                            var fri=new Date(mondayDate.getFullYear(),mondayDate.getMonth(),mondayDate.getDate()+4);
+                            var sat=new Date(mondayDate.getFullYear(),mondayDate.getMonth(),mondayDate.getDate()+5);
+                            var sun=new Date(mondayDate.getFullYear(),mondayDate.getMonth(),mondayDate.getDate()+6);
+                            if(FormatDate(tuesdayDate) !=FormatDate(tues)){
+                                dateMismatch=true;
+                                break;
+                            }
+                            if(FormatDate(wednesdayDate) !=FormatDate(wed)){
+                                dateMismatch=true;
+                                break;
+                            }
+                            if(FormatDate(thursdayDate) !=FormatDate(thu)){
+                                dateMismatch=true;
+                                break;
+                            }
+                            if(FormatDate(fridayDate) !=FormatDate(fri)){
+                                dateMismatch=true;
+                                break;
+                            }
+                            if(FormatDate(saturdayDate) !=FormatDate(sat)){
+                                dateMismatch=true;
+                                break;
+                            }
+                            if(FormatDate(sundayDate) !=FormatDate(sun)){
+                                dateMismatch=true;
+                                break;
+                            }
+                            //alert(tues+'##'+wed+'###'+thu+'$$$'+fri+'$$'+sat+'%%%'+sun);
+                            
+                        }else{
+                            
+                            var aName=excelRows[i][Object.keys(excelRows[i])[0]]
+                            var initivateName=excelRows[i][inName];
+                            var des=excelRows[i][desValue];
+                            var tpm=excelRows[i][TPMValue];
+                            var mon=excelRows[i].Mon;
+                            var tue=excelRows[i].Tue;
+                            var wed=excelRows[i].Wed;
+                            var thu=excelRows[i].Thu;
+                            var fri=excelRows[i].Fri;
+                            var sat=excelRows[i].Sat;
+                            var sun=excelRows[i].Sun;
+                            console.log('des--'+excelRows[i][desValue])
+                            if(des && aName){
+                                iniName.push({
+                                    AccountName:aName,
+                                    Initiative : initivateName,
+                                    Description: des,
+                                    TPM:tpm,
+                                    Mon:mon,
+                                    Tue:tue,
+                                    Wed:wed,
+                                    Thu:thu,
+                                    Fri:fri,
+                                    Sat:sat,
+                                    Sun:sun,
+                                    StartWeekDate:FormatDate(mondayDate),
+                                    EndWeekDate:FormatDate(sundayDate),
+                                });
+                                //console.log(initivateName);
+                            }  
+                        }
+                    }
+                    if(dateMismatch==true){
+                        alert('Invalid date found on the timesheet week period. Please check the timesheet and upload again.');   
+                        document.getElementById('fileUpload').value= null;
+                    }else if(iniName.length==0){
+                        alert('The timesheet entry is not present in the uploaded sheet.');
+                        document.getElementById('fileUpload').value= null;
+                        
+                    } else{
+                        //console.log('log--'+JSON.stringify(iniName));
+                        var confirmresult = false;
+                        confirmresult = confirm("Are you sure want to upload the timesheets");
+                        if(confirmresult){
+                            getInitList(JSON.stringify(iniName));
+                        }
+                    }
+                    
+                };
+                function fillTimeSheet(){
+                    if('{!ifTimeSheetCreated}'=='true'){
+                        document.getElementById('fileUpload').value= null;
+                        alert('The timesheets are successfully uploaded.');
+                    }
+                    
+                }
+                
+                function exportAsExcelMethod()
+                {
+                    $('.errorM3').text("").remove();
+                    ExportAsExcelActionCall(FormatDate(new Date($("#weekStDate").html())));
+                }
+                </script>
+            </apex:outputPanel>
+            
+            
+            <!-------- Fonts Awesome ----->
+            <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'font-awesome/css/font-awesome.css')}" />
+            <title>ON DEMAND SERVICES </title>
+        </head>
+        <div class="shadow-show"></div>
+        <c:ODS_HeaderComponent />
+        <apex:pageMessages />
+        <apex:actionStatus id="statusSaveTrip" stopText="">
+            <apex:facet name="start">
+                <div>
+                    <div class="popupBackground" />
+                    <div class="PopupPanel">
+                        <table border="0" width="100%" height="100%">
+                            <tr>
+                                <td align="center"><b>Please Wait</b></td>
+                            </tr>
+                            <tr>
+                                <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionStatus>
+        <apex:pageMessages id="showPageMsg"></apex:pageMessages>
+        <apex:actionFunction name="ExportAsExcelActionCall" action="{!exportAsExcel}" rerender="SearchResultsPanel,CustomerPanel" immediate="true" >
+            <apex:param name="iList" assignTo="{!startWeekDateOnUI}" value=""  />
+        </apex:actionFunction>
+        <apex:actionFunction name="getInitList" action="{!getInitList}" status="statusSaveTrip" oncomplete="fillTimeSheet();" rerender="jsPanel,hdnActionPanel,showPageMsg" immediate="false" >
+            <apex:param name="iList" assignTo="{!initiativeNameList}" value=""  />
+        </apex:actionFunction>
+        <div class="clr"></div>
+        <div class="clr"></div>
+        
+        <div class="mid-bg">
+            <div class="sub-warp">    
+                <div class="time-submit"> 
+                    
+                    <apex:outputPanel id="UploadTimesheetPanel"> 
+                        <body>
+                            <div class="clr"></div>
+                            <div class="clr"></div>
+                            
+                            <div class="mid-white" style="margin-right: 270px">
+                                <div class="mid-user-sec">
+                                    <div class="clr"></div>
+                                    <div class="clr"></div>
+                                    
+                                    <apex:outputPanel id="AddTimesheetPanel"> 
+                                        <apex:commandButton id="downloadasexcel" value="Download Excel Timesheet" styleClass="save-submit" onclick="exportAsExcelMethod();return false;" />
+                                    </apex:outputPanel>
+                                    <div class="mid-dateroll">
+                                        <div class="clr"></div>
+                                        <div><strong>Week Log hours on:</strong> <span id="weekStDate">Sep 4</span> - <span id="weekEndDate">Sep 10</span>
+                                            <a href="#" onclick="populatePreviousWeekDates();"><i class="fa fa-caret-left" aria-hidden="true"></i></a>
+                                            <a href="#" id="nextWeekID" onclick="return populateNextWeekDates();"><i class="fa fa-caret-right" aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="timeline-scroll">
+                                    <div class="time-submit">
+                                        <div style="float:left;" class="fileup" >  
+                                            <input  type="file" id="fileUpload" style="margin-right: 45px;"/>
+                                        </div>
+                                        <apex:commandButton id="fileUplbt" onclick="uploadFiles(); return false;" styleclass="save-submit" value="Upload Timesheet"/>
+                                    </div>
+                                    
+                                    <span id="HdrDay1" style="display:none;">Sep 04<br />Sun</span>
+                                    <span id="HdrDay2" style="display:none;">Sep 05<br />Mon</span>
+                                    <span id="HdrDay3" style="display:none;">Sep 06<br />Tue</span>
+                                    <span id="HdrDay4" style="display:none;"> Sep 07<br />Wed</span>
+                                    <span id="HdrDay5" style="display:none;"> Sep 08<br />Thu</span>
+                                    <span id="HdrDay6" style="display:none;">Sep 09<br />Fri</span>
+                                    <span id="HdrDay7" style="display:none;">Sep 10<br />Sat</span>
+                                </div>
+                            </div>                            
+                        </body>
+                    </apex:outputPanel>
+                </div>
+            </div>
+        </div>
+        <c:ODS_FooterComponent />
+    </apex:form>
+</apex:page>

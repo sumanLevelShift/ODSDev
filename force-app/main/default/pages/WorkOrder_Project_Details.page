@@ -1,0 +1,270 @@
+<apex:page showHeader="false"
+           standardController="Work_Order__c"
+           extensions="WorkOrder_Project_Details_Controller">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE; IE=10; IE=11; " />
+    <apex:stylesheet value="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"  />
+    <apex:includeScript value="https://code.jquery.com/jquery-1.9.1.js" />
+    <apex:includeScript value="https://code.jquery.com/ui/1.10.3/jquery-ui.js" />
+    <apex:includeScript value="https://code.jquery.com/jquery-latest.min.js" /> 
+    
+    <style>
+        .newspaper {
+        column-count: 3;
+        }        
+        
+        .panel-title
+        {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        margin-right: -10px;
+        margin-left: -10px;
+        text-align: left;
+        background-color: #00BFFF;
+        color: white;
+        }
+        
+        .formtbl{
+        width:100%;
+        }
+        
+        .formtbl tbody tr td{
+        vertical-align:middle;
+        }
+        
+        .formtbl h3{
+        padding: 0px;
+        margin: 0px;
+        color:#4a4a56;
+        }
+        
+        .formtbl .bPageBlock .detailList th{
+        vertical-align:middle;
+        }
+        
+        .bPageBlock .labelCol{
+        font-weight:bold;
+        }
+        
+        body .bPageBlock .pbBody{
+        height: 700px!important;
+        margin: 0px!important;    
+        }
+        
+        .formtbl h4{
+        padding: 0px 20px;
+        margin: 0px;
+        color:#4a4a56;
+        }
+    </style>
+    <apex:form >
+        <apex:pageBlock >
+            <div class="mid-bg">
+                <div class="sub-warp">
+                    <div class="panel panel-default" >
+                        <p class="panel-title" style="color: #ffffff; font-size: 16px; padding: 5px 10px; margin: 0;" width="100%" >Work Order Details
+                        </p>
+                        <table class="formtbl">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Work Order Name:
+                                                <apex:outputText value="{!workOrderObj.Name}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                CSM:
+                                                <apex:outputText value="{!workOrderObj.Account_CSM__c}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Account Manager Name:
+                                                <apex:outputText value="{!workOrderObj.Account_Manager_Name__r.name}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Account Partner:
+                                                <apex:outputText value="{!workOrderObj.Account_Partner__c}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Execution Partner:
+                                                <apex:outputText value="{!workOrderObj.Execution_Partner__r.name}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Project Category:
+                                                <apex:outputText value="{!workOrderObj.Business_Unit__c}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Project Sub Category:
+                                                <apex:outputText value="{!workOrderObj.SubCategory__c}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Bill Rate:
+                                                <apex:outputText value="{!workOrderObj.Bill_Rate__c}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Bill Rate Type:
+                                                <apex:outputText value="{!workOrderObj.Bill_Rate_Type__c}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Billing Frequency:
+                                                <apex:outputText value="{!workOrderObj.Billing_Frequency__c}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Minumim Billable Hours Per Month:
+                                                <apex:outputText value="{!workOrderObj.Minumim_Billable_Hours_Per_Month__c}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Initial Gross Margin%:
+                                                <apex:outputText value="{!workOrderObj.Initial_Gross_Margin__c}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Vendor Name:
+                                                <apex:outputText value="{!vendorName}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Client Name:
+                                                <apex:outputText value="{!workOrderObj.Client_Name__r.Name}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        
+                                    </td></tr>
+                                <tr> <td>
+                                    <apex:pageBlockSection >
+                                        <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                            Project Name:
+                                            <apex:outputText value="{!workOrderObj.Project_Name__c}" style="width:30px"/>
+                                        </apex:pageBlockSectionItem>
+                                    </apex:pageBlockSection>
+                                    
+                                    </td></tr>
+                                <tr><td>
+                                    <apex:pageBlockSection >
+                                        <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                            Project Start Date:
+                                            <apex:outputText value="{!projectstart}"/>
+                                        </apex:pageBlockSectionItem>
+                                    </apex:pageBlockSection>
+                                    
+                                    </td></tr>
+                                <tr><td>
+                                    <apex:pageBlockSection >
+                                        <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                            Project End Date:
+                                            <apex:outputText value="{!projectend}"/>
+                                        </apex:pageBlockSectionItem>
+                                    </apex:pageBlockSection>
+                                    </td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td style="display:{!IF(IsShow,'none', 'block')}">
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Project Code:
+                                                <apex:inputText id="theTextInput" value="{!projectCode}"/>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                    </td>
+                                    <td style="display:{!IF(IsShow,'block', 'none')}">
+                                        <apex:pageBlockSection >
+                                            <apex:pageBlockSectionItem labelStyle="width:8%;text-align: left;">
+                                                Project Code:
+                                                <apex:outputText style="width:50%" value="{!workOrderObj.Project_Code__c}"/> 
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-left: 15px;margin-top: 15px;display:{!IF(IsShow,'none', 'block')}" >
+                        
+                        <apex:commandButton action="{!UpdateProjectCode}" value="Update" id="BtnUpdate" style="width: 90px;" /> 			
+                    </div>
+                </div>
+            </div> 
+        </apex:pageBlock>
+        <div>
+        </div>
+    </apex:form>
+</apex:page>

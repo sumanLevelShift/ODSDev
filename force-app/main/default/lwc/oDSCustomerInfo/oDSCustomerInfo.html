@@ -1,0 +1,1024 @@
+<template>
+    <div class="clr"></div>
+    <div class="clr"></div>
+    <div class="mid-bg" style="background: #FFFFFF;width: 100%;padding: 30px 2% 15px 2%;float: left;">
+        <div class="spinnerDiv" style="display: none;">
+            <div class="popupBackground"></div>
+            <div class="PopupPanel">
+                <table border="0" width="100%">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;font-size: 13px;"><b>Please Wait</b></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;"><img src={spinner} /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- modal start -->
+        <template if:true={isShowModal}>
+            
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="spinnerDiv1" style="display: none;">
+                    <div class="popupBackground"></div>
+                    <div class="PopupPanel">
+                        <table border="0" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center;font-size: 13px;"><b>Please Wait</b></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center;"><img src={spinner} /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="slds-modal__container">
+                    <!-- modal header start -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={hideModalBox}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h1 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate" style="font-size: 16px !important;"><b>Kickoff
+                                Completion</b>
+                        </h1>
+                    </header>
+                    
+                    <!-- modal body start -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_12-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_6-of-12 slds-text-align_right">
+                                        <label class="form-label">Kickoff Completed Date</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-input type="date"
+                                            class="kickOffCompletedDatePopUp"></lightning-input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- modal footer start-->
+                    <footer class="slds-modal__footer">
+                        <button class="slds-m-top_small cancelButton" onclick={hideModalBox}> CANCEL
+                        </button>&nbsp;
+                        <button class="slds-m-top_small approvedButton" onclick={handleKickoffCompleted}> Submit
+                        </button>
+                    </footer>
+
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <!-- modal end -->
+
+        <div class="sub-warp" style="max-width: 1300px;margin: 0 auto;">
+            <div class="panel panel-default">
+                <details open>
+                    <summary>
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4;"
+                            onclick={handleForDetailsElement}>
+                            <h3 style=" display:inline; " class="panel-title">Customer Info</h3>
+                            <span style=" padding-left:257px;font-weight: bold; "> <label class="panel-title"
+                                    id="Account_NameHeader">Account:
+                                </label> </span>
+                            <label class="panel-title" id="Account_Name" style="font-weight: bold;">&nbsp;{accountName}
+                            </label>
+                            <span style="padding-left:20px;font-weight: bold; "> <label class="panel-title"
+                                    id="Service_NameHeader">Service:
+                                </label> </span>
+                            <label class="panel-title" id="Service_Name" style="font-weight: bold;">&nbsp;{serviceName}
+                            </label>
+
+                            <div class="summary-chevron-up detailsClose clickable" style="float: right; display:none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="summary-chevron-down detailsOpen clickable" style="float: right;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-up">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </summary>
+                    <div class="panel-body">
+
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Organization ID</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-input type="text" class="orgID"
+                                            value={currentAccount.Organization_ID__c}></lightning-input>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Salesforce
+                                            Products</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-textarea class="mytextarea2 salesforceProduct"
+                                            value={currentAccount.Salesforce_Products__c}></lightning-textarea>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Salesforce AE Name</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <template if:true={salesforceAF}>
+                                            <lightning-input type="text" disabled="true" value={salesforceAF.Name}>
+                                            </lightning-input>
+                                            <div class="dashIconDiv">
+                                                <lightning-button variant="base" label="..."
+                                                    onclick={HandleShowSalesforceAF}
+                                                    class="dashIcon slds-m-left_x-small"></lightning-button>
+                                            </div>
+                                            <div class="hideCloseIconDiv" style="display: none;">
+                                                <lightning-button variant="base" label="X"
+                                                    onclick={HandleHideSalesforceAF}
+                                                    class="hideCloseIcon slds-m-left_x-small">
+                                                </lightning-button>
+                                            </div>
+                                            <div class="hideDIVBOX" style="display: none;">
+                                                <p><strong> Phone: </strong><span>{salesforceAF.Dailer_Phone__c}</span>
+                                                </p>
+                                                <p><strong> Mobile: </strong><span>{salesforceAF.Cell__c}</span></p>
+                                                <p><strong> Email: </strong><span>{salesforceAF.Email}</span></p>
+                                            </div>
+                                        </template>
+                                        <template if:false={salesforceAF}>
+                                            <lightning-input type="text" disabled="true">
+                                            </lightning-input>
+                                        </template>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Appexchange Apps</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+
+                                        <lightning-textarea class="mytextarea2 appexchangeApps"
+                                            value={currentAccount.Appexchange_Apps__c}></lightning-textarea>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Kickoff Status</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-combobox value={currentAccount.Kickoff__c}
+                                            options={kickOffStatusOption} class="kickOffStatus" disabled="true">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Customer Service</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-input type="text" class="customerService"
+                                            value={currentAccount.Customer_Service__c}></lightning-input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Kickoff Completed Date</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-input type="date" class="kickOffCompletedDate"
+                                            value={currentAccount.KickOff_Completed_Date__c} disabled="true"
+                                            ></lightning-input>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">CPQ Product</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+
+                                        <lightning-input type="text" class="CPQProduct"
+                                            value={currentAccount.CPQ_Product__c}></lightning-input>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Customer Portal
+                                            Access</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-combobox value={currentAccount.Customer_Portal_Access__c}
+                                            options={CustomerPortalAccessOption} class="CustomerProtalAccess">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Marketing</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+
+                                        <lightning-input type="text" class="Marketing"
+                                            value={currentAccount.Marketing__c}></lightning-input>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Customer Portal Access Status
+                                            Date</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style=" padding-right: 268px">
+                                        <lightning-input type="date" class="customerPortalAccessStatusDate"
+                                            value={currentAccount.Customer_Portal_Access_Status_Date__c}></lightning-input>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Middleware</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+
+                                        <lightning-input type="text" class="Middleware"
+                                            value={currentAccount.Middleware__c}></lightning-input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Setup Weekly &amp; Monthly
+                                            Meeting</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-combobox value={currentAccount.Setup_Weekly_Monthly_Meeting__c}
+                                            options={SetupWeeklyMonthlyMeeting} class="SetupWeeklyMonthlyMeeting">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">ERP</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-input type="text" class="ERP"
+                                            value={currentAccount.ERP__c}></lightning-input>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Setup Weekly &amp; Monthly Meeting
+                                            Date</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style=" padding-right: 268px">
+                                        <lightning-input type="date" class="setupWeeklyMonthlyMeetingDate"
+                                            value={currentAccount.Setup_Weekly_MonthlyMeeting_Date__c}></lightning-input>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Document
+                                            generation</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+
+                                        <lightning-input type="text" class="DocumentGenration"
+                                            value={currentAccount.Document_Generation__c}></lightning-input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Environment Access</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-combobox value={currentAccount.Environment_Access__c}
+                                            options={EnvironmentAccessOption} class="EnvironmentAccess">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">External Storage
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-input type="text" class="ExternalStorage"
+                                            value={currentAccount.External_Storage__c}></lightning-input>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Environment Access Status
+                                            Date</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style=" padding-right: 268px">
+
+                                        <lightning-input type="date" class="EnvironmentAccessStatusDate"
+                                            value={currentAccount.Environment_Access_Status_Date__c}></lightning-input>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Digital Signature
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+
+                                        <lightning-input type="text" class="DigitalSignature"
+                                            value={currentAccount.Digital_Signature__c}></lightning-input>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Onboarding Document</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-combobox value={currentAccount.Onboarding_Document__c}
+                                            options={OnboardhingDocumentOption} class="OnboardingDocument">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Analytics
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-input type="text" class="Analytics"
+                                            value={currentAccount.Analytics__c}></lightning-input>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Onboarding Document Status
+                                            Date</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style=" padding-right: 268px">
+
+                                        <lightning-input type="date" class="OnboardingDocumentStatusDate"
+                                            value={currentAccount.Onboarding_Document_Status_Date__c}></lightning-input>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Backup
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-input type="text" class="Backup"
+                                            value={currentAccount.Backup__c}></lightning-input>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Lightning Readiness
+                                            Check</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-combobox value={currentAccount.Lightning_Readiness_Check__c}
+                                            options={LightningReadinessCheck} class="LightningReadinessCheck">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Project Management
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-input type="text" class="ProjectManagement"
+                                            value={currentAccount.Project_Management__c}></lightning-input>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Lightning Readiness Check Status
+                                            Date</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style=" padding-right: 268px">
+
+                                        <lightning-input type="date" class="LightningReadinessCheckStatusDate"
+                                            value={currentAccount.Lightning_Readiness_Check_Status_Date__c}></lightning-input>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Development Tools
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-textarea class="mytextarea2 DevelopmentTools"
+                                            value={currentAccount.Development_Tools__c}></lightning-textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Instance Name</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-input type="text" class="InstanceName"
+                                            value={currentAccount.Instance_Name__c}></lightning-input>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Customer Engagement
+                                            Score</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-combobox value={currentAccount.Customer_Engagement_Score__c}
+                                            options={CustomerEnagementScoreOption} class="CustomerEnagementScore">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Marketing Cloud Instance
+                                            Name</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-input type="text" class="MarketingCloudInstanceName"
+                                            value={currentAccount.Marketing_Cloud_Instance_Name__c}></lightning-input>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12" style="margin-top: 15px;">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right"
+                                        style="    margin-top: -15px;">
+                                        <label class="form-label">Status Report
+                                            Frequency</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-combobox value={SRFValue} options={SRFPicklist}
+                                            onchange={handleSPFChange} style="margin-top: -16px;">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Has Communities?</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style="width: 20px !important;
+                                        height: 20px !important;">
+
+                                        <lightning-input type="checkbox" checked={currentAccount.Has_Communities__c}
+                                            class="hasCommunities"></lightning-input>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right" style="">
+                                        <label class="form-label">Allow Future Timesheets</label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-input type="checkbox" onchange={handleAllowTimesheet}
+                                            checked={allowTimesheetBoolean}></lightning-input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </details><br />
+                    <details open>
+                    <summary>
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4;"
+                            onclick={handleForDetailsElement}>
+                            <h3 style=" display:inline; " class="panel-title">Project Status</h3>
+                                <div class="summary-chevron-up detailsClose clickable" style="float: right; display:none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="summary-chevron-down detailsOpen clickable" style="float: right;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-up">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </summary>
+                    <div class="panel-body">
+
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Project Status
+                                            </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                       <lightning-combobox value={ProjectStatusValue} options={ProjectStatuslist}
+                                            onchange={handleProjectStatusChange} >
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Scope of Work
+                                            </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-combobox value={ScopeofWorkValue} options={ScopeofWorklist}
+                                            onchange={handleScopeofWorkChange} >
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="slds-grid slds-gutters">
+                             <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Schedule
+                                            </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-combobox value={ScheduleValue} options={Schedulelist}
+                                            onchange={handleScheduleChange} >
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="slds-col slds-size_6-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_4-of-12 slds-text-align_right">
+                                        <label class="form-label">Budget
+                                            </label>
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 col-xs-12">
+                                        <lightning-combobox value={BudgetValue} options={Budgetlist}
+                                            onchange={handleBudgetChange} >
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </details><br />
+                <details open>
+                    <summary>
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4; "
+                            onclick={handleForDetailsElement1}>
+                            <h3 style=" display:inline; " class="panel-title">Onboarding Details</h3>
+                            <div class="summary-chevron-up detailsClose1 clickable" style="float: right; display:none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="summary-chevron-down detailsOpen1 clickable" style="float: right;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-up">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </summary>
+                    <div class="panel-body">
+                        <div class="slds-grid slds-wrap slds-p-around--medium"
+                            style="background:#eee; border:1px #ddd solid; font-size: 10px;">
+                            <div class="slds-col slds-size_1-of-1 slds-p-horizontal_medium">
+                                <div class="form-group">
+                                    <label class="col-md-4 col-sm-4 col-xs-12 control-label"
+                                        style="margin-top: 0px;width: 18%;">Business Overview<span></span></label>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style="width: 82%;">
+
+                                        <lightning-textarea value={currentAccount.Business_Overview__c}
+                                            class="mytextarea BusinessOverview"></lightning-textarea>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-p-horizontal_medium">
+                                <div class="form-group">
+                                    <label class="col-md-4 col-sm-4 col-xs-12 control-label"
+                                        style="margin-top: 0px;width: 18%;">Products/Services
+                                        Offered<span></span></label>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style="width: 82%;">
+                                        <lightning-textarea value={currentAccount.Products_Services_Offered__c}
+                                            class="mytextarea ProductServicesOffered"></lightning-textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-p-horizontal_medium">
+                                <div class="form-group">
+                                    <label class="col-md-4 col-sm-4 col-xs-12 control-label"
+                                        style="margin-top: 0px;width: 18%;">Customers<span></span></label>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style="width: 82%;">
+                                        <lightning-textarea value={currentAccount.Customers__c}
+                                            class="mytextarea Customers"></lightning-textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-p-horizontal_medium">
+                                <div class="form-group">
+                                    <label class="col-md-4 col-sm-4 col-xs-12 control-label"
+                                        style="margin-top: 0px;width: 18%;">Key Competitors<span></span></label>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style="width: 82%;">
+                                        <lightning-textarea value={currentAccount.Key_Competitors__c}
+                                            class="mytextarea KeyCompetitors"></lightning-textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-p-horizontal_medium">
+                                <div class="form-group">
+                                    <label class="col-md-4 col-sm-4 col-xs-12 control-label"
+                                        style="margin-top: 0px;width: 18%;">Collaborators /
+                                        Partners<span></span></label>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style="width: 82%;">
+                                        <lightning-textarea value={currentAccount.Collaborators_Partners__c}
+                                            class="mytextarea CollaboratorsPartners"></lightning-textarea>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-p-horizontal_medium">
+                                <div class="form-group">
+                                    <label class="col-md-4 col-sm-4 col-xs-12 control-label"
+                                        style="margin-top: 0px;width: 18%;">Compliance
+                                        Requirements<span></span></label>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style="width: 82%;">
+                                        <lightning-textarea value={currentAccount.Compliance_Requirements__c}
+                                            class="mytextarea ComplianceRequirements"></lightning-textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-p-horizontal_medium">
+                                <div class="form-group">
+                                    <label class="col-md-4 col-sm-4 col-xs-12 control-label"
+                                        style="margin-top: 0px;width: 18%;">Salesforce Roadmap<span></span></label>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style="width: 82%;">
+                                        <lightning-textarea value={currentAccount.Salesforce_Roadmap__c}
+                                            class="mytextarea SalesforceRoadMap"></lightning-textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-p-horizontal_medium">
+                                <div class="form-group">
+                                    <label class="col-md-4 col-sm-4 col-xs-12 control-label"
+                                        style="margin-top: 0px;width: 18%;">Product Backlog<span></span></label>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style="width: 82%;">
+
+                                        <lightning-textarea value={currentAccount.Product_Backlog__c}
+                                            class="mytextarea ProductBacklog"></lightning-textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-1 slds-p-horizontal_medium">
+                                <div class="form-group">
+                                    <label class="col-md-4 col-sm-4 col-xs-12 control-label"
+                                        style="margin-top: 0px;width: 18%;">Current Painpoints<span></span></label>
+                                    <div class="col-md-8 col-sm-8 col-xs-12" style="width: 82%;">
+
+                                        <lightning-textarea value={currentAccount.Current_Painpoints__c}
+                                            class="mytextarea CurrentPainpoints"></lightning-textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details><br />
+
+                <!--Release-->
+
+
+                <details open>
+                    <summary>
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4; "
+                            onclick={handleForDetailsElement2}>
+                            <h3 style=" display:inline; " class="panel-title">Release Update Impact Analysis</h3>
+                            <div class="summary-chevron-up detailsClose2 clickable" style="float: right; display:none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="summary-chevron-down detailsOpen2 clickable" style="float: right;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-up">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </summary>
+
+                    <div class="panel-body">
+                        <table
+                            class="apply_dataTable slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered"
+                            style="width:100%;">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col"
+                                        style="background-color: #4ECAF4; font-weight:normal; color:#fff; font-size:13px; padding: 4px 10px; text-align:center !important; width:155px; ">
+                                        <div class="slds-truncate" style="text-align:left;">RELEASE</div>
+                                    </th>
+                                    <th class="" scope="col"
+                                        style="background-color: #4ECAF4; font-weight:normal; color:#fff; font-size:13px; padding: 4px 10px; text-align:center !important; width:155px">
+                                        <div class="slds-truncate" style="text-align:left;">
+                                            RELEASE DATE</div>
+                                    </th>
+                                    <th class="" scope="col"
+                                        style="background-color: #4ECAF4; font-weight:normal; color:#fff; font-size:13px; padding: 4px 10px; text-align:center !important; width:155px">
+                                        <div class="slds-truncate" style="text-align:left;">
+                                            STATUS</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template if:true={casesList}>
+                                    <template for:each={casesList} for:item="c">
+                                        <tr style="font-size:13px;font-weight:normal;text-align:left; margin: left 10px; color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;background: #f2f2f2;"
+                                            key={c.Id}>
+                                            <td style="width:155px">
+
+                                                <div class="slds-truncate" data-item={c.Release__c} data-id={c.Id}>
+                                                    {c.Release__c}
+                                                </div>
+                                            </td>
+                                            <td style="width:155px">
+                                                <div class="slds-truncate" data-id={c.Id}>
+                                                    {c.Release_Date__c}
+                                                </div>
+                                            </td>
+                                            <template if:true={c.isDisable}>
+                                                <td style="cursor: pointer;">
+                                                    <lightning-combobox data-item={c.Id} name="status" value={c.Status}
+                                                        options={options} onchange={handleChange} data-id={c.Id}
+                                                        disabled=true>
+                                                    </lightning-combobox>
+                                                </td>
+                                            </template>
+                                            <template if:false={c.isDisable}>
+                                                <td style="cursor: pointer;">
+                                                    <lightning-combobox data-item={c.Id} name="status" value={c.Status}
+                                                        options={options} onchange={handleChange} data-id={c.Id}>
+                                                    </lightning-combobox>
+                                                </td>
+                                            </template>
+
+
+                                        </tr>
+                                    </template>
+                                </template>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </details></br>
+                <details open>
+                    <summary>
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4; "
+                            onclick={handleForDetailsElement2}>
+                            <h3 style=" display:inline; " class="panel-title">Incidents</h3>
+                            <div class="summary-chevron-up detailsClose2 clickable" style="float: right; display:none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-down">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="summary-chevron-down detailsOpen2 clickable" style="float: right;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-chevron-up">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </summary>
+
+                    <div class="panel-body">
+                        <table
+                            class="apply_dataTable slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered"
+                            style="width:100%;">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col"
+                                        style="background-color: #4ECAF4; font-weight:normal; color:#fff; font-size:13px; padding: 4px 10px; text-align:center; ">
+                                        <div class="slds-truncate" title="Customer Name">SUBJECT</div>
+                                    </th>
+                                    <th class="" scope="col"
+                                        style="background-color: #4ECAF4; font-weight:normal; color:#fff; font-size:13px; padding: 4px 10px; text-align:center !important; width:155px">
+                                        <div class="slds-truncate" style="text-align:left;" title="Service Opted">
+                                            CREATED DATE</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template if:true={incidents}>
+                                    <template for:each={incidents} for:item="r">
+                                        <tr style="font-size:13px;font-weight:normal;text-align:left; margin: left 10px; color: #000;font-family: 'Open Sans', sans-serif;font-size: 12px;background: #f2f2f2;"
+                                            key={r.id}>
+                                            <td style="cursor: pointer;">
+                                                <div class="slds-truncate" data-item={r.Id} onclick={showPopUp}>
+                                                    {r.Subject}
+                                                </div>
+                                            </td>
+                                            <td style="width:155px">
+                                                <div class="slds-truncate">
+
+                                                    <lightning-formatted-date-time value={r.CreatedDate} year="numeric"
+                                                        month="numeric" day="numeric" hour="2-digit" minute="2-digit"
+                                                        hour12="false">
+                                                    </lightning-formatted-date-time>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
+
+                <div class="custPopup" style="display: none;">
+                    <div class="BackGPopup" style="float: right;">
+                        <lightning-icon icon-name="utility:clear" title="Close" onclick={closePopUp}
+                            class="slds-icon_small" aria-hidden="true" style="margin-top: 10px;margin-right: 10px;">
+                        </lightning-icon>
+                    </div>
+                    <div class="popupText" style="font-size:13px;color:black;margin: 20px 15px 10px 20px;">
+                        <span style="font-weight: bold;"> {currentSubject}</span><br /><br />
+                        <lightning-formatted-rich-text value={currentHtmlBody}></lightning-formatted-rich-text>
+                    </div>
+                </div>
+            </div>
+            <div class="pull-right"><br>
+                <template if:true={kickoffCompletionButton}>
+                    <lightning-button variant="brand" class="slds-m-top_small submitButton" label="Kickoff Completed"
+                        type="submit" onclick={showModalBox}></lightning-button> &nbsp;
+                </template>
+
+                <button class="slds-m-top_small cancelButton" onclick={handleReset}> CANCEL
+                </button> &nbsp; <lightning-button variant="brand" class="slds-m-top_small submitButton" type="submit"
+                    label="SAVE" onclick={handleSubmit}>
+                </lightning-button>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,416 @@
+<apex:page controller="ODS_ViewTimesheetControllerMobile" showHeader="false" sidebar="false" standardStyleSheets="false" id="PageId">
+    
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+        
+        <title>ON DEMAND SERVICES </title>
+        
+        <script>
+        $(document).ready(function(){
+            $("#timesheet").addClass("active");
+            $("button.collapsed").click(function(){
+                $(".header").toggleClass("header-fixed");
+                $(".navbar-toggle").toggleClass("nav-btn-fixed");
+                $(".mid-bg").toggleClass("mid-bg-fixed");
+            });
+            
+            //Search popu
+            $('.tsearch').click(function(){
+                $('.advnc_search').slideToggle('fast');
+                $('#date_service').val('');
+                $('#date_service1').val('');
+                $('#statsDrop').val('All');
+            });   
+            
+            var AccountID = $(".ddlstAccount").val();
+            var ServiceID = $(".ddlstService").val();
+            
+            ApplySearchAction(AccountID,ServiceID)             
+        });  
+        function ApplySearch(){
+            var AccountID = $(".ddlstAccount").val();
+            var ServiceID = $(".ddlstService").val();
+            
+            ApplySearchAction(AccountID,ServiceID)
+        }
+        function HidePopup(){                
+            $("#myModal").hide();                
+            $(".modal-backdrop").removeClass("modal-backdrop");
+        } 
+        
+        function DeleteTimesheetFunction(timeshtId){
+            var IsConfirm = confirm('Are you sure you want to delete?');
+            if(IsConfirm){
+                DeleteTimesheetAction(timeshtId);
+                return True;
+            }
+            else{
+                return False;
+            }
+        }
+        
+        function CommentValidation(){ 
+            var cmnts = $('.Comments').val(); 
+            
+            if(cmnts.trim() == '') 
+            {
+                alert('Please enter comments');
+                return false;
+            }
+            else
+            {           
+                HidePopup();                    
+                RejectAction(cmnts);     
+                return true;                
+            }
+        }          
+        
+        function fnSearchTimesheet(){
+            var FromDate = $('.tfrom_date').val();
+            var ToDate = $('.tto_date').val();
+            GetSearchResultsFromAjax(FromDate,ToDate);
+            
+        }
+        //function to restrict numbers in datepicker
+        function isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (!(charCode > 31 && (charCode < 48 || charCode > 57) && charCode ==91 )) {
+                return false;
+            }
+            return true;
+        }
+        
+        function fnUpdateStatus(Statustype){
+            
+            if(Statustype =='Approve'){
+                HidePopup();
+                ApproveAction();
+                
+            }else {
+                
+                var cmnts = $('.Comments').val();
+                if(cmnts.trim() == '') 
+                    
+                {
+                    alert('Please enter comments');
+                    return false;
+                }
+                else
+                {           
+                    HidePopup();                    
+                    RejectAction(cmnts);     
+                    return true;                
+                }
+            }            
+            
+        }
+        
+        function reloadpage()
+        {
+            window.location.reload(false); 
+            
+        }
+        
+        function ClearTimeSheetComments(actiontype){
+            debugger;
+            if(actiontype =='Approve')
+            {
+                $('.btnApprove').show(); 
+                $('.btnReject').hide();
+                $('#hideApprove').show();
+                $('#hideReject').hide(); 
+                
+            }else{
+                $('.btnReject').show();  
+                $('.btnApprove').hide();
+                $('#hideApprove').hide();
+                $('#hideReject').show(); 
+            }
+            
+            $("#myModal").find("textarea").val('').end();
+            HidePopup();    
+        }
+        </script>
+        <style>
+            .mid-bg{
+            display:none;
+            }
+            form{
+            width:100%!important;
+            }
+            .page-info, .pglist-wrapper{
+            width:100%;
+            }
+        </style>
+    </head>
+    <body>
+        <apex:form id="formId">
+            <div class="shadow-show"></div>
+            <c:ODS_HeaderComponent_Mobile />
+            <apex:pageMessages />
+            <apex:actionStatus id="statusSaveTrip" stopText="">
+                <apex:facet name="start">
+                    <div>
+                        <div class="popupBackground" />
+                        <div class="PopupPanel">
+                            <table border="0" width="100%" height="100%">
+                                <tr>
+                                    <td align="center"><b>Please Wait</b></td>
+                                </tr>
+                                <tr>
+                                    <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionStatus>
+            
+            <apex:actionFunction name="GetSearchResultsFromAjax" action="{!GetSearchResults}" reRender="SearchResultsPanel" status="statusSaveTrip">
+                <apex:param name="FromDt" value="" assignTo="{!FromDate}"/>
+                <apex:param name="ToDt" value="" assignTo="{!ToDate}"/>
+            </apex:actionFunction>
+            <apex:actionFunction name="ApproveRejectAction" action="{!GetTimeSheetIdFromAction}" rerender="SearchResultsPanel, myModal" immediate="true">
+                <apex:param name="CurrentTimesheetId" value="" assignTo="{!CurrenTimesheetId}"/>
+            </apex:actionFunction>
+            <apex:actionFunction name="ViewTimesheetAction" action="{!ViewTimesheet}" rerender="SearchResultsPanel,CustomerPanel" immediate="true">
+                <apex:param name="ViewTimesheetId" value="" assignTo="{!CurrenTimesheetId}"/>
+            </apex:actionFunction>
+            
+            <apex:actionFunction action="{!DeleteTimesheet}"   name="DeleteTimesheetAction" rerender="listPanel" status="statusSaveTrip" immediate="true"  >
+                <apex:param name="DeleteTimesheetId" value="" assignTo="{!CurrenTimesheetId}"/>
+            </apex:actionFunction>
+            
+            <apex:actionFunction name="RejectAction" action="{!RejectTimesheet}" reRender="SearchResultsPanel" status="statusSaveTrip" oncomplete="reloadpage();" >
+                <apex:param name="timeshtCmnts" value="" assignTo="{!TimesheetComments}"/>
+            </apex:actionFunction>   
+            
+            <apex:actionFunction name="RenderTableAction" action="{!GetTimesheet}" rerender="SearchResultsPanel,CustomerPanel" immediate="true"/>
+            <apex:actionFunction name="ApplySearchAction" action="{!GetTimesheetByAccountServiceID}" status="statusSaveTrip" reRender="listPanel,SearchResultsPanel,CustomerPanel,AddTimesheetPanel,AddTimesheetDisclaimer" immediate="True" >
+                <apex:param name="SelectedAccountId" value="" assignTo="{!AccountId}"/>
+                <apex:param name="SelectedServiceID" value="" assignTo="{!ServiceID}"/>
+            </apex:actionFunction>
+            
+            <!-- Mobile Code -->
+            <!-- Page Header -->
+            <div class="page-header no-filterhead">
+                <div class="d-flex align-items-center justify-content-between">
+                    <a href="javascript: history.go(-1)">
+                        <img src="{!URLFOR($Resource.ods_mobile_assets,'images/backarrow.svg')}" alt="back"  />
+                    </a>  
+                    <p>
+                        Timesheet
+                    </p>
+                    <a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#prelude_mnu" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <img src="{!URLFOR($Resource.ods_mobile_assets,'images/navdots.svg')}" alt="navdots"  />
+                    </a>
+                    <!-- <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#prelude_mnu"><i class="fa fa-ellipsis-v"></i></button> -->                                                             
+                </div>                
+            </div>
+            <!-- Page Header -->
+            <!-- App Page -->
+            <div class="page-info">
+                <div class="container-fluid">
+                    <apex:outputPanel id="CustomerPanel">
+                        <apex:outputPanel styleClass="approved-by" rendered="{!((IsApprover) && Not(timesheetList.size==0 && timesheetList!=null ))}">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label class="info-label">Approver</label>
+                                    <p class="info-value">
+                                        {!ApproverName}
+                                    </p>
+                                </div>
+                            </div>                            
+                        </apex:outputPanel>                         
+                    </apex:outputPanel>                    
+                </div>
+            </div>
+            <div class="pglist-wrapper">
+                <div class="container-fluid">
+                    <apex:outputPanel id="listPanel"> 
+                        <apex:pageBlock id="SearchResultsPanel"> 
+                            <div class="pglist-view">
+                                <apex:repeat rendered="{!(timesheetList.size!=0 && timesheetList !='' && timesheetList !=null ) }" value="{!timesheetList}" var="time" id="pgTable">
+                                    <div class="pglist-item" >
+                                        <div class="clearfix">
+                                            <div class="float-left w-65" onClick="ViewTimesheetAction('{!time.Id}');return false;">
+                                                <a href="#">
+                                                    <div class="pglist-content status-content">
+                                                        <p class="pglist-id">
+                                                            Week.
+                                                            <span><apex:outputText value="{!time.Week_Start_Date__c}  -  {!time.Week_End_Date__c}" /></span>
+                                                        </p>
+                                                        <div class="pglist-title">
+                                                            <apex:outputText value="{!time.Account_Services__r.Account__r.Name} - {!time.Account_Services__r.ODS_Services__r.Name__c}"/>
+                                                        </div>
+                                                        <div class="pglist-hours">
+                                                            Total Hours.
+                                                            <span><apex:outputText value="{!time.Total_Hours__c}"/></span>
+                                                        </div>
+                                                        <p class="pglist-status">
+                                                            Status: 
+                                                            <span><apex:outputText value="{!time.Status__c }"/></span>
+                                                        </p>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="float-right w-35">
+                                                <div class="pglist-action">
+                                                    <ul class="pgaction-menu">
+                                                        <li class="pgmenu-item">
+                                                            <i class="fa fa-cog"></i>
+                                                            <ul class="pgsubmenu-item">
+                                                                <li>
+                                                                    <apex:outputPanel id="Approve" styleClass="actionbutton">
+                                                                        <apex:commandLink title="Approve" html-data-toggle="modal" html-data-target="#myModal" styleClass="time_view approve"  status="statusSaveTrip" 
+                                                                                          onclick="ClearTimeSheetComments('Approve');ApproveRejectAction('{!time.Id}');return false;" rendered="{!IF( ( (PortalUserRole == 'Customer') && (IsPortalApprover == True) && (time.Status__c == 'Submitted'))  || (OR(PortalUserRole == 'Technical Account Manager',PortalUserRole == 'Practice Head') && (time.Status__c == 'Submitted') ) , IF((PortalUserRole == 'Partner'), false, true), False)}">
+                                                                            <i class="fa fa-check"></i>
+                                                                        </apex:commandLink> 
+                                                                    </apex:outputPanel>                                                                    
+                                                                </li>
+                                                                <li>
+                                                                    <apex:outputPanel id="Reject" styleClass="actionbutton">
+                                                                        <apex:commandLink title="Reject" html-data-toggle="modal" html-data-target="#myModal" styleClass="time_view reject" status="statusSaveTrip" 
+                                                                                          onclick="ClearTimeSheetComments('Reject');ApproveRejectAction('{!time.Id}');return false;" rendered="{!IF( ( (PortalUserRole == 'Customer') && (IsPortalApprover == True) && (time.Status__c == 'Submitted'))  || (OR(PortalUserRole == 'Technical Account Manager',PortalUserRole == 'Practice Head') && (time.Status__c == 'Submitted') ) , IF((PortalUserRole == 'Partner'), false, true), False)}">
+                                                                            <i class="fa fa-times"></i>
+                                                                        </apex:commandLink>
+                                                                    </apex:outputPanel>
+                                                                </li>  
+                                                                <li>
+                                                                    <apex:outputPanel id="Delete" styleClass="actionbutton">
+                                                                        <apex:commandLink styleClass="time_view delete" title="Delete" onClick="return DeleteTimesheetFunction('{!time.Id}');" status="statusSaveTrip" 
+                                                                                          rendered="{!IF(OR(PortalUserRole == 'Customer',PortalUserRole == 'Partner'), False,IF(time.Status__c== 'Submitted', False, IF(time.Status__c == 'Approved',False, True)))}" reRender="listPanel">                                            
+                                                                            <i class="fa fa-trash-o"></i>
+                                                                        </apex:commandLink>
+                                                                    </apex:outputPanel>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                </apex:repeat>                                
+                            </div>
+                            <div class="pgbutton">
+                                <apex:outputPanel id="AddTimesheetPanel">
+                                    <apex:commandLink action="{!AddTimesheet}" styleClass="save-submit" rendered="{!ShowAddTimesheet && PortalUserRole != 'Partner'}" > 
+                                        <i class="fa fa-plus"></i>
+                                    </apex:commandLink>
+                                </apex:outputPanel>                                               
+                            </div>
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                </div>
+                <!-- Approve/Decline Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered">                            
+                        <div class="modal-content formmodal">
+                            <!-- Modal Header -->
+                            <div class="modal-header gradient3">
+                                <h4 class="modal-title"><span id= "hideApprove">Approve </span> <span id= "hideReject">Reject </span></h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div> 
+                            <!-- Modal Body -->
+                            <div class="modal-body">
+                                <apex:inputTextarea html-placeholder="Comments" id="Comments" rows="5" styleclass="form-control Comments" value="{!TimesheetComments}"/>                                                
+                            </div>
+                            <!-- Modal Footer -->
+                            <div class="modal-footer"> 
+                                <apex:commandButton value="Approve" styleClass="popup-add btnsave btnApprove" onclick="HidePopup();" action="{!ApproveTimesheet}" 
+                                                    oncomplete="RenderTableAction();" reRender="" status="statusSaveTrip" />
+                                <input type="button" id="btnReject" class="popup-cancel btndecline btnReject" value="Reject" onclick="return fnUpdateStatus('Reject')" />                               
+                                <button type="button" class="btncancel" data-dismiss="modal">Close</button>                                
+                            </div>                                 
+                        </div>
+                    </div>
+                </div>
+                <!-- Approve/Decline Modal -->
+            </div>
+            <!-- Mobile Code -->
+            
+            <div class="mid-bg">
+                <div class="sub-warp"> 
+                    <div class="mid-white">
+                        <div class="mid-user-sec">
+                            <apex:outputPanel id="CustomerPanel1">
+                             <apex:outputPanel styleClass="approved-by" rendered="{!((IsApprover) && Not(timesheetList.size==0 && timesheetList!=null ))}"><strong>Approver</strong>: {!ApproverName}</apex:outputPanel>                         
+                            </apex:outputPanel>
+                        </div>
+                        <div class="timeline-scroll" id ="divID">
+                            &nbsp;
+                            <apex:outputPanel id="listPanel1">
+                                
+                                <apex:pageBlock id="SearchResultsPanel1">
+                                    <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/jquery.dataTables.css')}"/>
+                                    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"/>
+                                    <apex:includeScript value="https://cdn.datatables.net/1.10.0/js/jquery.dataTables.js"/>
+                                    
+                                    <style type="text/css" media="screen">
+                                        table.dataTable.display tbody tr.odd > .sorting_1, table.dataTable.order-column.stripe tbody tr.odd > .sorting_1 {
+                                        background-color: #F1F1F1;
+                                        }
+                                        
+                                    </style>
+                                    <script type="text/javascript" charset="utf8">
+                                    var oTable;
+                                    var currentNumberDisplayed = 5;
+                                    
+                                    $(document).ready(function() {
+                                        $('#load').click( function () {
+                                            var oSettings = oTable.fnSettings();
+                                            currentNumberDisplayed += 5;
+                                            oSettings._iDisplayLength = currentNumberDisplayed;
+                                            oTable.fnDraw();
+                                        });
+                                        
+                                        oTable = $('[id$=pgTable]').dataTable({
+                                            "iDisplayLength": 25,
+                                            "bSort": false,
+                                            "bFilter": false,
+                                            "dom": '<"top"flp<"clear">>rt<"bottom"ifp<"clear">>',
+                                            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                                            stateSave: true
+                                            
+                                        });
+                                    });
+                                    
+                                    </script>
+                                </apex:pageBlock>
+                            </apex:outputPanel>
+                        </div>  
+                    </div>
+                </div>
+            </div>           
+        </apex:form>
+    </body>
+    
+    <script type="text/javascript">
+    
+    j$ = jQuery.noConflict();
+    
+    j$(document).ready(function() 
+                       {
+                           j$( "#date_service, #date_service1").datepicker(
+                               {
+                                   dateFormat : 'mm/dd/yy',
+                                   changeMonth : true,
+                                   changeYear : true,
+                                   yearRange: '-100y:c+nn',
+                                   maxDate: '0d'
+                               });
+                           $("#date_service, #date_service1").bind('paste',function(e){
+                               e.preventDefault();  //disable paste in datePicker
+                           });
+                       });
+    </script>
+    <script type="text/javascript">
+    $('#PageId:formId:SearchResultsPanel:pgTable_length').click(function() {
+        alert('hi');
+    });
+    </script>
+</apex:page>

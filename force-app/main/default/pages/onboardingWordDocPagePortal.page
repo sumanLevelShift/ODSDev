@@ -1,0 +1,83 @@
+<apex:page showHeader="false" sidebar="false" title="ON DEMAND SERVICES" standardController="Account">
+    <style>
+        #popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+        
+        /* Dimensions */
+        width: 100%;
+        height: 500%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        font-family: sans-serif;
+        /* Mouse */
+        cursor:wait;
+        }
+        
+        /* This is for the message DIV */
+        #PopupPanel {
+        /* Background color */
+        border: solid 2px skyblue;
+        background-color: white;
+        font-family: sans-serif;
+        /* Dimensions */
+        left: 50%;
+        width: 100px;
+        margin-left: -100px;
+        top: 50%;
+        height: 100px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+        }
+        
+    </style>
+    <apex:includeLightning />
+    <div id="lightning" style="clear: both;"/>
+    <apex:form >
+        <div style="display: none;">
+            <c:ODS_HeaderComponent />    
+        </div>
+    </apex:form>
+    <div>
+        <div id="popupBackground" />
+        <div id="PopupPanel">
+            <table border="0" width="100%" height="100%">
+                <tr>
+                    <td align="center"><b>Please Wait</b></td>
+                </tr>
+                <tr>
+                    <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script>
+    var AccountID;
+    var ServiceID;
+    
+    $(document).ready(function(){
+        AccountID = $(".ddlstAccount").val();
+        ServiceID = $(".ddlstService").val();        
+    });
+    
+    $Lightning.use("c:onboardingWordDocApp", function() {
+        $Lightning.createComponent("c:onboardingWordDocCMP", {accID: AccountID },
+                                   "lightning",
+                                   function(cmp) {
+                                       var loadingDivElt = document.getElementById("PopupPanel");
+                                       loadingDivElt.style.display = 'none' ;  
+                                       var loadingDivElt = document.getElementById("popupBackground");
+                                       loadingDivElt.style.display = 'none' ;   
+                                   }
+                                  );
+    });
+    </script>
+</apex:page>

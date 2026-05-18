@@ -1,0 +1,2 @@
+<apex:page controller="ReusableOrgController" action="{!redirectToReusables}">
+</apex:page>

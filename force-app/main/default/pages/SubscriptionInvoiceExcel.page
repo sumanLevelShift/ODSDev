@@ -1,0 +1,135 @@
+<apex:page showHeader="false" sidebar="false" controller="SubscriptionInvoiceExportController" contentType="application/vnd.ms-excel#{!fileName}.xls" language="en-US" cache="true">
+    <apex:form >
+        <html>
+            <head>
+                <style>
+                    @page
+                    {   
+                    size:landscape;
+                    }                            
+                </style>
+            </head>
+            <body style="font-family: Times New Roman; font-size:14px;">
+                <div class="mid-bg">
+                    <div class="sub-warp">
+                        
+                        <div class="mid-white">
+                            
+                            <p style="float:left;font-size:16px;">Fiscal Year -  {!selectedYear}</p>
+                            <!---<div style="clear:both"></div>-->          
+                            <table border='1 px solid #d7d7d7' cellpadding='0' cellspacing='0' width='100%'>
+                                <tr>
+                                    <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; padding:5px;font-size:16px; text-align: center;" ><strong>CUSTOMER</strong></th>
+                                    <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; padding:5px;font-size:16px; text-align: center;" ><strong>ACCOUNTING</strong></th>
+                                    <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; padding:5px;font-size:16px; text-align: center;" ><strong>CSM</strong></th>
+                                    <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; padding:5px;font-size:16px;text-align: center;" ><strong>Total(FY: {!selectedYear})</strong></th>
+                                    <apex:repeat value="{!TableLabels.labels}" var="row">
+                                        <th  style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;  color: #fff; padding:5px;font-size:16px; text-align: center;" class="thcls" id="{!row}">
+                                            <div class="labname" title="Month APR">
+                                               <label>{!row}</label> 
+                                             </div>
+                                        </th>
+                                    </apex:repeat>
+                                    <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;  color: #fff; padding:5px; text-align: center;" ><strong>Subscription Fee Frequency</strong></th>
+                                    <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;  color: #fff; padding:5px; text-align: center;" ><strong>Subscription Fee Terms</strong></th>
+                                    <th style="background: #3399cc; border: 1px solid #d7d7d7; border-right: none; border-bottom: none; font-size:16px; color: #fff; padding:5px; text-align: center;" ><strong>Subscription Fee Exceptions</strong></th>
+                                    
+                                </tr>                           
+                                <apex:repeat value="{!SubscriptionExport.WorkOrderDetails}" var="a">
+                                    
+                                    <tr>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:left">
+                                            {!a.customerName}
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:left">
+                                            {!a.Accounting}
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:left">
+                                            {!a.CSM}
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['sumOfFees']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['April']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['May']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['June']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['July']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['August']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['September']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['October']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['November']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['December']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['January']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['February']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:right">
+                                            <apex:outputText value="{0, number, $###,###,##0.00}">
+                                                <apex:param value="{!a['March']}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:left">
+                                            {!a.subscriptionFF}
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:left">
+                                            {!a.subscriptionFT}
+                                        </td>
+                                        <td style=" padding:5px; border: 1px solid #d7d7d7; border-right: none; border-bottom: none;font-size:16px;text-align:left">
+                                            {!a.subscriptionFE}
+                                        </td>
+                                        
+                                    </tr>
+                                </apex:repeat> 
+                            </table>
+                            <div class="clr"></div>
+                        </div>
+                    </div>
+                </div>
+            </body> 
+        </html>
+    </apex:form>
+</apex:page>

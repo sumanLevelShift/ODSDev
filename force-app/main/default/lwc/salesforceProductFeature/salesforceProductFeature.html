@@ -1,0 +1,82 @@
+<template>
+    <div class="slds-p-around_medium blue-box" style="display: none;">
+        <label>Account </label>
+        <c-lwc-lookup object-api-name="account" icon-name="standard:account" style="font-size: 12px;" onrecordselection={onAccountSelection}>
+        </c-lwc-lookup>
+    </div>
+    <div class="slds-p-around_medium grey-box ">
+      
+        <label class="slds-p-bottom_x-small">Salesforce Product</label>
+      
+        <div class="slds-grid slds-wrap slds-m-vertical_x-small red">
+            <template for:each={salesforceProductRecords} for:item="i">
+                <div class="slds-col slds-size_1-of-6" key={i.Id}>
+                    <lightning-input style="width: 55px;font-size:13px;" min="0" max="100" value={i.productUsage} data-id={i.Id} key={i.Id}
+                        type="number" onfocusout={handleFeature} disabled>
+                </lightning-input>
+                </div>
+                <div class="slds-col slds-size_5-of-6" key={i.Id}>
+                    <button data-id={i.Id} class="accordion" key={i.Id} id={i.Id} onclick={accordionMethod}>
+                        {i.Name}
+                    </button>
+
+                    <div class="panel" key={i.Id}>
+                        <div class="adjcementDiv">
+                            <table class='table1' >
+                                <tbody>
+                                    <tr>
+                                        <th width="65%">Feature</th>
+                                        <th class="PartentTH">Usage %</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+
+                                            <div class="scroll">
+                                                <table class='table2'>
+                                                    <tbody>
+                                                        <template for:each={i.productFeatureList}
+                                                            for:item="j">
+                                                            <tr key={j.Id}>
+                                                                <td width="68%">{j.Name}</td>
+                                                                <td class="ChildTD" data-id={j.Id}>
+                                                                    <p class="hidevalue">
+                                                                        <span class="loadspan">{j.clientUsage}</span>
+                                                                       <!-- <lightning-button-icon  class="slds-float_right" data-id={j.Id}
+                                                                            icon-name="utility:edit" variant="container"
+                                                                            onclick={handleFeatureChangeForOnClick}>
+                                                                        </lightning-button-icon>-->
+                                                                    </p>
+                                                                    <lightning-input class={j.Id} style="display:none; "
+                                                                        min="0" max="100"
+                                                                        value={j.clientUsage}
+                                                                        data-id={j.Id} key={j.Id} type="number"
+                                                                        onfocusout={handleClientFeature}  disabled></lightning-input>
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </template>
+  
+        </div>
+      
+      <!--  <div class="actionrow" style="background: #efefef;display: none;">
+            <div class="inner">
+            <lightning-button label="Cancel"  onclick={handleCancel}></lightning-button>
+            </div>
+            <div class="inner slds-p-left_x-small">
+            <lightning-button  variant="brand" label="Save" onclick={handleClientUsageSave}></lightning-button>
+        </div>
+        </div>-->
+    </div>
+  
+</template>

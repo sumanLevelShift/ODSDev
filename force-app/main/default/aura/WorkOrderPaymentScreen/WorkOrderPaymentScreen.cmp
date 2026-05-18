@@ -1,0 +1,11 @@
+<aura:component access="global" implements="lightning:availableForFlowScreens">
+     
+       <div class="slds-p-top_medium slds-clearfix">
+          <div class="slds-float_left">
+             
+             <h2><b>Payment and Invoice Screen:</b></h2>
+          </div>
+           
+          
+       </div>
+    </aura:component>

@@ -1,0 +1,318 @@
+/* View Initiative LWC - Matching VF Page Design */
+
+/* Main Container - Fit to Page */
+:host {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Page Header Styling */
+.slds-page-header {
+    background: #f3f2f2;
+    border-bottom: 1px solid #dddbda;
+    padding: 0.75rem 1rem;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.slds-page-header__row {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.slds-page-header__col-actions {
+    flex-shrink: 0;
+}
+
+.add-initiative-btn {
+    font-weight: bold;
+}
+
+.search-toggle-btn {
+    font-weight: bold;
+}
+
+/* Card Container - Fit to Page */
+.slds-card {
+    margin: 0.75rem;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.slds-card__body {
+    padding: 0.75rem;
+    overflow-x: auto;
+}
+
+.slds-card__body_inner {
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+/* Data Table Styling - Matching VF Design */
+.initiative-table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.initiative-table th {
+    background-color: #0070d2;
+    color: #ffffff;
+    border: 1px solid #dee2e6;
+    padding: 10px 8px;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    text-align: left;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.initiative-table td {
+    border: 1px solid #dee2e6;
+    padding: 8px;
+    font-size: 13px;
+    vertical-align: top;
+    background-color: #ffffff;
+    word-wrap: break-word;
+    max-width: 300px;
+}
+
+.initiative-table tbody tr:nth-child(even) td {
+    background-color: #f8f9fa;
+}
+
+.initiative-table tbody tr:hover td {
+    background-color: #e3f2fd;
+}
+
+/* Yellow highlight for submitted initiatives (customers only) */
+.initiative-table tbody tr.cust-init-sub td {
+    background-color: #FFFF99;
+}
+
+.initiative-table tbody tr.cust-init-sub:hover td {
+    background-color: #FFFFCC;
+}
+
+/* Action Column Styling */
+.action-cell {
+    text-align: center;
+    padding: 8px 4px;
+}
+
+.action-icons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-icon {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    display: inline-block;
+    padding: 4px;
+    text-decoration: none;
+}
+
+.action-icon:hover {
+    transform: scale(1.1);
+}
+
+/* View Icon - Light Blue */
+.view-icon-svg {
+    --slds-c-icon-color-foreground-default: #4ecaf4;
+    width: 20px;
+    height: 20px;
+}
+
+.view-icon:hover .view-icon-svg {
+    --slds-c-icon-color-foreground-default: #3bb8e0;
+}
+
+/* Delete Icon - Red */
+.delete-icon-svg {
+    --slds-c-icon-color-foreground-default: #c23934;
+    width: 20px;
+    height: 20px;
+}
+
+.delete-icon:hover .delete-icon-svg {
+    --slds-c-icon-color-foreground-default: #a01a1a;
+}
+
+/* Approve Icon - Green (matching image: green checkmark) */
+.approve-icon-svg {
+    --slds-c-icon-color-foreground-default: #04844b;
+    width: 20px;
+    height: 20px;
+}
+
+.approve-icon:hover .approve-icon-svg {
+    --slds-c-icon-color-foreground-default: #027e42;
+}
+
+/* Reject Icon - Red (matching image: red X for reject) */
+.reject-icon-svg {
+    --slds-c-icon-color-foreground-default: #c23934;
+    width: 20px;
+    height: 20px;
+}
+
+.reject-icon:hover .reject-icon-svg {
+    --slds-c-icon-color-foreground-default: #a01a1a;
+}
+
+/* Column Width Constraints */
+.initiative-table td:first-child {
+    min-width: 150px;
+    max-width: 200px;
+}
+
+.initiative-table td:nth-child(2) {
+    min-width: 100px;
+    max-width: 150px;
+}
+
+.initiative-table td:nth-child(3) {
+    min-width: 200px;
+    max-width: 300px;
+}
+
+.initiative-table td:nth-child(4) {
+    min-width: 120px;
+    max-width: 150px;
+}
+
+.initiative-table td:nth-last-child(1) {
+    min-width: 150px;
+    max-width: 200px;
+    text-align: center;
+}
+
+/* Pagination Styling */
+.slds-button-group {
+    display: inline-flex;
+}
+
+.slds-button-group .slds-button {
+    min-width: 40px;
+    margin-right: 5px;
+}
+
+.slds-button-group .slds-button_brand {
+    font-weight: bold;
+}
+
+/* Modal Styling */
+.slds-modal__container {
+    max-width: 500px;
+}
+
+.slds-modal__header {
+    background-color: #0070d2;
+    color: #ffffff;
+    padding: 1rem;
+}
+
+.slds-modal__title {
+    color: #ffffff;
+}
+
+.slds-modal__close {
+    color: #ffffff;
+}
+
+/* Search Panel Styling */
+.slds-card__header {
+    background-color: #f3f2f2;
+    border-bottom: 1px solid #dddbda;
+    padding: 0.75rem 1rem;
+}
+
+.slds-card__header-title {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .slds-page-header {
+        padding: 0.5rem;
+    }
+    
+    .slds-page-header__col-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+    
+    .slds-page-header__controls {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .add-initiative-btn,
+    .search-toggle-btn {
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+    
+    .slds-card {
+        margin: 0.5rem;
+    }
+    
+    .initiative-table {
+        font-size: 11px;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .initiative-table th,
+    .initiative-table td {
+        padding: 6px 4px;
+        min-width: 80px;
+    }
+}
+
+/* Ensure table container fits page */
+.initiative-table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Grid alignment improvements */
+.slds-grid {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.slds-grid_align-spread {
+    align-items: center;
+}
+
+/* Pagination alignment */
+.slds-grid_align-spread .slds-col {
+    display: flex;
+    align-items: center;
+}
+
+/* Loading Spinner */
+lightning-spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}

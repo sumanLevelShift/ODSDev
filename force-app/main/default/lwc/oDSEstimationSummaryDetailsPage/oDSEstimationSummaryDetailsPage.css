@@ -1,0 +1,77 @@
+.tabset{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 12px !important;
+    line-height: 1.42857143;
+    color: #333;
+    margin: 10px;
+}
+
+.tab-active {
+    --sds-c-tabs-scoped-color-text-active: #4ECAF4;
+}
+.inactive{
+    pointer-events: none;
+}
+abbr.slds-required{
+    display: none !important;
+}
+.pull-right {
+    float: right !important;
+}
+.slds-tabs_scoped__content{
+    border:0px !important;
+    }
+
+.header-info{
+    background: #302d2e;
+    padding: 12px 30px;
+   /* position: sticky;*/
+    top:0;
+    height:auto;
+    z-index: 99;
+}
+
+.header-info .slds-col {
+    padding-right: 25px;
+    padding-left: 25px;
+}
+
+.lblname{
+    color:#FFFFFF;
+    display:block;
+    font-size: 12px;
+    font-weight:400;
+    margin:0;
+}
+
+.lblvalue{
+    color: #4ECAF4;
+    display:block;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.border-right{
+    border-right:1px solid #FFFFFF;
+}
+.sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+  
+.sticky + .tabset {
+    padding-top: 0;
+}
+
+@media(min-width:0px) and (max-width:767px){
+    .header-info{
+        padding:10px;
+    }
+    .header-info .slds-col{
+        padding:0 7.5px;
+    }
+   /* .border-right{
+    border:none;
+    }*/
+}

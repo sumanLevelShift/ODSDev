@@ -1,0 +1,16 @@
+<apex:component >
+    <!--<apex:includeLightning />    
+    <div id="LightningComponentid" /> -->   
+ <script>
+/*    $Lightning.use("c:ChatGPTApp", function() {
+        $Lightning.createComponent("c:chatGPTCMP",
+                                   { 
+                                   },
+                                   "LightningComponentid",
+                                   function(cmp) {
+                                       console.log('LWC Componenet added in VF page');
+                                   });
+    });*/
+    </script>
+    <div class="footer-bg"><div class="copyright">COPYRIGHT© {!YEAR(TODAY())} LEVELSHIFT. ALL RIGHTS RESERVED</div></div>    
+</apex:component>

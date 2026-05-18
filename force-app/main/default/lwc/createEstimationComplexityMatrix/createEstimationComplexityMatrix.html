@@ -1,0 +1,288 @@
+<template>
+    <div class="mid-bg" style="background: #FFFFFF;width: 100%;padding: 0 2% 15px 2%;float: left;"
+        onchange={unSavedChanges}>
+        <div class="spinnerDiv" style="display: None;">
+            <div class="popupBackground"></div>
+            <div class="PopupPanel">
+                <table border="0" width="100%">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;font-size: 12px;"><b>Please Wait</b></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;"><img src={spinner} /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- modal start -->
+        <template if:true={isShowModalForApprovalUser}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container" style="max-width: 43% !important;">
+                    <!-- modal header start -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={hideModalBoxForApproval}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                                size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 style="text-align:center;font-size:16px;font-weight: bold;text-transform: uppercase"
+                            class="slds-text-heading_medium slds-hyphenat">Select the available user for
+                            the approval</h2>
+                    </header>
+                    <!-- modal body start -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1"
+                        style="height: 170px;">
+                        <br />
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_7-of-12">
+                                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                                    <div class="slds-col slds-size_6-of-12 slds-text-align_right">
+                                        <label class="form-label">Approver List</label>
+                                    </div>
+                                    <div class="slds-col slds-size_8-of-12">
+                                        <lightning-combobox class="dropDownCSS" value={approverUserValue}
+                                            onchange={handleApproversPopUp} options={approverUserList}
+                                            name="ApproverList">
+                                        </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                        <div class="buttonSection" style="float: right;">
+                            <lightning-button variant="brand" label="Cancel" onclick={hideModalBoxForApproval}>
+                            </lightning-button>&nbsp;&nbsp;
+                            <lightning-button variant="brand" label="Approve" onclick={ApproveTheEstimation}
+                                class="searchButton" disabled={approverButtonOnPopUp}></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <!-- modal end -->
+        <div class="top_srch">
+            <div class="tsearch" onclick={searchOnClick}>Search<i aria-hidden="true" class="fa fa-search"></i></div>
+            <div class="mid-white searchDiv" style="display: none;">
+                <div class="slds-m-top_x-large slds-m-around_medium">
+                    <div class="slds-grid slds-gutters slds-wrap">
+                        <div
+                            class="slds-col slds-size_1-of-1 slds-medium-size_12-of-12 slds-large-size_12-of-12">
+                            <div class="slds-grid slds-gutters slds-wrap">
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_4-of-10 slds-large-size_3-of-12">
+                                    <label class="platformLabel">Platform</label>
+                                    <lightning-combobox class="platformPickList dropDownCSS"
+                                         name="Platform" style="width: 300px;"
+                                        options={platformOptionList} onchange={handleForPlatformPickList} value="">
+                                    </lightning-combobox>
+                                </div>
+                                <div
+                                    class="slds-col slds-size_1-of-1 slds-medium-size_4-of-10 slds-large-size_3-of-12">
+                                    <label class="entityTypeLabel">Entity Type</label>
+                                    <br />
+                                    <select class="entityTypeValue slds-select" name="enityType">
+                                        <option value="" selected>--None--</option>
+                                    </select>
+                                </div>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-10 slds-large-size_2-of-12"
+                                    style="padding-top: 29px;/*position: absolute;left: 53%;*/">
+                                    <lightning-button label="Search" onclick={handleFetchComplexity}
+                                        class="searchButton">
+                                    </lightning-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <template if:false={newEstimationDetails}>
+
+            <div class="sub-warp">
+                <div class="scrollContainer" onscroll={loadRecords}>
+                    <div class="mid-white">
+                        <div class="slds-align_absolute-center norecords"
+                            style="display:none;font-weight: bold;font-size: 14px;margin-left: 45%;margin-bottom: 30px;">
+                            <br />
+                            No records found.
+                        </div>
+                        <table style="width:100%;" class="list timeline dataTable no-footer">
+                            <tbody>
+                                <tr>
+                                    <th>Platform</th>
+                                    <th style="width:156px">Entity Type</th>
+                                    <th>Complexity</th>
+                                    <th>Effort Type</th>
+                                    <th style="width:519px">Complexity Definition</th>
+                                    <th>Recommended <br />Effort (Hours)</th>
+                                    <th>Revised Effort</th>
+                                    <th>Rationale If Different</th>
+                                </tr>
+
+                                <template for:each={complexityMatrixList} for:item="i">
+                                    <tr key={i.Id} class="inputRows">
+                                        <td>
+                                            <lightning-formatted-text class="complexityMatrixId" value={i.Id}
+                                                style="display: none;">
+                                            </lightning-formatted-text>
+                                            <lightning-formatted-text value={i.Platform__c}>
+                                            </lightning-formatted-text>
+                                        </td>
+                                        <td>
+                                            <lightning-formatted-text value={i.Entity_Type__c}>
+                                            </lightning-formatted-text>
+                                        </td>
+                                        <td>
+                                            <lightning-formatted-text value={i.Complexity__c}>
+                                            </lightning-formatted-text>
+                                        </td>
+                                        <td>
+                                            <lightning-formatted-text value={i.Effort_Type__c}>
+                                            </lightning-formatted-text>
+                                        </td>
+                                        <td>
+                                            <lightning-formatted-text value={i.Complexity_Definition__c}>
+                                            </lightning-formatted-text>
+                                        </td>
+                                        <td style="text-align: right !important;">
+                                            <lightning-formatted-number value={i.Recommended_Effort__c}
+                                                maximum-fraction-digits="2"></lightning-formatted-number>
+                                        </td>
+                                        <td style="text-align: right !important;">
+                                            <lightning-input class="revisedEffortValue" type="number" step="0.01"
+                                                disabled={isApproved} min="0" max="100">
+                                            </lightning-input>
+                                        </td>
+                                        <td>
+                                            <lightning-textarea class="rationalIfDifferentValue textAreaCss"
+                                                disabled={isApproved}>
+                                            </lightning-textarea>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template if:true={newEstimationDetails}>
+            <div class="sub-warp">
+                <div class="scrollContainer" onscroll={loadRecords}>
+                    <div class="mid-white">
+                        <div class="slds-align_absolute-center norecords"
+                            style="display:none;font-weight: bold;font-size: 14px;margin-left: 45%;margin-bottom: 30px;">
+                            <br />
+                            No records found.
+                        </div>
+                        <table style="width:100%;" class="list timeline dataTable no-footer">
+                            <tbody>
+                                <tr>
+                                    <th>Platform</th>
+                                    <th style="width:156px">Entity Type</th>
+                                    <th>Complexity</th>
+                                    <th>Effort Type</th>
+                                    <th style="width:519px">Complexity Definition</th>
+                                    <th>Recommended <br />Effort (Hours)</th>
+                                    <th>Revised Effort</th>
+                                    <th>Rationale If Different</th>
+                                </tr>
+                                <template for:each={existEstimationDetailCompMat} for:item="i">
+                                    <tr key={i.Id} class="inputRows">
+                                        <td>
+                                            <lightning-formatted-text class="estimationDetailId" value={i.Id}
+                                                style="display: none;">
+                                            </lightning-formatted-text>
+                                            <lightning-formatted-text value={i.Platform__c}>
+                                            </lightning-formatted-text>
+                                        </td>
+                                        <td>
+                                            <lightning-formatted-text value={i.Entity_Type__c}>
+                                            </lightning-formatted-text>
+                                        </td>
+                                        <td>
+                                            <lightning-formatted-text value={i.Complexity__c}>
+                                            </lightning-formatted-text>
+                                        </td>
+                                        <td>
+                                            <lightning-formatted-text value={i.Effort_Type__c}>
+                                            </lightning-formatted-text>
+                                        </td>
+                                        <td>
+                                            <lightning-formatted-text value={i.Complexity_Definition__c}>
+                                            </lightning-formatted-text>
+                                        </td>
+                                        <td style="text-align: right !important;">
+                                            <lightning-formatted-number value={i.Recommended_Effort__c}
+                                                maximum-fraction-digits="2"></lightning-formatted-number>
+                                        </td>
+                                        <td style="text-align: right !important;">
+                                            <lightning-input class="revisedEffortValue" type="number" step="0.01"
+                                                value={i.Project_Specfic_Effort__c} disabled={isApproved} min="0"
+                                                max="100">
+                                            </lightning-input>
+                                        </td>
+                                        <td>
+                                            <lightning-textarea class="rationalIfDifferentValue textAreaCss"
+                                                value={i.Rationale_If_Different_From_Recommended__c}
+                                                disabled={isApproved}>
+                                            </lightning-textarea>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+    <div class="floating-actions">
+        <ul>
+            <template if:true={enableForDeliveryRole}>
+                <template if:false={ObsoleteStatus}>
+                    <template if:true={approvedButton}>
+                        <li><a href="#" onclick={handleForApproveButton} title="Approve"><img
+                                    src={approveButtonIcon}></img></a>
+                        </li>
+                    </template>
+                    <template if:true={enableEditButton}>
+                        <li><a href="#" onclick={handleForEditButton} title="Edit"><img src={editButtonIcon}></img></a>
+                        </li>
+                    </template>
+                    <template if:true={exportToInitiative}>
+                        <li><a href="#" onclick={exportToInitiativeMethod} title="Export To Initiative"><img
+                                    src={exportToInitiativeButton}></img></a>
+                        </li>
+                    </template>
+                    <template if:true={enableButtonSection}>
+                        <template if:true={isApproved}>
+                            <li><a href="#" onclick={exportExcel} title="Download"><img src={exportButton}></img></a>
+                            </li>
+                        </template>
+                        <template if:false={isApproved}>
+                            <li><a href="#" class="actionButton" onclick={handleReset} title="Cancel"><img
+                                        src={cancelButton}></img></a>
+                            </li>
+                            <template if:false={newEstimationDetails}>
+                                <li><a href="#" class="actionButton" onclick={handleSaveRecord} title="Submit"><img
+                                            src={saveButton}></img></a></li>
+                            </template>
+                            <template if:true={newEstimationDetails}>
+                                <li><a href="#" class="actionButton" onclick={handleUpdateRecord} title="Submit"><img
+                                            src={saveButton}></img></a></li>
+                            </template>
+                        </template>
+                    </template>
+                </template>
+            </template>
+        </ul>
+    </div>
+</template>

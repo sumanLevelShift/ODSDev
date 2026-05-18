@@ -1,0 +1,610 @@
+<apex:page controller="EstimationReportController" contenttype="application/vnd.ms-excel#{!fileName}.xls" cache="true">
+    <apex:outputText value="{!xmlheader}"/>
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:html="http://www.w3.org/TR/REC-html40">
+        <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+            <Author></Author>
+            <LastAuthor></LastAuthor>
+            <Company></Company>
+            <Version>1</Version>
+        </DocumentProperties>
+        <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+            <WindowHeight>16000</WindowHeight>
+            <WindowWidth>20480</WindowWidth>
+            <WindowTopX>400</WindowTopX>
+            <WindowTopY>400</WindowTopY>
+            <ProtectStructure>False</ProtectStructure>
+            <ProtectWindows>False</ProtectWindows>
+        </ExcelWorkbook>
+        <Styles>
+            <Style ss:ID="header" >
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Bold="1" />
+                <Interior />
+                <NumberFormat/>
+                <HeaderRow /> 
+                <Protection/>
+            </Style>
+            <Style ss:ID="label" >
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Bold="1" />
+                <Interior />
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="value" >
+                <Alignment ss:Horizontal="Justify" ss:WrapText="1"/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font />
+                <Interior />
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="valueright" >
+                <Alignment ss:Horizontal="Right"/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font />
+                <Interior />
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+           <!--   <Style ss:ID="valuedate" >
+                <Alignment ss:Horizontal="Right"/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font />
+                <Interior />
+                <NumberFormat ss:Format="m/d/yyyy"/>
+                <Protection/>
+            </Style>-->
+            <Style ss:ID="valuerightpercentage" >
+                <Alignment ss:Horizontal="Right"/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font />
+                <Interior />
+                <NumberFormat ss:Format="0.0%"/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="titlecenter" >
+                <Alignment ss:Horizontal="Center"/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Bold="1" />
+                <Interior ss:Color="#ddebf7" ss:Pattern="Solid"/>
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="title" >
+                <Alignment ss:WrapText="1"/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Bold="1" />
+                <Interior ss:Color="#ddebf7" ss:Pattern="Solid"/>
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+        </Styles>
+        <Names>
+            <NamedRange ss:Name="Percentage_Column" ss:RefersTo="='ODS Estimate'!R2C3:R6C3"/>
+            <NamedRange ss:Name="ActualHours_Column" ss:RefersTo="='ODS Estimate'!R2C4:R{!table4Size+1}C4"/>
+            <NamedRange ss:Name="Recommended_Table1" ss:RefersTo="='Effort Calculation'!R9C2:R{!table1Size+8}C2"/>
+            <NamedRange ss:Name="ProjectSpecific_Table1" ss:RefersTo="='Effort Calculation'!R9C3:R{!table1Size+8}C3"/>
+            <NamedRange ss:Name="PersonMonths_Table1" ss:RefersTo="='Effort Calculation'!R9C4:R{!table1Size+8}C4"/>
+            <NamedRange ss:Name="PersonWeeks_Table1" ss:RefersTo="='Effort Calculation'!R9C5:R{!table1Size+8}C5"/>
+            <NamedRange ss:Name="PersonMonths_Table2" ss:RefersTo="='Effort Calculation'!R19C4:R{!table2Size+18}C4"/>
+            <NamedRange ss:Name="PersonWeeks_Table2" ss:RefersTo="='Effort Calculation'!R19C5:R{!table2Size+18}C5"/>  
+            <NamedRange ss:Name="PersonMonths_Table3" ss:RefersTo="='Effort Calculation'!R31C2:R{!table3Size+30}C2"/>
+            <NamedRange ss:Name="PersonWeeks_Table3" ss:RefersTo="='Effort Calculation'!R31C3:R{!table3Size+30}C3"/>
+        </Names>
+        <Worksheet ss:Name="Summary">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="150"/>
+                <Column ss:Width="150"/>
+                <Column ss:Width="150"/>
+                <Column ss:Width="120"/>
+                <Row>
+                    <Cell ss:StyleID="titlecenter" ss:MergeAcross="3" ><Data ss:Type="String" >Project Estimation for Salesforce</Data></Cell>
+                </Row>
+                <Row>
+                    <Cell ss:StyleID="titlecenter" ss:MergeAcross="1" ><Data ss:Type="String" >Project Profile</Data></Cell>
+                    <Cell ss:StyleID="titlecenter" ss:MergeAcross="1"><Data ss:Type="String" >Standard Definitions</Data></Cell>
+                </Row>
+                <apex:repeat value="{!EstimationSummaryRecord}" var="i">
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Customer</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Customer__r.Name}</Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Work Hours Per Day</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Work_Hours_Per_Day__c}</Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Initiative ID</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Project_ID__r.Name}</Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Work Days Per Week</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Work_Days_Per_Week__c}</Data></Cell>
+                    </Row>
+                      <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Jira ID</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Project_ID__r.JIRA_ID__c}</Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Work Days Per Month</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Work_Days_Per_Month__c}</Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Revenue Region</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Revenue_Region__c}</Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Is Coding Involved</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!IF (i.Is_Coding_Involved__c,'Yes', 'No')}</Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Project Billing Type</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Project_Billing_Type__c}</Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Has Data Migration</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!IF (i.Has_Data_Migration__c,'Yes', 'No')}</Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Proposed Start Date</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="String">   <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                            <apex:param value="{!i.Proposed_Start_Date__c}" />
+                            </apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Total Effort in Months</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Total_Effort_In_Months__c}</Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Proposed End Date</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="String">   <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                            <apex:param value="{!i.Proposed_End_Date__c }" />
+                            </apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Total Effort in Weeks</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Total_Effort_In_Weeks__c}</Data></Cell>  
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Created By</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Created_By__r.Full_Name__c}</Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Total Effort in Hours</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number">{!i.Total_Effort_In_Hours__c}</Data></Cell>                       
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Created Date</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="String">   <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                            <apex:param value="{!i.CreatedDate}" />
+                            </apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Status</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Status__c}</Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Technical Project Manager</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Technical_Project_Manager__r.Full_Name__c}</Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >SEM Vertical</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.SME_Vertical__r.Full_Name__c}</Data></Cell>
+                    </Row>
+                    
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Customer Success Manager</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Customer_Success_Manager__r.Name}</Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Program Manager</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Program_Manager__r.Full_Name__c}</Data></Cell>
+                    </Row>
+                    <Row>
+                        
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Project Description</Data></Cell>
+                        <Cell ss:StyleID="value" ss:MergeAcross="2"><Data ss:Type="String" >{!i.Project_Description__c}</Data></Cell>
+                        
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Estimation Date</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="String">   <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                            <apex:param value="{!i.Estimation_Date__c}" />
+                            </apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" ></Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                    </Row>
+                </apex:repeat>
+                
+                
+            </Table>
+        </Worksheet>
+        <Worksheet ss:Name="Scope Details">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="200"/>
+                <Column ss:Width="400"/>                
+                <Row>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Sections</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Description</Data></Cell>
+                </Row>
+                
+                <apex:repeat value="{!EstimationSummaryRecord}" var="i">
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Objective Statement/ Acceptance Criteria</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Acceptance_Criteria__c}</Data></Cell>
+                        
+                        
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Scope</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Scope__c}</Data></Cell>
+                        
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Out Of Scope</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Out_of_Scope__c}</Data></Cell>
+                        
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Assumptions</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Assumptions__c}</Data></Cell>
+                        
+                    </Row>
+                    
+                </apex:repeat>
+                
+            </Table>
+            
+        </Worksheet>
+        <Worksheet ss:Name="Risk Description">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="34"/>
+                <Column ss:Width="200"/>
+                <Column ss:Width="200"/>
+                <Row>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >#</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Risk Description</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Risk Boundary</Data></Cell>
+                </Row>
+                <apex:variable value="{!0}" var="Riskcount" />
+                
+                <apex:repeat value="{!EstimationRiskDescriptionRecord}" var="i">
+                    <Row>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="String" >{!Riskcount+1}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Risk_Description__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Risk_Boundary__c}</Data></Cell>
+                    </Row>
+                    <apex:variable var="Riskcount" value="{!Riskcount+1}"/>
+                </apex:repeat>
+                
+            </Table>
+            
+        </Worksheet>
+        <Worksheet ss:Name="ODS Estimate">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="34"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                
+                <Row>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >S#</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Line Items</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Percentage</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Actual Hours</Data></Cell>
+                </Row>
+                <apex:variable value="{!0}" var="count" />
+                <apex:repeat value="{!ODSEstimateRecord}" var="i">
+                    <Row>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!count+1}</Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >{!i.SLDC_Phase_Name__c}</Data></Cell>
+                        <Cell ss:StyleID="valuerightpercentage"><Data ss:Type="Number" >{!i.Project_Specific__c/100}</Data><NamedCell ss:Name="Percentage_Column"/></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Project_Specific_Effort_Hours__c}</Data><NamedCell ss:Name="ActualHours_Column"/></Cell>
+                    </Row>
+                    <apex:variable var="count" value="{!count+1}"/>
+                </apex:repeat>
+                <Row>
+                    <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="valueright"><Data ss:Type="String" >Total</Data></Cell>
+                    <Cell ss:StyleID="valuerightpercentage" ss:Formula="=SUM(Percentage_Column)"><Data ss:Type="Number"></Data></Cell>
+                    <Cell ss:StyleID="valueright" ss:Formula="=SUM(ActualHours_Column)"><Data ss:Type="Number"></Data></Cell>
+                </Row>
+            </Table>
+        </Worksheet>
+        
+        <Worksheet ss:Name="Inventory">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="150"/>
+                <Row >
+                    <Cell ss:StyleID="titlecenter" ss:MergeAcross="9"><Data ss:Type="String" >Estimation Elements</Data></Cell>
+                </Row>
+                <Row>
+                    <Cell ss:StyleID="titlecenter" ss:MergeAcross="9" ><Data ss:Type="String" ></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Platform</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Entity Type</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Effort Type</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Complexity</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Estimation Element</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Brief Description</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Quantity</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Recommended Effort (Hours)</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Revised Effort (Hours)</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Remarks/Rationale If Different</Data></Cell>
+                </Row>
+                <apex:repeat value="{!InventoryRecord}" var="i">
+                    <Row>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Platform__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Entity_Type__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Effort_Type__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Complexity__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Estimation_Element__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Brief_Description__c}</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Quantity__c}</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Recommended_Effort__c}</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Project_Specfic_Effort__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Rationale_If_Different_From_Recommended__c}</Data></Cell>
+
+                    </Row>
+                </apex:repeat>
+            </Table>
+        </Worksheet>
+        <Worksheet ss:Name="Estimation Complexity Matrix">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="100"/>
+                <Column ss:Width="200"/>
+                <Column ss:Width="150"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="700"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="200"/>
+                
+                <Row>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Platofrm</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Entity Type</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Complexity</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Effort Type</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Complexity Definition</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Recommended Effort (Hours)</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Revised Effort</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Rationale If Different</Data></Cell>
+                </Row>
+                <apex:repeat value="{!EstimationComplexityRecord}" var="i">
+                    <Row>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Platform__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Entity_Type__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Complexity__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Effort_Type__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Complexity_Definition__c}</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Recommended_Effort__c}</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Project_Specfic_Effort__c	}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Rationale_If_Different_From_Recommended__c}</Data></Cell>
+                        
+                        
+                    </Row>
+                </apex:repeat>
+            </Table>
+        </Worksheet>
+        
+        <Worksheet ss:Name="Estimation CheckList">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="34"/>
+                <Column ss:Width="600"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="200"/>
+                
+                <Row>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >S.No</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Activities</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Status</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Remarks</Data></Cell>
+                    
+                </Row>
+                <apex:variable value="{!0}" var="CheckListcount" />
+                <apex:repeat value="{!EstimationChecklistRecord}" var="i">
+                    <Row>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!CheckListcount+1}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Activities__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Status__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Remarks__c}</Data></Cell>
+                    </Row>
+                    <apex:variable var="CheckListcount" value="{!CheckListcount+1}"/>
+                </apex:repeat>
+            </Table>
+        </Worksheet>
+        <Worksheet ss:Name="Effort Calculation">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="400"/>
+                <Column ss:Width="150"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="130"/>
+                <Column ss:Width="140"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="300"/>
+                <Row>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Technology </Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >SFDC </Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="titlecenter" ss:MergeAcross="1"><Data ss:Type="String" >Total Effort for the Project (In Person Months)</Data></Cell>                    
+                </Row>
+                
+                <apex:repeat value="{!EstimationSummaryRecord}" var="i">
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Team Productivity</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Team_Productivity__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >With Risk</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.With_Risk__c}</Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Total Base Effort (Declarative) -- in Person Hours</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Total_Base_Effort_Declarative__c}</Data></Cell>
+                        <Cell ss:StyleID="valuerightpercentage"><Data ss:Type="Number" >{!effortDeclarativePercentage}</Data></Cell>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Without Risk</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Without_Risk__c}</Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Total Base Effort (Programming) -- in Person Hours</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Total_Base_Effort_Programming__c}</Data></Cell>
+                        <Cell ss:StyleID="valuerightpercentage"><Data ss:Type="Number" >{!effortProgrammingPercentage}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                    </Row>
+                    <Row>
+                        <Cell ss:StyleID="label"><Data ss:Type="String" >Total Base Effort -- in Person Months</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Total_Base_Effort_Months__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                    </Row>
+                    
+                </apex:repeat>
+                <Row>
+                    <Cell ss:StyleID="label"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="label"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                </Row>
+                
+                <Row>
+                    <Cell ss:StyleID="titlecenter" ss:MergeAcross="5"><Data ss:Type="String" >Effort Calculation for SDLC Phases (Phase-wise Effort Distribution)</Data></Cell>
+                    
+                </Row>
+                
+                <Row>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >SDLC Phase</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Recommended (Org. Wide)</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Project Specific</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Person Months</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Person Weeks</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Rationale If Different Than Recommended</Data></Cell>                    
+                </Row>
+                <apex:repeat value="{!EffortCalculationRecord}" var="i">
+                    <Row>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Phases}</Data></Cell>
+                        <Cell ss:StyleID="valuerightpercentage" ><Data ss:Type="Number" >{!i.Recommended/100}</Data><NamedCell ss:Name="Recommended_Table1"/></Cell>
+                        <Cell ss:StyleID="valuerightpercentage"><Data ss:Type="Number" >{!i.ProjectSpecfic/100}</Data><NamedCell ss:Name="ProjectSpecific_Table1"/></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.PersonMonth}</Data><NamedCell ss:Name="PersonMonths_Table1"/></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.PersonWeeks}</Data><NamedCell ss:Name="PersonWeeks_Table1"/></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Remarks}</Data></Cell>
+                    </Row>
+                    
+                </apex:repeat>
+                <Row>
+                    <Cell ss:StyleID="label"><Data ss:Type="String" >Total</Data></Cell>
+                    <Cell ss:StyleID="valuerightpercentage" ss:Formula="=SUM(Recommended_Table1)"><Data ss:Type="Number" ></Data></Cell>
+                    <Cell ss:StyleID="valuerightpercentage" ss:Formula="=SUM(ProjectSpecific_Table1)"><Data ss:Type="Number" ></Data></Cell>
+                    <Cell ss:StyleID="valueright" ss:Formula="=SUM(PersonMonths_Table1)"><Data ss:Type="Number" ></Data></Cell>
+                    <Cell ss:StyleID="valueright" ss:Formula="=SUM(PersonWeeks_Table1)"><Data ss:Type="Number" ></Data></Cell>
+                    <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell ss:StyleID="label"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="label"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell ss:StyleID="titlecenter" ss:MergeAcross="5"><Data ss:Type="String" >Effort Calculation for Other Activities (as a % of SDLC Phase Effort)</Data></Cell>
+                </Row>
+                <Row>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Activities</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Applicable SDLC Phase</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Project Specific</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Person Months</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Person Weeks</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Comments</Data></Cell>
+                    
+                </Row> 
+                <apex:repeat value="{!EffortCalculationProjectSpecificActivitiesRecord}" var="i">
+                    <Row>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Activity_Name__c}</Data></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Applicable_SDLC_Phases__c}</Data></Cell>
+                        <Cell ss:StyleID="valuerightpercentage"><Data ss:Type="Number" >{!i.Project_Specific__c/100}</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Person_Months__c}</Data><NamedCell ss:Name="PersonMonths_Table2"/></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Person_Weeks__c}</Data><NamedCell ss:Name="PersonWeeks_Table2"/></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Comments__c}</Data></Cell>
+                    </Row>
+                    
+                </apex:repeat>
+                <Row>
+                    <Cell ss:StyleID="label"><Data ss:Type="String" >Total</Data></Cell>
+                    <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="value"><Data ss:Type="String"></Data> </Cell>
+                    <Cell ss:StyleID="valueright" ss:Formula="=SUM(PersonMonths_Table2)"><Data ss:Type="Number" ></Data></Cell>
+                    <Cell ss:StyleID="valueright" ss:Formula="=SUM(PersonWeeks_Table2)"><Data ss:Type="Number" ></Data></Cell>
+                    <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell ss:StyleID="label"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="label"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                </Row>
+                <Row>
+                    <Cell ss:StyleID="titlecenter" ss:MergeAcross="3"><Data ss:Type="String" >Effort Calculation for Other Project Specific Activities</Data></Cell>
+                </Row>
+                
+                <Row>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Activities</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Person Months</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Person Weeks</Data></Cell>
+                    <Cell ss:StyleID="title"><Data ss:Type="String" >Comments</Data></Cell>
+                    
+                </Row>
+                <apex:repeat value="{!EffortCalculationSDLCPhaseEffortRecord}" var="i">
+                    <Row>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Activity_Name__c}</Data></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Person_Months__c}</Data><NamedCell ss:Name="PersonMonths_Table3"/></Cell>
+                        <Cell ss:StyleID="valueright"><Data ss:Type="Number" >{!i.Person_Weeks__c}</Data><NamedCell ss:Name="PersonMonths_Table3"/></Cell>
+                        <Cell ss:StyleID="value"><Data ss:Type="String" >{!i.Comments__c}</Data></Cell>
+                        
+                    </Row>                    
+                </apex:repeat>
+                <Row>
+                    <Cell ss:StyleID="label"><Data ss:Type="String" >Total</Data></Cell>
+                    <Cell ss:StyleID="valueright" ss:Formula="=SUM(PersonMonths_Table3)"><Data ss:Type="Number" ></Data></Cell>
+                    <Cell ss:StyleID="valueright" ss:Formula="=SUM(PersonWeeks_Table3)"><Data ss:Type="Number" ></Data></Cell>
+                    <Cell ss:StyleID="value"><Data ss:Type="String" ></Data></Cell>
+                </Row>
+            </Table>
+        </Worksheet>
+    </Workbook>
+</apex:page>

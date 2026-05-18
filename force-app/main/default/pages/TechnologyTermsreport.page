@@ -1,0 +1,202 @@
+<apex:page docType="html-5.0" controller="TechnologyTermsreportclass">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE; IE=10; IE=11; " />
+    <apex:stylesheet value="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"  />
+    <apex:includeScript value="https://code.jquery.com/jquery-1.9.1.js" />
+    <apex:includeScript value="https://code.jquery.com/ui/1.10.3/jquery-ui.js" />
+    <apex:includeScript value="https://code.jquery.com/jquery-latest.min.js" /> 
+    
+    <script>
+    
+    function ValidateInitiativeRows(){
+                    
+        var StartDate = $('.date_service').val();
+        var EndDate = $('.date_service1').val();
+        var TechnologyTerms = $('.Technology').val();
+        
+        if(StartDate.length == 0){
+             alert('Start Date should not be empty');
+             return false;
+        }
+        
+        if(EndDate.length == 0){
+            alert('End Date should not be empty');
+            return false;
+        }
+        
+        if(TechnologyTerms == null){
+             alert('Please select one or multiple Technology Terms.');
+             return false;
+        }
+        
+        var probableStart = new Date(StartDate);
+        var probableEnd = new Date(EndDate);
+        
+        
+        if(probableStart > probableEnd){ 
+          alert('End date should be more than Start date');
+          return false;
+        }            
+                  
+        var Difference_In_Time = probableEnd.getTime() - probableStart.getTime(); 
+        
+        // To calculate the no. of days between two dates 
+        var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24); 
+                    
+        if(Difference_In_Days >365){
+             alert('End date should not be one year more than Start date');
+                              return false;
+        }
+    }
+                       
+    </script>
+    <style>
+        .newspaper {
+            column-count: 3;
+        }        
+        
+        .panel-title
+        {
+            padding-top: 20px;
+            padding-bottom: 20px;
+            margin-right: -10px;
+            margin-left: -10px;
+            text-align: left;
+            background-color: #00BFFF;
+            color: white;
+        }
+        
+        .formtbl{
+            width:100%;
+        }
+        
+        .formtbl tbody tr td{
+            vertical-align:middle;
+        }
+        
+        .formtbl h3{
+            padding: 0px;
+            margin: 0px;
+            color:#4a4a56;
+        }
+        
+        .formtbl .bPageBlock .detailList th{
+            vertical-align:middle;
+        }
+        
+        .bPageBlock .labelCol{
+            font-weight:bold;
+        }
+        
+        body .bPageBlock .pbBody{
+            height: 280px!important;
+            margin: 0px!important;    
+        }
+        
+        .formtbl h4{
+            padding: 0px 20px;
+            margin: 0px;
+            color:#4a4a56;
+        }
+    </style>
+    <apex:form >
+        <apex:pageBlock >
+            <div class="mid-bg">
+                <div class="sub-warp">
+                    <div class="panel panel-default" >
+                        <p class="panel-title" style="color: #ffffff; font-size: 16px; padding: 5px 10px; margin: 0;" width="100%" >Technology Terms Report
+                        </p>
+                        <table class="formtbl">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                <apex:pageBlockSectionItem labelStyle="width: 30%;">
+                                     Start Date:
+                                    <apex:input id="date_service" type="date" value="{!dat}" styleclass="date_service"/>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                               
+                                    </td>
+                                    <td>
+                                        <apex:pageBlockSection >
+                                <apex:pageBlockSectionItem labelStyle="width: 30%;">
+                                    End Date:
+                                    <apex:input id="date_service1" type="date" value="{!dats}" styleclass="date_service1"/>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                                    </td>
+                                    <td align = "Right">
+                                         <h3 >Search By:
+                            </h3>
+                          
+                                    </td>
+                                    <td>
+                                          <apex:selectRadio label="Search By:" value="{!defaultCheck}" >
+                                <apex:selectOption id="cddate" itemLabel="Created Date" itemValue="cddate" />
+                                <apex:selectOption id="lmdate" itemLabel="Last Updated Date" itemValue="lmdate"/>
+                            </apex:selectRadio>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div     class="formtbl">
+                                                        
+                            <h4>Technology Term:</h4>
+                            <div style="margin-left: 100px; ">
+                                <apex:selectList value="{!listEmp}" size="5" styleClass="Technology" multiselect="true" style="margin: 10px 0; padding-bottom: 60px;">
+                                    <apex:selectOptions value="{!items}"/>
+                                </apex:selectList>
+                            </div>
+                            
+                            <div style="margin-top: -35px;">
+                                
+                                
+                                <p align="right" style="margin-right: 300px; " >
+                                    <apex:commandButton style="right" action="{!search}" value="Search" id="theButton" onclick="return ValidateInitiativeRows();"  />
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:pageBlock>
+        <div>
+            
+            
+            <apex:outputPanel id="CountPlaneId" rendered="{!(listSearchCount.size !=0 && listSearchCount != '' && listSearchCount != null )}">
+                <apex:pageBlock id="CountBlockId" >                            
+                    <apex:pageBlockTable StyleClass="timeline" Style="cellpadding:0; margin-left: 320px; cellspacing:0; width:50%;" value="{!listSearchCount}" var="CountValue"   >
+                        <apex:column style="width: 100px;">
+                            <apex:facet name="header">Term</apex:facet>   
+                            
+                            <apex:outputlink value="/apex/TechnologyTermsReportDetails"  rendered="{!CountValue.StringCount != 0 }" target="_blank">  {!CountValue.SearchString} 
+                                <apex:param name="getCPQ" value="{!CountValue.SearchString} " />
+                                <apex:param name="getsdates" value="{!dat} " />
+                                 <apex:param name="getedates" value="{!dats} " />
+                                <apex:param name="defaultChecks" value="{!defaultCheck} "/>
+                                
+                                
+                                
+                                 </apex:outputlink>
+                            <apex:outputText label="Count" rendered="{!CountValue.StringCount == 0 }" value="{!CountValue.SearchString}" style="text-align:left;"/>
+
+
+                           <!-- <apex:commandLink styleClass="time_view" title="View" action="{!reDirecttoCustomer}" >
+                                         {!CountValue.SearchString} 
+                                <apex:param name="getCPQ" value="{!CountValue.SearchString} " />
+                                <apex:param name="getsdates" value="{!dat} " />
+                                 <apex:param name="getedates" value="{!dats} " />
+                                                                            </apex:commandLink> !-->
+                        </apex:column>
+                        <apex:column style="width: 100px;">
+                            <apex:facet name="header">Count</apex:facet>   
+                            <apex:outputText label="Count" value="{!CountValue.StringCount}" style="text-align:left;"/>
+                        </apex:column>                               
+                    </apex:pageBlockTable>
+                </apex:pageBlock>
+            </apex:outputPanel>
+        </div>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,191 @@
+<template>
+    <div class="mid-bg" style="background: #FFFFFF;width: 100%;padding: 0 2% 15px 2%;float: left;">
+        <div class="spinnerDiv" style="display: None;">
+            <div class="popupBackground"></div>
+            <div class="PopupPanel">
+                <table border="0" width="100%">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;font-size: 13px;"><b>Please Wait</b></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;"><img src={spinner} /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="sub-warp">
+            <div class="mid-white">
+                <div class="mid-user-sec">
+                </div>
+                <div class="slds-align_absolute-center norecords"
+                    style="display:none;font-weight: bold;font-size: 14px;margin-left: 40%;">
+                    <br />
+                    No records found.
+                </div>
+                <template if:true={enableForDeliveryRole}>
+                    <div class="add-estimate">
+                        <button title="ADD ESTIMATE" class="addEstimate" onclick={handleAddEstimate}>
+                            ADD ESTIMATE
+                        </button>
+                    </div>
+                </template>
+                <br />
+                <div class="timeline-scroll tableListEST">
+                    <div class="pagesizeDiv">
+                        <div class="quote-form-section">
+                            <b>Show&nbsp;</b>
+                        </div>
+                        <div class="pagesizeClass quote-form-section">
+                            <select class="pageDropDow" onchange={handlePageSizeChange}>
+                                <option value=10 selected>10</option>
+                                <option value=25>25</option>
+                                <option value=50>50</option>
+                                <option value=0>All</option>
+                            </select>
+                        </div>
+                        <div class="quote-form-section">
+                            <b>&nbsp;entries
+                            </b>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center">
+                        <div class="slds-p-right_xx-small">
+
+                            <a class="paginate_button" disabled={isPrev} onclick={handlePrev} name="prev">Previous</a>
+                        </div>
+                        <template for:each={pageNumberButton} for:item="i">
+                            <span key={i}>
+                                <a class="paginate_button" id={i} data-item={i} onclick={handlePageButton}
+                                    value={i}>{i}</a>
+                            </span>
+                        </template>
+                        <div class="slds-p-left_xx-small">
+                            <a class="paginate_button" disabled={isNext} onclick={handleNext}>Next</a>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="table-responsive slds">
+                        <table
+                            class="list timeline dataTable no-footer table slds-table slds-max-medium-table_stacked slds-table_striped">
+                            <tbody>
+                                <tr class="rowHeading slds-text-heading--label">
+                                    <th style="display: none;">
+                                        Customer
+                                    </th>
+                                    <th>
+                                        Initiative Name
+                                    </th>
+                                    <th>
+                                        Jira ID
+                                    </th>
+                                    <th>
+                                        Start Date
+                                    </th>
+                                    <th>
+                                        CSM
+                                    </th>
+                                    <th>
+                                        TPM
+                                    </th>
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Estimation Date
+                                    </th>
+                                    <th>
+                                        Total Effort <br />In Hours
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                                <template for:each={estimateSummaryList} for:item="es">
+                                    <tr key={es.ID}>
+                                        <td style="display: none;">
+                                            {es.Customer}
+                                        </td>
+                                        <td style="white-space: break-spaces !important;">
+                                            <span> {es.ProjectId} </span>
+                                        </td>
+                                        <td>
+                                            <span> {es.JiraId} </span>
+
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <lightning-formatted-date-time value={es.StartDate} month="2-digit"
+                                                day="2-digit" year="numeric">
+                                            </lightning-formatted-date-time>
+
+                                        </td>
+                                        <td>
+                                            <span> {es.CSMName} </span>
+                                        </td>
+                                        <td>
+                                            <span> {es.TechnicalProjectManager} </span>
+                                        </td>
+                                        <td>
+                                            <span> {es.Status} </span>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <lightning-formatted-date-time value={es.EstimateDate} month="2-digit"
+                                                day="2-digit" year="numeric">
+                                            </lightning-formatted-date-time>
+                                        </td>
+                                        <td style="text-align: right;">
+
+                                            <lightning-formatted-number value={es.totalEffortHours}
+                                                maximum-fraction-digits="0">
+                                            </lightning-formatted-number>
+                                        </td>
+                                        <td>
+                                            <lightning-icon data-item={es.ID} id={es.ID} icon-name="action:preview"
+                                                alternative-text="Preview" title="View" onclick={handleViewRecord}
+                                                style="cursor: pointer;">
+                                            </lightning-icon>
+                                            &nbsp;&nbsp;
+                                            <template if:true={enableForDeliveryRole}>
+                                                <template if:false={es.hideDeleteButton}>
+                                                    <lightning-icon data-item={es.ID} id={es.ID}
+                                                        icon-name="action:delete" alternative-text="Delete"
+                                                        title="Delete" onclick={handleDeleteRecord}
+                                                        style="cursor: pointer;">
+                                                    </lightning-icon>
+                                                </template>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+
+
+                    <div class="slds-align_absolute-center" style="padding: 10px;">
+                        <div class="slds-p-right_xx-small">
+
+                            <a class="paginate_button" disabled={isPrev} onclick={handlePrev} name="prev">Previous</a>
+                        </div>
+                        <!--  {recordStart}-{recordEnd} of {totalRecords} | Page {pageNumber} of {totalPages}-->
+                        <template for:each={pageNumberButton} for:item="i">
+                            <span key={i}>
+                                <a class="paginate_button" id={i} data-item={i} onclick={handlePageButton}
+                                    value={i}>{i}</a>
+                            </span>
+                        </template>
+                        <div class="slds-p-left_xx-small">
+                            <a class="paginate_button" disabled={isNext} onclick={handleNext}>Next</a>
+
+                            <!--<lightning-button label="Next" disabled={isNext} onclick={handleNext} variant="brand"
+                                icon-name="utility:forward" icon-position="right" name="next"></lightning-button>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

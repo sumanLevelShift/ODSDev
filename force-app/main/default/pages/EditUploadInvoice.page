@@ -1,0 +1,760 @@
+<apex:page controller="ODS_EditUploadInvoicecontroller" sidebar="false" showHeader="false" standardStylesheets="false" id="editUploadInvoice" docType="html-5.0">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" />
+        <meta http-equiv="content-type" content="text/html;charset=Windows-1252"/>
+        <apex:includeScript value="https://code.jquery.com/jquery-latest.min.js" />
+        <!-------- Bootstrap ----->
+        <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/bootstrap.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/bootstrap.js')}" />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet"/>
+        <script src='https://www.google.com/recaptcha/api.js'></script>
+        <link href="{!URLFOR($Resource.ODS_Assets,'css/style.css')}" rel="stylesheet" type="text/css"  />
+            <apex:stylesheet value="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"  />
+                <apex:includeScript value="https://code.jquery.com/jquery-1.9.1.js" />
+                    <apex:includeScript value="https://code.jquery.com/ui/1.10.3/jquery-ui.js" />
+                        <link href="{!URLFOR($Resource.ODS_Assets,'css/style_dev.css')}" rel="stylesheet" type="text/css"  /> 
+                            <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'ckeditor/ckeditor.js')}"/>
+                            
+                            
+                            
+                            
+                            <script type="text/javascript">
+                                $(document).ready(function(){ 
+                                $("#Invoice").addClass("active");
+                                var AccountID = $('.ddlstAccount').val();
+                                
+                                var ServiceID = $('.ddlstService').val();
+                                //ApplySearch();
+                                var currentDate = new Date();
+                                $( ".tfrom_date, .tto_date").datepicker(
+                                    {
+                                        dateFormat : 'mm/dd/yy',
+                                        changeMonth : true,
+                                        changeYear : true,
+                                        maxDate: new Date(currentDate.setFullYear(currentDate.getFullYear() + 5))                                  
+                                    });
+                                
+                                $(".tfrom_date, .tto_date").bind('paste',function(e){
+                                    e.preventDefault();  //disable paste in datePicker
+                                });
+                                var id ='{!Invoice.Invoice_ID__c}';
+                                if(id == '')
+                                {
+                                    Visualforce.remoting.Manager.invokeAction(
+                                        '{!$RemoteAction.ODS_EditUploadInvoicecontroller.getInvoiceSessionDetails}',
+                                        function(result, event){
+                                            if (event.status) {
+                                                if( result.UserBillingStartDate__c != null){
+                                                    var billingStart = new Date(result.UserBillingStartDate__c);
+                                                    $('.tfrom_date').val(((billingStart.getUTCMonth() > 8) ? (billingStart.getUTCMonth() + 1) : ('0' + (billingStart.getUTCMonth() + 1))) + '/' + ((billingStart.getUTCDate() > 9) ? billingStart.getUTCDate() : ('0' + billingStart.getUTCDate())) + '/' + billingStart.getUTCFullYear());
+                                                    $('[id$=uploadInvoiceMonth]').val(billingStart.toLocaleString('default', { month: 'long' }));
+                                                    $('[id$=uploadInvoiceYear]').val(billingStart.getUTCFullYear());
+                                                }
+                                                if( result.UserBillingEndDate__c != null){
+                                                    var billingEnd = new Date(result.UserBillingEndDate__c);
+                                                    $('.tto_date').val(((billingEnd.getUTCMonth() > 8) ? (billingEnd.getUTCMonth() + 1) : ('0' + (billingEnd.getUTCMonth() + 1))) + '/' + ((billingEnd.getUTCDate() > 9) ? billingEnd.getUTCDate() : ('0' + billingEnd.getUTCDate())) + '/' + billingEnd.getUTCFullYear());
+                                                }
+                                            } else if (event.type === 'exception') {
+                                                alert(event.message);
+                                            } else {
+                                                alert(event.message);
+                                            } 
+                                        }, 
+                                        {escape: true}
+                                    );
+                                }
+                                else
+                                {  // var getsetbdate = '{!BillingStartDate}';
+                                    var billingStart = new Date('{!BillingStartDate}');
+                                    
+                                  
+                                    console.log('Billing start date :{!BillingStartDate}');
+                                    
+                                    var billingEnd = new Date('{!BillingEndDate}');
+                                    console.log('Billing end date :',billingEnd);
+                             
+                                    $('.tfrom_date').val(((billingStart.getUTCMonth() > 8) ? (billingStart.getUTCMonth() + 1) : ('0' + (billingStart.getUTCMonth() + 1))) + '/' + ((billingStart.getUTCDate() > 9) ? billingStart.getUTCDate() : ('0' + billingStart.getUTCDate())) + '/' + billingStart.getUTCFullYear());
+                                    
+                                    $('.tto_date').val(((billingEnd.getUTCMonth() > 8) ? (billingEnd.getUTCMonth() + 1) : ('0' + (billingEnd.getUTCMonth() + 1))) + '/' + ((billingEnd.getUTCDate() > 9) ? billingEnd.getUTCDate() : ('0' + billingEnd.getUTCDate())) + '/' + billingEnd.getUTCFullYear());
+                                    
+                                }
+                                var invStatus = '{!InvoiceStatus}';
+                                
+                                if(invStatus == 'Submitted')
+                                {
+                                    $('[id$=uploadInvoiceMonth]').prop("disabled", true);
+                                    $('[id$=uploadInvoiceYear]').prop("disabled", true);
+                                    $('[id$=date_service]').prop("disabled", true);
+                                    $('[id$=date_service1]').prop("disabled", true);
+                                    $('[id$=EmailAddress]').prop("disabled", true); 
+                                    $('[id$=CCAddress]').prop("disabled", true);
+                                    $('[id$=EmailSubject]').prop("disabled", true);
+                                    $('[id$=uploadInvoiceComments]').prop("disabled", true);
+                                }
+                                
+                                
+                                
+                            });
+        function ApplySearch() {
+            //  debugger;
+            var AccountID = $(".ddlstAccount").val();
+            var ServiceID = $(".ddlstService").val();
+            // debugger;
+            
+            ApplySearchAction(AccountID,ServiceID)
+            
+        }
+        
+        $(document).on('click', '.panel-heading span.clickable', function(e){
+            var $this = $(this);
+            if(!$this.hasClass('panel-collapsed')) {
+                $this.parents('.panel').find('.panel-body').slideUp();
+                $this.addClass('panel-collapsed');
+                $this.find('i').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+            } else {
+                $this.parents('.panel').find('.panel-body').slideDown();
+                $this.removeClass('panel-collapsed');
+                $this.find('i').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+            }
+        })  
+        window.onload = function(){
+            CKEDITOR.replace( 'editUploadInvoice:formId:editor1', { language: 'EN', toolbar: 'editUploadInvoice:formId:editor1',scayt_autoStartup: true,disableNativeSpellChecker: true,});
+            CKEDITOR.on("instanceReady", function (ev){
+                CKEDITOR.config.height = 800;
+                var invStatus = '{!InvoiceStatus}';
+                var bodyelement = ev.editor.document.$.body;
+                // var myeditor = $('#editor1');
+                if(invStatus == 'Submitted')
+                {
+                     bodyelement.setAttribute("contenteditable", false);   
+                }
+                else
+                {
+                    bodyelement.setAttribute("contenteditable", true);
+                }
+                
+            });                 
+        }
+        
+        
+        function isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (!(charCode > 31 && (charCode < 48 || charCode > 57) && charCode ==91 )) {
+                return false;
+            }
+            return true;
+        }
+        function BlockSpecialCharacter(key){
+            var keycode = (key.which) ? key.which : key.keyCode;
+            if ((keycode >= 65 && keycode <= 90) || (keycode >= 97 && keycode <= 122) || (keycode >= 46 && keycode <= 57) || keycode == 32 || keycode == 95 || keycode == 13)
+                return true;
+            else
+                return false;
+        }
+        function downloadAttachment(attachmentId, type)
+        {
+            debugger;
+            // alert('download Attachment id1 '+attachmentId);
+            if(type == 'Invoice' || type == 'Timesheet' || type == 'Supporting Document')
+            {
+                var base_url = window.location.origin;
+                // 	alert('download Attachment id3 '+attachmentId);  
+                var win = window.open(base_url +'/sfc/servlet.shepherd/version/download/'+attachmentId, '_blank');	                
+                // 	alert('download Attachment id2 '+attachmentId);
+                if (!window.loction.origin){
+                    
+                    base_url  = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+                } 
+                win.focus();
+            }
+            else if(type == '')
+            {
+                //  alert('download Attachment id4 '+attachmentId);
+                var base_url = window.location.origin;
+                if (!window.location.origin) {
+                    
+                    base_url  = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+                }
+                
+                var win = window.open(base_url +'/servlet/servlet.FileDownload?file='+attachmentId, '_blank');
+                win.focus();
+            }
+            
+        }
+        var errorMessage = '';
+        var isValidFileType = true;
+        var isValidInvoice = true;
+        
+        
+        
+        function uploadAttachment(type)
+        {
+            
+            var id ='{!Invoice.Invoice_ID__c}';
+            var returnValue;
+            var uploadFile;
+            //  alert('InvoiceId '+id);
+            if(id != '')
+            {
+                //  alert('InvoiceType '+type);
+                $('[id$=documentType]').val(type);
+                uploadFile = $('[id$=uploadFile]').val();
+                if ($.trim(uploadFile) =="") {
+                    alert("Please select a file");
+                    return false;
+                }
+                else {
+                    $('[id$=uploadFile]').addClass("");
+                    $("#divErrorMessageFileType").text("");
+                    
+                }
+                if(uploadFile != '')
+                {
+                    $("#divErrorMessageFileType").text("");
+                    if(type == 'Invoice'){
+                        var validFiles = '{!$Label.ODS_InvoiceExtenstion}'; //if above this
+                        var splitFileExtensions = validFiles.split(',');
+                        // alert(splitFileExtensions);
+                        var fileExtension = uploadFile.substr(uploadFile.lastIndexOf('.') + 1);
+                        for(var i = 0; i < splitFileExtensions.length; i++) {
+                            
+                            if(fileExtension == splitFileExtensions[i])
+                            {
+                                isValidFileType = true;
+                                
+                                break;
+                            }
+                            else
+                            {
+                                isValidFileType = false;
+                            }
+                        }
+                    }
+                    
+                    //write supporting document code here.
+                    if(type == 'Supporting Document'){
+                        var validFiles = '{!$Label.ODS_InvoiceSupportingTypeExtenstion}'; //if above this
+                        var splitFileExtensions = validFiles.split(',');
+                        // alert(splitFileExtensions);
+                        var fileExtension = uploadFile.substr(uploadFile.lastIndexOf('.') + 1);
+                        for(var i = 0; i < splitFileExtensions.length; i++) {
+                            
+                            if(fileExtension == splitFileExtensions[i])
+                            {
+                                isValidFileType = true;
+                                break;
+                            }
+                            else
+                            {
+                                isValidFileType = false;
+                            }
+                        }
+                    }
+                    
+                    debugger;
+                    if(isValidFileType ==false)
+                    {
+                        isValidInvoice = false;                          
+                        $("#divErrorMessageFileType").text("Invalid File Type!");
+                        return false;
+                    } else{
+                        var input=document.getElementById('uploadFile').files;
+                        var reader = new FileReader();
+                        reader.readAsDataURL(input[0]);
+                        reader.onload = function(e) 
+                        {
+                            var fileString = e.target.result;
+                            var attachmentbodybase64 = window.btoa(fileString)
+                            console.log(fileString)
+                            debugger;
+                            sendAttachmentToController(input[0].name,fileString);
+                            
+                            
+                        }
+                    }
+                }
+            }
+            else
+            {
+                returnValue = false;
+            }
+            return returnValue;
+        }
+        
+        function ValidateInvoiceDetails(status)
+        {
+            
+            var returnValue = false;
+            
+            // debugger;
+           
+            console.log('Heya m in Validation!!');
+            
+            errorMessage ='';  
+            var id ='{!Invoice.Invoice_ID__c}';
+            var Month = $('[id$=uploadInvoiceMonth]').val();
+            var Year = $('[id$=uploadInvoiceYear]').val();
+            var InvoiceId = document.getElementById('{!$Component.formId.InvoiceId}').value;
+            var billingStart = $('.tfrom_date').val();
+            var billingEnd = $('.tto_date').val();
+            var cmmnt = $('[id$=uploadInvoiceComments]').val();
+            var dateObj = new Date();
+            var currentMonth = dateObj.getUTCMonth() + 1; //months from 1-12
+            var currentYear = dateObj.getUTCFullYear(); 
+            var startDate = new Date(billingStart);
+            var endDate = new Date(billingEnd);
+            var emailAddress=$('[id$=EmailAddress]').val();
+            var ccEmailAddress=$('[id$=CCAddress]').val();
+            if(ccEmailAddress.trim().length > 0){
+            	emailAddress += ',' + ccEmailAddress;
+            }
+            
+            var emails = emailAddress.split(',');
+            
+            
+            var emailValid = true;
+            //var regex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
+            var regex = /^((?!\.)[\w\-_.]*[^.])(@[\w\-]+)(\.\w+(\.\w+)?[^.\W])$/;
+
+            for (var i = 0; i < emails.length; i++) {
+                if( emails[i] === "" || !regex.test(emails[i].replace(/\s/g, ""))){
+                    emailValid = false;
+                }
+            }
+            if(emailValid==false){
+                alert('Please enter valid email address');
+                returnValue = false;
+                return false;
+            }
+            
+            if(Month == 'Month' && Year == 'Year' ){
+                alert('Please select Year & Month');
+                returnValue = false;
+            }
+            else if(Month == 'Month')
+            {
+                alert('Please select Month');
+                returnValue = false;
+            }
+                else if(Year == 'Year')
+                {
+                    alert('Please select Year');
+                    returnValue = false;
+                }
+            
+                    else if(billingStart.length == 0){
+                        $('.tfrom_date').addClass('mandatoryClass');
+                        alert("Billing start date is mandatory");
+                        returnValue = false;
+                    }
+                        else if(billingEnd.length == 0){
+                            $('.tto_date').addClass('mandatoryClass');
+                            alert("Billing end date is mandatory");
+                            returnValue = false;
+                        }
+                            else if(startDate > endDate){
+                                $('.tfrom_date').addClass('mandatoryClass');
+                                $('.tto_date').addClass('mandatoryClass');
+                                alert("Billing end date should be more than Billing start date");
+                                returnValue = false;
+                            }
+                                else
+                                {  
+                                    $('.tfrom_date').removeClass('mandatoryClass');
+                                    $('.tto_date').removeClass('mandatoryClass');               
+                                    debugger;
+                                    if(status == 'Submitted')
+                                    {
+                                        
+                                        Visualforce.remoting.Manager.invokeAction(
+                                            '{!$RemoteAction.ODS_EditUploadInvoicecontroller.validateOnSubmitUpdated}',
+                                            id,
+                                            function(result, event){
+                                                if (event.status) {
+                                                    if((result.indexOf("TI")  > -1 )||(result.indexOf("IT")  > -1))
+                                                    { 
+                                                        $('[id$=DisabledInvoiceStatus]').val(status);
+                                                        $('[id$=uploadDisableButton]').trigger("click");
+                                                        //return true;   
+                                                    }
+                                                    else if((result.indexOf("T")  > -1) && (!result.indexOf("I")  > -1))
+                                                    {
+                                                        alert('You can not submit it, Invoice file is not present.');
+                                                        return false;
+                                                    }
+                                                        else if((result.indexOf("I")  > -1) && (!result.indexOf("T")  > -1))
+                                                        {
+                                                            alert('You can not submit it, Timesheet file is not present.');
+                                                            return false;
+                                                        }
+                                                            else
+                                                            {
+                                                                alert('You can not submit it, Invoice and Timesheet files are not present.');
+                                                                return false;
+                                                            }
+                                                    debugger;
+                                                } else if (event.type === 'exception') {
+                                                    alert(event.message);
+                                                } else {
+                                                    alert(event.message);
+                                                } 
+                                            }, 
+                                            {escape: true}
+                                        );
+                                    }
+                                    else
+                                    {
+                                        $('[id$=DisabledInvoiceStatus]').val(status);
+                                        returnValue = true;
+                                    }             
+                                }
+            return returnValue;
+        } 
+        
+        function IsInputEmpty(inputName) {
+            
+            var inputControl = document.getElementById(inputName).value;
+            if ($.trim(inputControl) =="") {
+                document.getElementById(inputName).className = "mandatoryClass";
+                $("#divErrorMessageFileType").text("Please select a file");
+                return true;
+            }
+            else {
+                document.getElementById(inputName).className = "";
+                $("#divErrorMessageFileType").text("");
+                return false;
+            }
+        }
+        function ValidateInvoiceMonthYear() {
+            debugger;
+            var Month = $('[id$=uploadInvoiceMonth]').val();
+            var Year = $('[id$=uploadInvoiceYear]').val();
+            
+            var dateObj = new Date();
+            var currentMonth = dateObj.getUTCMonth() + 1; //months from 1-12
+            var currentYear = dateObj.getUTCFullYear(); 
+            if(getMonthFromString(Month) > currentMonth && Year == currentYear)
+            {
+                alert('Sorry, you cannot select upcoming months.');
+                $('[id$=uploadInvoiceMonth]').val('Month');
+                return false;
+            }
+            return false;
+        }
+        
+        function getMonthFromString(mon){
+            return new Date(Date.parse(mon +" 1, 2012")).getMonth()+1
+        }
+        
+        </script>   
+        <style>
+            .hideClass{
+            display:none;
+            }
+            .mandatoryClass{
+            border-color:red !important;
+            }
+            .clickable {
+            cursor: pointer;
+            }
+            
+            .mid-bg {
+            background: #FFFFFF;
+            width: 100%;
+            padding: 30px 2% 15px 2%;
+            float: left;
+            }
+            #cke_1_contents
+            {
+            height: 350px !important;
+            }
+        </style>
+        <link href="{!URLFOR($Resource.ODS_Assets,'font-awesome/css/font-awesome.css')}" rel="stylesheet" type="text/css"  />
+        <title>ON DEMAND SERVICES </title> 
+    </head>
+    <body>
+        <apex:form id="formId">
+            <c:ODS_HeaderComponent />
+            <apex:actionStatus id="statusSaveTrip" stopText="">
+                <apex:facet name="start">
+                    <div>
+                        <div class="popupBackground" />
+                        <div class="PopupPanel">
+                            <table border="0" width="100%" height="100%">
+                                <tr>
+                                    <td align="center"><b>Please Wait</b></td>
+                                </tr>
+                                <tr>
+                                    <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionStatus> 
+            <apex:pageMessages id="showmsg"></apex:pageMessages>
+            <apex:actionFunction name="sendAttachmentToController" action="{!attachFile}" status="statusSaveTrip" reRender="showmsg" >
+                <apex:param name="filename" value=""/>
+                <apex:param name="blobBody" value=""/>
+            </apex:actionFunction>
+            <apex:actionFunction name="ApplySearchAction" action="{!redirectToInvoiceList}" status="statusSaveTrip" reRender="showmsg" immediate="True" >
+                <apex:param name="SelectedAccountId" value="" assignTo="{!AccountId}"/>
+                <apex:param name="SelectedServiceID" value="" assignTo="{!ServiceId}"/>
+            </apex:actionFunction>
+            
+            <!-- <div class="shadow-show"></div>
+<c:ODS_HeaderComponent />
+<apex:actionStatus id="statusSaveTrip" stopText="">
+<apex:facet name="start">
+<div>
+<div class="popupBackground" />
+<div class="PopupPanel">
+<table border="0" width="100%" height="100%">
+<tr>
+<td align="center"><b>Please Wait</b></td>
+</tr>
+<tr>
+<td align="center"><img src="{!$Resource.ODS_Statussign}" /></td>
+</tr>
+</table>
+</div>
+</div>
+</apex:facet>
+</apex:actionStatus> -->
+            <div class="clr"></div>
+            <div class="clr"></div>
+            
+            <div class="mid-bg">
+                <div class="sub-warp">
+                    <div class="panel panel-default">          
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4">
+                            <h3 style=" display:inline;" class="panel-title">INVOICE</h3>
+                            <span style="padding-left:257px">    <label class="panel-title" id="Account_NameHeader">Account:</label>  </span>
+                            <label class="panel-title" id="Account_Name">{!PassAccountName}</label>
+                            <span style="padding-left:20px">      <label class="panel-title" id="Service_NameHeader">Service:</label>  </span>
+                            <label class="panel-title" id="Service_Name">{!PassServiceName}</label>
+                            <span class="pull-right clickable" style="margin-top: 0.2px;" ><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                        </div> 
+                        
+                        <div id="divid" class="panel-body">
+                            <div style="text-align:center;color:red;" id="divErrorMessageFileType"></div>
+                            <div style="text-align:center;color:red;" id="divErrorMessageFileName"></div>
+                            <apex:actionRegion >
+                                <div class="col-md-6 col-sm-6 col-xs-6">
+                                    
+                                    <div class="form-horizontal"> 
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Invoice Month<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList value="{!Invoice.Month__c}" id="uploadInvoiceMonth" size="1" styleClass="form-control" onchange="ValidateInvoiceMonthYear();">
+                                                    <apex:selectOption itemLabel="Month" itemValue="Month"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="January" itemValue="January"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="February" itemValue="February"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="March" itemValue="March"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="April" itemValue="April"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="May" itemValue="May"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="June" itemValue="June"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="July" itemValue="July"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="August" itemValue="August"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="September" itemValue="September"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="October" itemValue="October"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="November" itemValue="November"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="December" itemValue="December"></apex:selectOption>
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Invoice Years<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:selectList styleClass="form-control"  id="uploadInvoiceYear" value="{!Invoice.Year__c}" html-placeholder="Year" size="1" onchange="ValidateInvoiceMonthYear();">
+                                                    <apex:selectOptions value="{!Years}" />
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Billing Start Date<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:input type="text" styleClass="tfrom_date form-control" html-placeholder="Billing Start Date" id="date_service" value="{!BillingStartDate}" onkeypress="return isNumber(event)" /> 
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Billing End Date<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:input type="text" styleClass="tto_date form-control" html-placeholder="Billing End Date" id="date_service1" value="{!BillingEndDate}" onkeypress="return isNumber(event)" />  
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-horizontal"> 
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label " width = "10%">Status<span style="color:#ff9797; font-size:15px; cursor:default;"></span>
+                                            </label> 
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <!-- <apex:selectList styleClass="form-control" disabled="true" value="{!Invoice.Status__c}" id="uploadInvoiceStatus" size="1">
+<apex:selectoptions value="{!getInvoiceStatus}"/> 
+</apex:selectList> -->
+                                                <apex:input type="text" disabled="true" styleClass="form-control" value="{!InvoiceStatus}" id="uploadInvoiceStatus"/>
+                                                
+                                            </div> 
+                                        </div>
+                                        
+                                        
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Comments<span style="color:#ff9797; font-size:15px; cursor:default;"></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:inputTextarea styleClass="form-control" rows="3"  value="{!CommentData }" onkeypress="return BlockSpecialCharacter(event)" id="uploadInvoiceComments" html-placeholder="Comments" style="margin-bottom:20px;"/> 
+                                                <!--  <apex:inputText styleClass="form-control" value="{!CommentData}" id="uploadInvoiceComments" onkeypress="return BlockSpecialCharacter(event)" html-placeholder="Comments" style="margin-bottom:20px;"/> -->
+                                                <!--  <apex:input type="text" styleClass="form-control" value="{!CommentData}" id="uploadInvoiceComments" onkeypress="return BlockSpecialCharacter(event)" html-placeholder="Comments" style="margin-bottom:20px; height:150px;"/>--> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <apex:inputField value="{!Invoice.Invoice_ID__c}" styleClass="hideClass"  id="InvoiceId" /> 
+                                    <apex:inputField value="{!Invoice.Status__c}" id="DisabledInvoiceStatus" styleClass="hideClass form-control"/>
+                                    <apex:input type="text"   value="{!fileType}" id="documentType" styleClass="hideClass form-control"/>
+                                </div>
+                            </apex:actionRegion>
+                            <div class="clr"></div>
+                        </div>
+                    </div>
+                    <div id="attachment" style="{!IF(AND(isCustomer = false,ShowUploadInvoice=true,NOT(InvoiceStatus == 'Submitted')), 'display:block', 'display:none')}" >
+                        <div class="panel panel-default">   
+                            <div class="panel-heading" style="color: white;background-color: #4ECAF4;">
+                                <h3 style=" display:inline;" class="panel-title">UPLOAD ATTACHMENT</h3>
+                                <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                            </div> 
+                            <div class="panel-body">
+                                <div style="float:left; ">
+                                    <input id="uploadFile" type="file"  value="{!blobBody}" filename="{!filename}" name="files"/> 
+                                    <!--<apex:inputFile value="{!blobBody}"  id="uploadFile" filename="{!filename}" title="Max file size is 5MB" /> -->
+                                </div>
+                                <div style="float:right;">
+                                    <apex:outputPanel rendered="{!ShowUploadInvoice && PortalRole != 'Partner'}">
+                                        <input class="savebutton popup-add save-submit"  type="button" value="Upload Supporting Document" id="attachAttachment" onClick="return uploadAttachment('Supporting Document');" status="statusSaveTrip"  />
+                                        
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!(NOT(hasInvoiceFile)&& ShowUploadInvoice && PortalRole != 'Partner')}">
+                                        <input class="savebutton popup-add save-submit"  type="button" value="Upload Invoice" id="InvoiceAttachment" onClick="return uploadAttachment('Invoice');" status="statusSaveTrip"  />
+                                        
+                                    </apex:outputPanel>
+                                    
+                                    <!--<apex:commandbutton styleClass="popup-add save-submit" Value="Upload Supporting Document" id="attachAttachment"  action="{!attachFile}"  onClick="return uploadAttachment('Supporting Document');" status="statusSaveTrip" rendered="{!ShowUploadInvoice && PortalRole != 'Partner'}" />
+<apex:commandbutton styleClass="popup-add save-submit" Value="Upload Invoice" id="InvoiceAttachment"  action="{!attachFile}"  onClick="return uploadAttachment('Invoice');" status="statusSaveTrip" rendered="{!(NOT(hasInvoiceFile)&& ShowUploadInvoice && PortalRole != 'Partner')}" />
+<!--<apex:commandbutton styleClass="popup-add save-submit" Value="UPLOAD SUPPORTING DOCUMENT" id="uploadSupportingAttachment" action="{!attachFile}"  onClick="return uploadAttachment('Supporting Document');"  status="statusSaveTrip" reRender="documentSection,attachment,pgmsg"  rendered="{!ShowUploadInvoice && PortalRole != 'Partner'}" immediate="true"  /> -->
+                                    <!-- <apex:commandbutton styleClass="popup-add save-submit" Value="UPLOAD INVOICE" id="uploadInvoiceAttachment" action="{!attachFile}"  onClick="return uploadAttachment('Invoice');"  status="statusSaveTrip"  rendered="{!ShowUploadInvoice && PortalRole != 'Partner'}"/> -->
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div id="documentSection" style="{!IF(ShowUploadInvoice=true, 'display:block', 'display:none')}" >
+                        <div class="panel panel-default">   
+                            <div class="panel-heading" style="color: white;background-color: #4ECAF4;">
+                                <h3 style=" display:inline;" class="panel-title">DOCUMENTS</h3>
+                                <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                            </div> 
+                            <div class="panel-body">
+                                <apex:pageBlock >
+                                    <apex:pageBlockTable StyleClass="datatable timeline" id="pgTable" Style="cellpadding:0; cellspacing:0; width:100%;color:#4ECAF4;"  value="{!wrapAttachmentList}" var="Attachment"
+                                                         rendered="{!(wrapAttachmentList.size!=0 && wrapAttachmentList !='') }">                        
+                                        
+                                        <apex:column headerValue="Name" value="{!Attachment.documentName}"  style="text-align:left; border-right-width: 1px;"/>
+                                        <apex:column headerValue="Type" value="{!Attachment.docuemtType}"  style="text-align:left; border-right-width: 1px;"/>
+                                        <apex:column headerValue="Action" style="text-align:left; border-left-width: 1px;">
+                                            <apex:commandLink styleClass="time_view" title="Delete" status="statusSaveTrip"  action="{!DeleteAttachment}" rendered="{!(NOT(isCustomer) && NOT(InvoiceStatus == 'Submitted' || InvoiceStatus == 'Approved'))}">                                            
+                                                <apex:param name="AttachmentToDelete" value="{!Attachment.documentId}" assignTo="{!AttachmentToDelete}"/>
+                                                <apex:param name="AttachmentType" value="{!Attachment.docuemtType}" assignTo="{!AttachmentType}"/>
+                                                <strong><i class="fa fa-trash" aria-hidden="true"></i></strong>
+                                            </apex:commandLink>
+                                            <apex:commandLink styleClass="time_view" title="Download" html-data-toggle="#" html-data-target="#myModal" onClick="downloadAttachment('{!Attachment.documentId}','{!Attachment.docuemtType}'); return false">                                            
+                                                <apex:param name="AtachmentId" value="{!Attachment.documentId}"/>    
+                                                <strong><i class="fa fa-download" aria-hidden="true"></i></strong>
+                                            </apex:commandLink> 
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                </apex:pageBlock>
+                                
+                            </div>
+                        </div>
+                    </div> 
+                    <div id="emailSection" style="{!IF(AND(isCustomer = false,isPartner = false), 'display:block', 'display:none')}" >
+                        <div class="panel panel-default">   
+                            <div class="panel-heading" style="color: white;background-color: #4ECAF4;">
+                                <h3 style=" display:inline;" class="panel-title">Invoice Email</h3>
+                                <span class="pull-right clickable" style="margin-top: 0.2px;"><i class="fa fa-chevron-up" aria-hidden="true"></i></span>
+                            </div> 
+                            <div class="panel-body">
+                                <div class="col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label " width = "10%">Email Address<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:input type="text"  styleClass="form-control" value="{!toAddress}" id="EmailAddress" html-placeholder="Email Address"/>
+                                            </div>
+                                        </div>  
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-6">
+                                    <div class="form-horizontal"> 
+                                        <div class="form-group">
+                                            <label class="col-md-4 col-sm-4 col-xs-12 control-label " width = "10%">CC Address<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                                <apex:input type="text"  styleClass="form-control" value="{!ccAddress}" id="CCAddress" html-placeholder="CC Address"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-horizontal"> 
+                                        <div class="form-group">
+                                            <label class="col-md-2 col-sm-2 col-xs-12 control-label " width = "10%">Subject<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-10 col-sm-10 col-xs-12">
+                                                <apex:input type="text"  styleClass="form-control" value="{!emailSubject}" id="EmailSubject" html-placeholder="Enter Email Subject"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-2 col-sm-2 col-xs-12 control-label " width = "10%">Body<span style="color:#ff9797; font-size:15px; cursor:default;" ></span>
+                                            </label>
+                                            <div class="col-md-10 col-sm-10 col-xs-12" >
+                                               <apex:inputTextArea id="editor1" value="{!Invoice.Email_Body__c}" label="Email Body" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div> 
+                    
+                    
+                    <div class="pull-right clr">  
+                        <apex:commandbutton id="btnBack" styleClass="cancel"  value="Back" action="{!redirectToInvoice}" immediate="true"  style="margin-right: 10px;"/>
+                        <apex:commandbutton styleClass="popup-add save-submit" Value="Attach Timesheet" id="attachTimeSheet"  action="{!attachTimeSheet}"  status="statusSaveTrip" rendered="{!(NOT(hasTimesheetFile) && NOT(isCustomer) && ShowUploadInvoice && PortalRole != 'Partner' && NOT(InvoiceStatus == 'Submitted'))}" />
+                        <!-- <apex:commandbutton styleClass="popup-add save-submit" Value="ADD" id="uploadInvoice"  onClick="return ValidateInvoiceDetails();" rerender="divErrorMessageFileType" status="statusSaveTrip"/> -->
+                        <apex:commandbutton styleClass="popup-add save-submit" Value="ADD" id="uploadInvoice"  action="{!InsertUpdateInvoice}" onClick="return ValidateInvoiceDetails('Saved');"  status="statusSaveTrip" rendered="{!(NOT(ShowUploadInvoice) &&  Not(isCustomer))}" />
+                        <apex:commandbutton styleClass="popup-add save-submit" Value="UPDATE" id="uploadInvoiceUpdate" onClick="return ValidateInvoiceDetails('Saved');" action="{!InsertUpdateInvoice}"  status="statusSaveTrip" rendered="{!(NOT(isCustomer) && ShowUploadInvoice && PortalRole != 'Partner' && NOT(InvoiceStatus == 'Submitted'))}" />
+                        
+                       
+                        
+                        <apex:commandbutton id="uploadDisableButton" action="{!InsertUpdateInvoice}" styleClass="hideClass save-submit" />
+                        <apex:commandButton id="submitInvoice" styleClass="popup-add save-submit" Value="SUBMIT"  onClick="return ValidateInvoiceDetails('Submitted');" rendered="{!(NOT(isCustomer) && ShowUploadInvoice && PortalRole != 'Partner' && NOT(InvoiceStatus == 'Submitted'))}" status="statusSaveTrip" />
+                    </div>
+                </div>
+            </div>
+            <c:ODS_FooterComponent /> 
+        </apex:form>
+    </body>
+</apex:page>

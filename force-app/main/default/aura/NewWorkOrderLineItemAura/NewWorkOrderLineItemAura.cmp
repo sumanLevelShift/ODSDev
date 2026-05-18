@@ -1,0 +1,8 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:actionOverride,lightning:isUrlAddressable,force:hasSObjectName" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="isAura" type="boolean" />
+    <aura:attribute name="pageReference" type="Object"/>
+	<aura:attribute name="isVFPage" type="boolean" />
+    <c:homeWOLI workOrderId="{!v.recordId}" isAura="{!v.isAura}" isVFPage="{!v.isVFPage}"/>
+</aura:component>

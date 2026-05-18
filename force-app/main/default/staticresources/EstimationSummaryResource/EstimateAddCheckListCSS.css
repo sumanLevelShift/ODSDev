@@ -1,0 +1,72 @@
+span.slds-checkbox_faux{
+	width: 70px !important;
+    height: 30px !important;
+	margin-left: 0px !important;
+}
+.slds-scope .slds-checkbox_toggle [type=checkbox]:checked[disabled]+.slds-checkbox_faux_container .slds-checkbox_faux{
+	background-color:#0176D3 !important;
+
+}
+.status span.slds-checkbox_faux::after{
+	width: 27px !important;
+    height: 26px !important;
+}
+.status .slds-checkbox_faux:before{
+	width: 27px !important;
+    height: 26px !important;
+}
+.status .slds-checkbox_toggle [type=checkbox]:checked+.slds-checkbox_faux_container .slds-checkbox_faux:after{
+	display:none !important;
+}
+/*span.slds-checkbox_faux_container{
+	margin:0px !important;
+}*/
+span.slds-checkbox_on{
+	display:none !important;
+}
+span.slds-checkbox_off{
+	display:none !important;
+}
+.remarkTextArea textarea{
+	background:#eeffe6 !important;
+	width:420px !important;
+	/*height:75px !important;*/
+	border: 2px solid #668cff !important;
+    border-radius: 5px !important;
+}
+
+.textAreaScope textarea{
+	background:#eeffe6 !important;
+}
+.slds-button_neutral{
+    color: #fff !important;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px !important;
+    font-weight: normal !important;
+    text-align: center !important;
+    border: none !important;
+    padding: 7px 15px !important;
+    background: #4ECAF4 !important;
+    text-transform: uppercase !important;
+    border-radius: 5px !important;
+    margin-right: 10px !important;
+}
+.slds-button_brand{
+color: #fff !important;
+    font-family: 'Open Sans', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: normal !important;
+    text-align: center !important;
+    border: none !important;
+    padding: 7px 15px !important;
+    background: #999999 !important;
+    text-transform: uppercase !important;
+    border-radius: 5px !important;
+    margin-right: 0 !important;
+}
+ th{
+        font-size: 12px !important;
+    }
+    td{
+        font-size: 12px !important;  
+    }

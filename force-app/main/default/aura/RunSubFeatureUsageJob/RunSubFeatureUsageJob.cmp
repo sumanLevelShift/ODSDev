@@ -1,0 +1,4 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader" access="global" controller="Run_SubFeatureClientUtilization">
+	<aura:handler name="init" value="{!this}" action="{!c.initiateJob}"/>
+    {!v.jobStatus}
+</aura:component>

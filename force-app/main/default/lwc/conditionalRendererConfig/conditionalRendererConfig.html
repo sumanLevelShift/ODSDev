@@ -1,0 +1,135 @@
+<template>
+    <div class="mid-bg"
+        style="background: #FFFFFF;width: 98.5% !important;padding: 0 0% 15px 0% !important;float: left;">
+        <div class="spinnerDiv" style="display: None;">
+            <div class="popupBackground"></div>
+            <div class="PopupPanel">
+                <table border="0" width="100%">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;font-size: 12px;"><b>Please Wait</b></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;"><img src={spinner} /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mid-white" style="height: 450px;background:white;">
+            <div class="slds-scrollable" style="height: 100%;">
+                <table class="list timeline dataTable no-footer css-serial slds-table slds-table_striped">
+                    <tbody>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Sobject</th>
+                            <th style="width:0px;">Controlling Field</th>
+                            <th style="width:0px;">Type</th>
+                            <th style="width:0px;">Value</th>
+                            <th style="width:0px;">Action</th>
+                            <th>Fields</th>
+                            <th>Action</th>
+                        </tr>
+                        <template for:each={oldTableData} for:item="row">
+                            <tr class="inputRows" key={row.Id} id={row.Id} data-tr={row.Id}>
+                                <td style="text-align: center;"></td>
+                                <td>
+                                    <c-searchable-combobox options={sObjectNames} onfocusout={handleObjectChange}
+                                        class="sObjectClass" name="sObject requiredField" data-rowid={row.Id}
+                                        data-sobject={row.Id} value={row.Sobject__c}></c-searchable-combobox>
+                                </td>
+                                <td>
+                                    <lightning-combobox onchange={handleFieldChange} placeholder="Select a field"
+                                        class="controllingFieldClass requiredField" name="controllingField"
+                                        data-rowid={row.Id} data-cfield={row.Id}
+                                        value={row.Controlling_Field__c} data-required={row.Id}></lightning-combobox>
+                                </td>
+                                <td>
+                                    <lightning-combobox placeholder="Data type" class="dataTypeClass requiredField"
+                                        name="dataType" data-rowid={row.Id} data-type={row.Id} options={typeOptions}
+                                        value={row.Type__c} data-required={row.Id}></lightning-combobox>
+                                </td>
+                                <td>
+                                    <lightning-input type="text" class="valueClass" name="value" data-rowid={row.Id}
+                                        data-value={row.Id} onfocusout={handleValue}
+                                        value={row.Value__c} data-required={row.Id}></lightning-input>
+                                </td>
+                                <td>
+                                    <lightning-combobox options={actionOptions} class="actionClass" name="action"
+                                        data-rowid={row.Id} data-action={row.Id} onchange={handleValue}
+                                        value={row.Action__c} data-required={row.Id}></lightning-combobox>
+                                </td>
+                                <td>
+                                    <!--<lightning-input type="text" class="fieldClass" name="field"
+                                        data-rowid={row}></lightning-input>-->
+                                    <c-multi-select-combobox data-rowid={row.Id} name="field" class="fieldClass"
+                                        data-mfield={row.Id} value={row.Fields__c}></c-multi-select-combobox>
+
+                                </td>
+                                <td>
+                                    <lightning-icon icon-name="action:delete" onclick={removeRow} data-row={row.Id}
+                                        data-id={row.Id} style="cursor: pointer;" id={row.Id} size="small" title="Delete"></lightning-icon>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <lightning-icon icon-name="utility:save" data-rowid={row.Id} data-id={row.Id}
+                                        style="cursor: pointer;" id={row.Id} onclick={handleSubmit} size="small" title="Submit"></lightning-icon>
+                                </td>
+                            </tr>
+                        </template>
+                        <template for:each={tableData} for:item="row">
+                            <tr class="inputRows" key={row} id={row} data-tr={row}>
+                                <td style="text-align: center;"></td>
+                                <td>
+                                    <c-searchable-combobox options={sObjectNames} onchange={handleObjectChange}
+                                        class="sObjectClass" name="sObject requiredField" data-rowid={row}
+                                        data-sobject={row} ></c-searchable-combobox>
+                                </td>
+                                <td>
+                                    <lightning-combobox onchange={handleFieldChange} placeholder="Select a field"
+                                        class="controllingFieldClass requiredField" name="controllingField"
+                                        data-rowid={row} data-cfield={row} data-required={row}></lightning-combobox>
+                                </td>
+                                <td>
+                                    <lightning-combobox placeholder="Data type" class="dataTypeClass requiredField"
+                                        name="dataType" data-rowid={row} data-type={row}
+                                        options={typeOptions} data-required={row}></lightning-combobox>
+                                </td>
+                                <td>
+                                    <lightning-input type="text" class="valueClass" name="value" data-rowid={row}
+                                        data-value={row} onfocusout={handleValue} data-required={row}></lightning-input>
+                                </td>
+                                <td>
+                                    <lightning-combobox options={actionOptions} class="actionClass" name="action"
+                                        data-rowid={row} value="ENABLE" data-action={row}
+                                        onchange={handleValue} data-required={row}></lightning-combobox>
+                                </td>
+                                <td>
+                                    <!--<lightning-input type="text" class="fieldClass" name="field"
+                                        data-rowid={row}></lightning-input>-->
+                                    <c-multi-select-combobox data-rowid={row} name="field" class="fieldClass"
+                                        data-mfield={row}></c-multi-select-combobox>
+
+                                </td>
+                                <td>
+                                    <lightning-icon icon-name="action:delete" onclick={removeRow} data-row={row}
+                                        data-id={row} style="cursor: pointer;" id={row} size="small" title="Delete"></lightning-icon>
+                                         &nbsp;&nbsp;&nbsp;
+                                    <lightning-icon icon-name="utility:save" data-rowid={row} data-id={row}
+                                        style="cursor: pointer;" id={row} onclick={handleSubmit} size="small" title="Submit"></lightning-icon>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="pull-right"><br>
+            <lightning-button variant="brand" class="slds-m-top_small submitButton" type="submit" label="Add"
+                onclick={addNewRow}>
+            </lightning-button>&nbsp;
+          <!--  <button class="slds-m-top_small cancelButton" onclick={handleReset}> CANCEL
+            </button> &nbsp; <lightning-button variant="brand" class="slds-m-top_small submitButton" type="submit"
+                label="SAVE" onclick={handleSubmit}>
+            </lightning-button>-->
+        </div>
+    </div>
+</template>

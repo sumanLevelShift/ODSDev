@@ -1,0 +1,246 @@
+<apex:page controller="ODS_TimeSheetExcelToolPageController" contentType="application/vnd.ms-excel#{!fileName}.xls" cache="true">
+    <apex:outputText value="{!xmlheader}"/>
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+              xmlns:html="http://www.w3.org/TR/REC-html40">
+        <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+            <Author></Author>
+            <LastAuthor></LastAuthor>
+            <Company></Company>
+            <Version>1</Version>
+        </DocumentProperties>
+        
+        <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+            <WindowHeight>16000</WindowHeight>
+            <WindowWidth>20480</WindowWidth>
+            <WindowTopX>400</WindowTopX>
+            <WindowTopY>400</WindowTopY>
+            <ProtectStructure>False</ProtectStructure>
+            <ProtectWindows>False</ProtectWindows>
+        </ExcelWorkbook>
+        <Styles>
+            <Style ss:ID="weekDay" >
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Bold="1" />
+                <Interior />
+                <NumberFormat ss:Format="dd\-mmm\-yyyy"/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="s1" >
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Bold="1" />
+                <Interior />
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="row1" >
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Interior ss:Color="#ddebf7" ss:Pattern="Solid"/>
+                <Protection/>
+                
+            </Style>
+            <Style ss:ID="row2" >
+                <Interior ss:Color="#ddebf7" ss:Pattern="Solid"/>
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Bold="1" />
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="row3" >
+                <Interior />
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="row4" >
+                <Interior ss:Color="#E0E0E0" ss:Pattern="Solid"/>
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <NumberFormat/>
+                <Protection/>
+            </Style>
+            <Style ss:ID="row5" >
+                <Interior ss:Color="#E0E0E0" ss:Pattern="Solid"/>
+                <Alignment/>
+                <Borders>
+                    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                </Borders>
+                <Font ss:Bold="1" />
+                <NumberFormat ss:Format="dd\-mmm\-yyyy"/>
+                <Protection/>
+            </Style>
+        </Styles>
+        <Names>
+            <NamedRange ss:Name="Account_Names" ss:RefersTo="=Account!R2C1:R{!accountList.size+1}C1"/>
+            <NamedRange ss:Name="Account_Alpha_Names" ss:RefersTo="=Account!R2C1:R{!accountList.size+1}C2"/>
+            <NamedRange ss:Name="TPM_Names" ss:RefersTo="=TPM!R2C1:R{!TPMList.size+1}C1"/>
+            <apex:repeat value="{!accInitiativeRange}" var="key">
+                <NamedRange ss:Name="{!key}" ss:RefersTo="=Initiatives!{!accInitiativeRange[key]}"/>
+            </apex:repeat>
+        </Names>
+        <Worksheet ss:Name="Timesheet">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="100"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="280"/>
+                <Column ss:Width="170"/>
+                <Column ss:Width="60" />
+                <Column ss:Width="60"/>
+                <Column ss:Width="60"/>
+                <Column ss:Width="60"/>
+                <Column ss:Width="60"/>
+                <Column ss:Width="60"/>
+                <Column ss:Width="60"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" ></Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">Mon</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">Tue</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">Wed</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">Thu</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String">Fri</Data></Cell>
+                    <Cell ss:StyleID="row5"><Data ss:Type="String">Sat</Data></Cell>
+                    <Cell ss:StyleID="row5"><Data ss:Type="String">Sun</Data></Cell>
+                </Row>
+                
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Account</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Resource Name</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Role</Data></Cell>
+                    <Cell ss:StyleID="row2"><Data ss:Type="String" >Initiatives Name</Data></Cell>
+                    <Cell ss:StyleID="row2"><Data ss:Type="String" >Activity Description - USER STORY / TASK DESCRIPTION </Data></Cell>
+                    <Cell ss:StyleID="row2"><Data ss:Type="String" >Technical Project Manager</Data></Cell>
+                    <Cell ss:StyleID="weekDay"><Data ss:Type="DateTime">{!weekDateList[0]}</Data></Cell>
+                    <Cell ss:StyleID="weekDay"><Data ss:Type="DateTime">{!weekDateList[1]}</Data></Cell>
+                    <Cell ss:StyleID="weekDay"><Data ss:Type="DateTime">{!weekDateList[2]}</Data></Cell>
+                    <Cell ss:StyleID="weekDay"><Data ss:Type="DateTime">{!weekDateList[3]}</Data></Cell>
+                    <Cell ss:StyleID="weekDay"><Data ss:Type="DateTime">{!weekDateList[4]}</Data></Cell>
+                    <Cell ss:StyleID="row5"><Data ss:Type="DateTime">{!weekDateList[5]}</Data></Cell>
+                    <Cell ss:StyleID="row5"><Data ss:Type="DateTime">{!weekDateList[6]}</Data></Cell>
+                </Row>
+                <apex:repeat value="{!emptyRow}" var="i">
+                    <Row >
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row1"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row3"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row4"><Data ss:Type="String"></Data></Cell>
+                        <Cell ss:StyleID="row4"><Data ss:Type="String"></Data></Cell>                        
+                    </Row>
+                </apex:repeat>
+            </Table>
+            <DataValidation xmlns="urn:schemas-microsoft-com:office:excel">
+                <Range>R3C1:R{!emptyRow.size+2}C1</Range>
+                <Type>List</Type>
+                <Value>Account_Names</Value>
+            </DataValidation>
+            <DataValidation xmlns="urn:schemas-microsoft-com:office:excel">
+                <Range>R3C6:R{!emptyRow.size+2}C6</Range>
+                <Type>List</Type>
+                <Value>TPM_Names</Value>
+            </DataValidation>
+            <DataValidation xmlns="urn:schemas-microsoft-com:office:excel">
+                <Range>R3C4:R{!emptyRow.size+2}C4</Range>
+                <Type>List</Type>
+                <Value>INDIRECT(VLOOKUP(RC[-3],Account_Alpha_Names,2,))</Value>
+            </DataValidation>
+        </Worksheet>
+        <Worksheet ss:Name="Account">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="170"/>
+                <Column ss:Index="2" ss:Hidden="1" ss:AutoFitWidth="0" ss:Width="170"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Accounts</Data></Cell>
+                </Row>
+                <apex:repeat value="{!accountList}" var="i">
+                    <Row>
+                        <Cell><Data ss:Type="String">{!i.Name}</Data><NamedCell ss:Name="Account_Names"/><NamedCell ss:Name="Account_Alpha_Names"/></Cell>
+                        <Cell><Data ss:Type="String">{!accountListAlpha[i.Name]}</Data><NamedCell ss:Name="Account_Alpha_Names"/></Cell>
+                    </Row>
+                </apex:repeat>
+            </Table>
+        </Worksheet>
+        <Worksheet ss:Name="Initiatives">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="170"/>
+                <Column ss:Width="280"/>
+                <Column ss:Index="3" ss:Hidden="1" ss:AutoFitWidth="0" ss:Width="170"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Accounts</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Initiatives Name</Data></Cell>
+                </Row>
+                <apex:repeat value="{!initList}" var="i">
+                    <Row>
+                        <Cell><Data ss:Type="String">{!i.Account_Service__r.Account__r.Name}</Data></Cell>
+                        <Cell><Data ss:Type="String">{!i.name}</Data><NamedCell ss:Name="{!accountListAlpha[i.Account_Service__r.Account__r.Name]}"/></Cell>
+                    </Row>
+                </apex:repeat>
+            </Table>
+        </Worksheet>
+        <Worksheet ss:Name="TPM">
+            <Table x:FullColumns="1" x:FullRows="1">
+                <Column ss:Width="280"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Technical Project Manager</Data></Cell>
+                </Row>
+                <apex:repeat value="{!TPMList}" var="i">
+                    <Row>
+                        <Cell><Data ss:Type="String">{!i}</Data><NamedCell ss:Name="TPM_Names"/></Cell>
+                    </Row>
+                </apex:repeat>
+            </Table>
+        </Worksheet>
+    </Workbook>
+</apex:page>

@@ -1,0 +1,135 @@
+<template>
+    <!--Billing components container div Start-->
+    <div class="mid-bg">
+        </br>
+        <!--Dashboard components div start-->    
+
+            <div class="cli-dash-blue slds-box"
+                style="background: black;width: 49%;margin-right: 1%;padding: 15px;box-shadow: 0px 0px 3px #888888;float: left;height: 238px;">
+                <h2 style="font-size: 16px;color:#fff;text-transform: uppercase;margin: 0 0 15px 0;padding: 0px 0 8px 0;font-weight: 600;font-family: 'Open Sans', sans-serif;float: left; border-bottom: 1px solid #ffffff;
+                width: 100%;"><strong>Customer Billing on ODS</strong> <span class="info-text">*</span></h2>
+                <div class="clr"></div>
+
+                <!-- This Month -->
+                <div class="cli-blue-box">
+                    <p style="text-align:center;">This Month</p>
+                    <div class="cli-blue-boxbg slds-col">
+                        <h3>
+                            <lightning-formatted-text value={OdsThisMonthCost}></lightning-formatted-text>
+
+                        </h3>
+                    </div>
+                </div>
+                <!-- YTD -->
+                <div class="cli-blue-box">
+                    <p style="text-align:center;"> YTD </p>
+                    <div class="cli-blue-boxbg slds-col">
+                        <h3>
+                            <lightning-formatted-text value={OdsYTDCost}></lightning-formatted-text>
+
+                        </h3>
+                    </div>
+                </div>
+                <!-- Life Time -->
+                <div class="cli-blue-box">
+                    <p style="text-align:center;">Life Time</p>
+                    <div class="cli-blue-boxbg slds-col">
+                        <h3>
+                            <lightning-formatted-text value={OdsLifeTimeCost}></lightning-formatted-text>
+
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="clr"></div>
+                <div style="font-size: 13px;
+                color: #ddd;"><i>*The billing includes the Subscription invoicing value as well</i></div>
+            </div>
+
+            <!-- Partner revenue -->
+            <div class="cli-dash-blue slds-box"
+                style="background: #f4f4f4;margin-left: 1%;margin-right: 0;padding: 15px 15px 30px;box-shadow: 0px 0px 3px #888888;float: left;    width: 49%;">
+                <h2 style="font-size: 16px;color:#231f20;;text-transform: uppercase;margin: 0 0 15px 0;padding: 0px 0 8px 0;font-weight: 600;font-family: 'Open Sans', sans-serif;float: left; border-bottom: 1px solid #ffffff;
+                width: 100%;"><strong>Partner Earnings</strong></h2>
+                <div class="clr"></div>
+
+                <!-- This Month -->
+                <div class="cli-white-boxbg" style="float: left;text-align: center;margin: 4px 5px 2px 5px;width: 31%;">
+                    <p style="text-align:center;">This Month</p>
+                    <div class="cli-white-box slds-col"
+                        style="background: #4ECAF4;border: 3px solid #4ECAF4;color: #fff;float: left;width: 100%;min-height: 102px;">
+                        <h3>
+                            <lightning-formatted-text value={PartnerThisMnthCost}
+                                style="font-size: 30px; color:#fff; font-weight:bold; "></lightning-formatted-text>
+                        </h3>
+                        <span>
+                            <lightning-formatted-text style="color: black;" value={CurrentMonthDate}>
+                            </lightning-formatted-text>
+
+                        </span>
+                    </div>
+                </div>
+                <!-- YTD -->
+                <div class="cli-white-boxbg" style="float: left;text-align: center;margin: 4px 5px 2px 5px;width: 31%;">
+                    <p style="text-align:center;"> YTD </p>
+                    <div class="cli-white-box slds-col"
+                        style="background: #4ECAF4;border: 3px solid #4ECAF4;color: #fff;float: left;width: 100%;min-height: 102px;">
+                        <h3>
+                            <lightning-formatted-text value={PartnerYTDCost}
+                                style="font-size: 30px; color:#fff; font-weight:bold; "></lightning-formatted-text>
+                        </h3>
+                        <span>
+                            <lightning-formatted-text style="color: black;" value={ytdDate}>
+                            </lightning-formatted-text>
+                        </span>
+                    </div>
+                </div>
+                <!-- Life Time -->
+                <div class="cli-white-boxbg" style="float: left;text-align: center;margin: 4px 5px 2px 5px;width: 31%;">
+                    <p style="text-align:center;">Life Time</p>
+                    <div class="cli-white-box slds-col"
+                        style="background: #4ECAF4;border: 3px solid #4ECAF4;color: #fff;float: left;width: 100%;min-height: 102px;">
+                        <h3>
+                            <lightning-formatted-text style="font-size: 30px; color:#fff; font-weight:bold; "
+                                value={partnerLifeTimeCost}></lightning-formatted-text>
+                        </h3>
+                        <span>
+                            <lightning-formatted-text style="color: black;" value="Till Date">
+                            </lightning-formatted-text>
+                            <!-- <apex:outputtext value=" Till Date"/> -->
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cli-dash-res cli-dash-res1">                
+                <lightning-layout class="slds-float_right" style="padding-bottom: 18px; padding: top 15px;padding-right: 25px;">
+                    <lightning-layout-item>
+                        <lightning-combobox style="padding-right: 10px; font: size 14px !important;width: 160px;text-transform: uppercase;" name="Subscription" value={slctdRevType} options={revType}
+                            class="ddlstUSRevType" onchange={eventHandle}>
+                        </lightning-combobox>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item>
+                        <lightning-combobox style="padding-right: 10px;font: size 14px;width: 114px;text-transform: uppercase;" name="months" value={valueMonth} options={monthOptions}
+                            class="ddlstUSMonths" onchange={eventHandle}>
+                        </lightning-combobox>
+                    </lightning-layout-item>
+
+                    <lightning-layout>
+                        <lightning-combobox style = "width: 72px;" name="year" value={slctdYear} options={yearOptions} class="ddlstUSYears"
+                            onchange={eventHandle}>
+                        </lightning-combobox>
+                    </lightning-layout>
+                </lightning-layout>
+                <h2 >PARTNER EARNINGS</h2>
+
+                </br>
+                <div class="slds-p-around_medium">
+                    <div id="chartdiv" class="chartdivs"></div>
+                </div>
+
+            </div>
+
+    </div>
+</template>

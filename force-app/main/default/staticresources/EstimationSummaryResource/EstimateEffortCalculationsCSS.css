@@ -1,0 +1,39 @@
+.inputFieldCSS input.slds-input{
+	border: 2px solid #668cff !important;
+    background: #ecf9ec !important;
+    border-radius: 6px !important;
+    padding: 5px !important;
+	text-align:right !important;
+}
+.textAreaCss textarea{
+    border: 2px solid #668cff !important;
+    background: #ecf9ec !important;
+	border-radius: 5px !important;
+}
+.rationaleSDLCPhases textArea{
+	    height: 31px !important;
+}
+.commentsOthers textArea{
+	    height: 31px !important;
+}
+.commentsSpecific textArea{
+	    height: 31px !important;
+}
+.activityTextArea textArea{
+	    height: 31px !important;
+}
+.projectSpecificWiseClass input{
+	height:29px !important;
+}
+.projectSpecificOtherClass input{
+	height:29px !important;
+}
+.personMonthSpecificClass input{
+height:29px !important;	
+}
+ th{
+        font-size: 12px !important;
+    }
+    td{
+        font-size: 12px !important;  
+    }

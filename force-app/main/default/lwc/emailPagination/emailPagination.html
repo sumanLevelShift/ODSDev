@@ -1,0 +1,31 @@
+<template>
+    <lightning-layout>
+        <div class="slds-grid slds-gutters" style="place-content:baseline;">
+            <div class="slds-col navButton" style="color: #000; font-weight: bold;font-size: 12px;">
+                <lightning-button label="First" icon-name="utility:jump_to_left" variant="neutral"
+                    onclick={firstHandler} disabled={disablePrevious}></lightning-button>
+            </div>
+
+            <div class="slds-col navButton" style="color: #000; font-weight: bold;font-size: 12px;">
+                <lightning-button label="Previous" icon-name="utility:chevronleft" variant="neutral"
+                    onclick={previousHandler} disabled={disablePrevious}></lightning-button>
+            </div>
+
+            <lightning-layout-item flexibility="grow">
+                <div class="slds-col" style="color: #4ECAF4; font-weight: bold;font-size: 12px;">
+                    <p class="slds-text-align_center">Displaying {currentPage} of {totalPage} Page</p>
+                </div>
+            </lightning-layout-item>
+
+            <div class="slds-col navButton" style="color: #000; font-weight: bold;font-size: 12px;">
+                    <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right" variant="neutral"
+                        onclick={nextHandler} disabled={disableNext}></lightning-button>
+            </div>
+
+            <div class="slds-col navButton" style="color: #000; font-weight: bold;font-size: 12px;">
+                <lightning-button label="Last" icon-name="utility:jump_to_right" icon-position="right" variant="neutral"
+                    onclick={lastHandler} disabled={disableNext}></lightning-button>
+        </div>
+        </div>
+    </lightning-layout>
+</template>

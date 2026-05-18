@@ -1,0 +1,357 @@
+<apex:page controller="ODS_Invoice_TimeSheetEC" standardStylesheets="false" sidebar="false" showHeader="false" applyHtmlTag="false" renderAs="pdf" contentType="application/pdf">
+    <head>
+        <style>
+            @page {
+                size: A4;
+                font-family: "Times New Roman", Times, serif;                
+            }
+            .clsMainDiv {
+                width: 680px;
+                min-height: 982px;
+                //border-bottom: 0.2px solid black;
+            }
+            .clsInvLogoDiv {
+                width: 50%;
+                height: 50px;
+                float: left;
+            }
+            .clsInvTitleDiv {
+                //border: 0.2px solid black;
+                width: 100%;
+                height: 25px;
+                text-align: right;
+                padding-right: 150px;
+                padding-top: 10px;
+                padding-bottom: 10px;                
+                float: right;
+                font-size: 22px;
+                font-weight: normal;
+                //font-family: Arial, Helvetica, sans-serif;
+                color: #c0c0d1;
+            }
+            .clsInvTitleSpan {
+                color: #c0c0d1;
+            }
+            .clsBillToDiv {
+                //border: 0.2px solid black;
+                width: 680px; 
+                min-height: 180px;
+                position: relative;
+            }
+            .clsBillToAddrDiv {
+                //border: 0.2px solid black;
+                width: 65%;
+                height: auto; 
+                float: left;
+                //margin-left: 20px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                margin-right: 10px;
+                padding-right: 10px;
+                font-size: 13px;
+                font-bold: bold;
+                //font-family: Arial, Helvetica, sans-serif;                             
+            }
+            .clsBillToTable {
+                float:left;
+            }
+            .clsBillToTable, .clsBillToTableRow, .clsBillToTableData {
+                border: 0.2px solid black;
+                border-collapse: collapse;
+                font-size: 13px;
+                //font-family: Arial, Helvetica, sans-serif;
+                padding: 5px;
+            }
+            .clsBillToTableRow, .clsBillToTableData {
+                text-align: left;
+                padding-left: 10px;
+            }
+            .clsBillToTableData {
+                width: 100%;
+                font-weight: 13px;
+            }
+            .clsInvNumDiv {
+                //border: 0.2px solid black;
+                width: 30%;
+                height: auto;
+                float: right;
+                margin-left: 10px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                right: 0;
+            }
+            .clsInvNumTable {
+                float: right;
+            }
+            .clsInvNumTable, .clsInvNumTableRow, .clsInvNumTableHdr, .clsInvNumTableData {
+                border: 0.2px solid black;
+                border-collapse: collapse;
+                font-size: 13px;
+                //font-family: Arial, Helvetica, sans-serif;
+                padding: 5px;
+            }
+            .clsInvNumTableHdr {
+                text-align: center;
+            }
+            .clsAccInfoDiv {
+                //border: 0.2px solid black;
+                width: 680px; 
+                min-height: 180px; 
+                position: relative; 
+                margin-bottom: 20px;              
+            }
+            .clsAccNumDiv {
+                position: relative;
+                left: 0;
+                float: left;
+                width: 30%
+                height: auto;
+            }
+            .clsAccNumTable {
+                float: left;
+            }
+            .clsAccNumTable, .clsAccNumRow, .clsAccNumData {
+                border: 0.2px solid black;
+                border-collapse: collapse;
+                text-align: center;
+                font-size: 13px;
+                //font-family: Arial, Helvetica, sans-serif;
+                padding: 5px;
+            }
+            .clsAccNumData  {
+                padding-left:20px;
+                padding-right:20px;
+            }
+            .clsBillPeriodDiv {
+                right: 0;
+                float: right;
+                width: 60%;
+                height: auto;
+            }
+            .clsBillPeriodTable {
+                float: right;
+            }
+            .clsBillPeriodTable, .clsBillPerRow, .clsBillPerData {
+                border: 0.2px solid black;
+                border-collapse: collapse;
+                text-align: left;
+                font-size: 13px;
+                //font-family: Arial, Helvetica, sans-serif;
+                padding: 5px;
+            }
+            .clsInvInfoDiv {
+                //border: 0.2px solid black;
+                position: inline !important;
+                //bottom: 30px;
+                width: 100%; 
+                min-height: 450px;                
+            }
+            .clsInvInfoTable {
+                //table-layout: fixed;
+                width: 100%;
+                height: auto;
+            }
+            .clsInvInfoTable, .clsInvInfoRow, .clsInvInfoHdr, .clsInvInfoData {
+                border: 0.2px solid black;
+                border-collapse: collapse;
+                text-align: left;
+                font-size: 13px;
+                //font-family: Arial, Helvetica, sans-serif;
+                padding: 5px;
+            }
+            .clsInvInfoHdr, .clsCenterAlign {
+                text-align: center;
+            }
+            .clsInvInfoInerData {
+                font-size: 13px;
+                //font-family: Arial, Helvetica, sans-serif;
+                padding: 5px;
+            }
+            .clsLeftBorder {
+                border-left: 0.2px solid black;
+            } 
+            .clsRightBorder {
+                border-right: 0.2px solid black;
+            } 
+            .clsTopBorder {
+                border-top: 0.2px solid black;
+            } 
+            .clsBottomBorder {
+                border-bottom: 0.2px solid black;
+            }            
+            .clsRightAlign {
+                text-align: right;
+            }
+            .clsLeftAlign {
+                text-align: left;
+            }
+            .clsExpandSize {
+                min-height: 250px;
+            }
+            .clsInvInfoData {
+                vertical-align: text-top;
+            }                         
+            .clsFooterDiv {
+                //border-top: 0.2px solid black;
+                position: absolute;
+                bottom: 0;
+                width: 580px;
+                height: 60px;
+                margin-left: 5px;
+                padding: 3px;
+                font-size: 12px;
+                //font-family: Arial, Helvetica, sans-serif;
+                //font-color: #dbcdcb;
+                text-align: center;
+                //border-bottom: 0.2px solid black;                
+            }
+            .clsWidth {
+                width: 680px;
+            }
+            .clsPadding {
+                padding: 5px;
+            }            
+            .clsOpacity {
+                opacity: 0.3;
+            }
+            .clsDisabled {
+                display: none;
+            }
+            .clsFontWeight {
+                font-size: 14px;
+            }
+        </style>
+    </head>
+    
+    <apex:form id="idMainForm" styleClass="clsMainForm">
+        <div id="idMainDiv" class="clsMainDiv">
+            
+            <div id="idInvLogoDiv" class="clsInvLogoDiv">
+                <span id="idInvLogoSpan" style="float: left; padding-left: 0px;"><apex:image value="{!URLFOR($Resource.ODS_PreludeSysLogo)}" alt="PreludeSys Logo"/></span>
+            </div>
+            
+            <div id="idInvTitleDiv" class="clsInvTitleDiv">                
+                <span id="idInvTitleSpan" class="clsInvTitleSpan">Invoice</span>
+            </div>
+        
+            <div id="idBillToDiv" class="clsBillToDiv">
+            
+                <div id="idBillToAddrDiv" class="clsBillToAddrDiv">
+                    <table id="idBillToTable" class="clsBillToTable" style="min-width: 300px;">
+                        <tr id="idBillToTableRow1" class="clsBillToTableRow">
+                            <td id="idBillToTableData1" class="clsBillToTableData">Bill To</td>
+                        </tr>
+                        <tr id="idBillToTableRow2" class="clsBillToTableRow">    
+                            <td id="idBillToTableData2" class="clsBillToTableData">
+                                {!BillStreet}<br/>
+                                {!BillCity} <br/>
+                                {!BillState} <br/>
+                                {!BillCountry} <br/>
+                                {!BillPostalCode} <br/>
+                                <br/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div id="idInvNumDiv" class="clsInvNumDiv">
+                    <table id="idInvNumTable" class="clsInvNumTable">
+                        <tr id="idInvNumTableRow1" class="clsInvNumTableRow">
+                            <th id="idInvNumTableHdr1" class="clsInvNumTableHdr">Date</th>
+                            <th id="idInvNumTableHdr2" class="clsInvNumTableHdr">Invoice #</th>
+                        </tr>
+                        <tr id="idInvNumTableRow2" class="clsInvNumTableRow">
+                            <td id="idInvNumTableData1" class="clsInvNumTableData">{!currentDate}</td>
+                            <td id="idInvNumTableData2" class="clsInvNumTableData">{!invNumb}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <div id="idAccInfoDiv" class="clsAccInfoDiv">
+            
+                <div id="idAccNumDiv" class="clsAccNumDiv">
+                    <table id="idAccNumTable" class="clsAccNumTable">
+                        <tr id="idAccNumRow1" class="clsAccNumRow">
+                            <td id="idAccNumData1" class="clsAccNumData">Account #</td>
+                            <td id="idAccNumData1" class="clsAccNumData">{!accNumb}</td>
+                        </tr>
+                        <tr id="idAccNumRow2" class="clsAccNumRow">
+                            <td id="idAccNumData3" class="clsAccNumData">Due Date</td>
+                            <td id="idAccNumData4" class="clsAccNumData">{!dueDate}</td>
+                        </tr>
+                        <tr id="idAccNumRow3" class="clsAccNumRow">
+                            <td id="idAccNumData5" class="clsAccNumData">Terms</td>
+                            <td id="idAccNumData6" class="clsAccNumData">{!terms}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div id="idBillPeriodDiv" class="clsBillPeriodDiv">
+                    <table id="idBillPeriodTable" class="clsBillPeriodTable">
+                        <tr id="idBillPerRow1" class="clsBillPerRow">
+                            <td id="idBillPerData1" class="clsBillPerData">Billing Period</td>
+                            <td id="idBillPerData2" class="clsBillPerData">{!billPerd}</td>
+                        </tr>
+                        <tr id="idBillPerRow2" class="clsBillPerRow">
+                            <td id="idBillPerData3" class="clsBillPerData">Project/Department</td>
+                            <td id="idBillPerData4" class="clsBillPerData">{!project}</td>
+                        </tr>
+                        <tr id="idBillPerRow3" class="clsBillPerRow">
+                            <td id="idBillPerData5" class="clsBillPerData">REF</td>
+                            <td id="idBillPerData6" class="clsBillPerData">{!refr}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+            </div>
+            
+            <div id="idInvInfoDiv" class="clsInvInfoDiv">
+                <table id="idInvInfoTable" class="clsInvInfoTable">
+                    <tr id="idInvInfoRow1" class="clsInvInfoRow">
+                        <th id="idInvInfoHdr1" class="clsInvInfoHdr">Item</th>
+                        <th id="idInvInfoHdr2" class="clsInvInfoHdr">Description</th>
+                        <th id="idInvInfoHdr3" class="clsInvInfoHdr">Hours</th>
+                        <th id="idInvInfoHdr4" class="clsInvInfoHdr">Rate</th>
+                        <th id="idInvInfoHdr5" class="clsInvInfoHdr">Amount</th>
+                    </tr>
+                    <apex:repeat value="{!lInvTablComp}" var="inv">
+                        <tr id="idInvInfoRow2" class="clsInvInfoRow">
+                            <td class="clsInvInfoInerData clsCenterAlign clsLeftBorder clsRightBorder">{!inv.itemNum}</td>
+                            <td class="clsInvInfoInerData clsLeftAlign clsRightBorder">{!inv.description}</td>
+                            <td class="clsInvInfoInerData clsCenterAlign clsRightBorder">{!inv.hours}</td>
+                            <td class="clsInvInfoInerData clsRightAlign clsRightBorder">{!inv.rate}</td>
+                            <td class="clsInvInfoInerData clsRightAlign clsRightBorder">{!inv.amount}</td>
+                        </tr> 
+                    </apex:repeat>
+                    <tr id="idInvInfoRow3" class="clsInvInfoRow">
+                        <td class="clsLeftBorder clsBottomBorder clsExpandSize"></td>
+                        <td class="clsLeftBorder clsRightBorder clsBottomBorder clsExpandSize"></td>
+                        <td class="clsLeftBorder clsRightBorder clsBottomBorder clsExpandSize"></td>
+                        <td class="clsRightBorder clsTopBorder clsBottomBorder clsExpandSize"></td>
+                        <td class="clsRightBorder clsBottomBorder clsExpandSize"></td>
+                    </tr>
+                    <tr id="idInvInfoRow4" class="clsInvInfoRow">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="clsInvInfoData clsCenterAlign">Total</td>
+                        <td class="clsInvInfoData clsRightAlign">{!totAmt}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div id="idFooterDiv1" class="clsFooterDiv">
+                <table class="clsWidth">
+                    <tr><td class="clsBottomBorder clsWidth clsPadding">
+                        <b>Note:</b>&nbsp;<span>Please mail checks to LevelShift - 5 Corporate Park, Suite # 140, Irvine CA 92606</span><br/>
+                        <span>*access this invoice via your customer portal: <span style="color: blue;">https://customer-demandblue.force.com</span></span>
+                    </td></tr>
+                    <tr class="clsOpacity clsWidth clsFontWeight"><td class="clsOpacity clsPadding clsFontWeight">LEVEL<span style="color: #42e8f4">SHIFT</span> - A PRELUDESYS COMPANY</td></tr>
+                </table>
+            </div>
+                        
+        </div>
+    </apex:form>
+</apex:page>

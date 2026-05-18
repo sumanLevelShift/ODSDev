@@ -1,0 +1,107 @@
+<template>
+    <!-- <lightning-card title="Add Work Line Items">-->
+    <div class="slds-p-horizontal_medium slds-p-vertical_small">
+        <template if:true={showSuccessMessage}>
+            <div class="slds-align_absolute-center slds-p-around_large">
+                <div class="slds-box slds-text-align_center">
+                    <lightning-icon icon-name="utility:success" size="large"></lightning-icon>
+                    <h2 class="slds-text-heading_medium slds-m-top_medium">
+                        Records successfully inserted. Please proceed with next screen.
+                    </h2>
+                </div>
+            </div>
+        </template>
+
+        <template if:false={showSuccessMessage}>
+            <!-- Header Row -->
+            <div class="slds-grid slds-gutters slds-border_bottom slds-p-bottom_x-small slds-m-bottom_small">
+                <div class="slds-col slds-size_4-of-12">
+                    <strong>Description</strong>
+                </div>
+                <div class="slds-col slds-size_2-of-12">
+                    <strong>Rate</strong>
+                </div>
+                <div class="slds-col slds-size_2-of-12">
+                    <strong>Quantity</strong>
+                </div>
+                <div class="slds-col slds-size_1-of-12">
+                    <strong>Tax Rate %</strong>
+                </div>
+                <template if:true={showEffectiveDateColumn}>
+                    <div class="slds-col slds-size_2-of-12">
+                        <strong>Effective Date</strong>
+                    </div>
+                </template>
+                <div class="slds-col slds-size_1-of-12">
+                    <strong>Action</strong>
+                </div>
+            </div>
+
+            <!-- Dynamic Rows -->
+            <template for:each={skuRows} for:item="row">
+                <div key={row.id} class="slds-grid slds-gutters slds-p-vertical_x-small row-container">
+
+                    <!-- Item Master Lookup Column -->
+                    <div class="slds-col slds-size_4-of-12">
+                        <c-item-master-custom-lookup placeholder="Search Description..." work-order-id={workOrderId}
+                            unit-of-measure={unitOfMeasureBasedOnSelectedRecordType} s-object-api-name="Item_Master__c" data-row-id={row.id}
+                            onlookupupdate={handleLookupUpdate}>
+                        </c-item-master-custom-lookup>
+                    </div>
+
+                    <!-- Rate Column -->
+                    <div class="slds-col slds-size_2-of-12">
+                        <lightning-input type="number" value={row.rate} step="0.01" min="0" formatter="currency"
+                            data-row-id={row.id} onchange={handleRateChange} variant="label-hidden">
+                        </lightning-input>
+                    </div>
+
+                    <!-- Quantity Column -->
+                    <div class="slds-col slds-size_2-of-12">
+                        <lightning-input type="number" value={row.quantity} min="1" step="1" data-row-id={row.id}
+                            onchange={handleQuantityChange} variant="label-hidden">
+                        </lightning-input>
+                    </div>
+                    <!-- Tax Rate Column -->
+                    <div class="slds-col slds-size_1-of-12">
+                        {row.taxRate}%
+                    </div>
+                    <template if:true={showEffectiveDateColumn}>
+                        <div class="slds-col slds-size_2-of-12">
+                            <lightning-input type="date" value={row.effectiveDate} data-row-id={row.id}
+                                onchange={handleEffectiveDateChange} variant="label-hidden" required>
+                            </lightning-input>
+                        </div>
+                    </template>
+                    <!-- Action Column -->
+                    <div class="slds-col slds-size_1-of-12">
+                        <lightning-button-icon icon-name="utility:delete" variant="border-filled"
+                            alternative-text="Remove Row" title="Remove Row" data-row-id={row.id}
+                            onclick={handleRemoveRow} class="remove-button">
+                        </lightning-button-icon>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Add Row Button -->
+            <div class="slds-m-top_medium slds-m-bottom_medium">
+                <lightning-button label="Add Row" icon-name="utility:add" variant="brand" onclick={handleAddRow}>
+                </lightning-button>
+            </div>
+            <div class="slds-m-top_medium slds-m-bottom_medium slds-float_right">
+                <lightning-button label="Back" variant="neutral" icon-name="utility:back"
+                    onclick={handleBackToParent}>
+                </lightning-button>&nbsp;&nbsp;&nbsp;
+                <template if:true={isAura}>
+                    <lightning-button label="Cancel" onclick={handleCancel}>
+                    </lightning-button>&nbsp;&nbsp;&nbsp;
+                </template>
+                <lightning-button label="Save" variant="brand" onclick={handleSave}>
+                </lightning-button>
+            </div>
+            <br/>
+            <br/>
+        </template>
+    </div>
+    <!--</lightning-card>-->
+</template>

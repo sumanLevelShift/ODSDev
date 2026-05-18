@@ -1,0 +1,136 @@
+<apex:page showHeader="false" sidebar="false" title="ON DEMAND SERVICES" lightningStylesheets="true">
+    
+    
+    <apex:form >
+        <c:ODS_HeaderComponent />
+    </apex:form>
+    <style>
+        #popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+        
+        /* Dimensions */
+        width: 100%;
+        height: 500%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        font-family: sans-serif;
+        /* Mouse */
+        cursor:wait;
+        }
+        
+        /* This is for the message DIV */
+        #PopupPanel {
+        /* Background color */
+        border: solid 2px skyblue;
+        background-color: white;
+        font-family: sans-serif;
+        /* Dimensions */
+        left: 50%;
+        width: 100px;
+        margin-left: -100px;
+        top: 50%;
+        height: 100px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+        }
+    </style>
+    <apex:includeLightning />
+    <div id="lightning" />
+    <c:ODS_FooterComponent /> 
+    <div>
+        <div id="popupBackground" />
+        <div id="PopupPanel">
+            <table border="0" width="100%" height="100%">
+                <tr>
+                    <td align="center"><b>Please Wait</b></td>
+                </tr>
+                <tr>
+                    <td align="center"><img src="{!$Resource.ODS_Statussign}"/></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script>
+    
+    document.addEventListener("contentChange", function(event){
+        //show/hide the account, service div here.
+        event.detail.data.showAccount
+        console.log('vf => ', event.detail.data.showAccount);
+        var serdiv = event.detail.data.showAccount;
+       
+         if(serdiv == false){
+                $(".ddlstAccount").css("display","none"); 
+                $(".ddlstService").css("display","none");
+                $(".ApplyBtn").css("display","none");
+            }
+        else{
+            $(".ddlstAccount").css("display","block"); 
+                $(".ddlstService").css("display","block");
+                $(".ApplyBtn").css("display","block");
+            }
+        
+       
+        
+    });     
+   
+    var AccountID;
+    var ServiceID;
+    $(document).ready(function(){
+         
+        $("#customer").addClass("active");
+        AccountID = $(".ddlstAccount").val();
+        ServiceID = $(".ddlstService").val();
+    });
+    
+    
+    function ApplySearch(){
+        var elem = document.getElementById("lightning");
+        elem.innerHTML = ""; 
+        AccountID = $(".ddlstAccount").val();
+        ServiceID = $(".ddlstService").val();
+        
+              
+              
+            
+        $Lightning.createComponent("c:LM_CustomerCMP",{
+            accID: AccountID,servId:ServiceID},
+                                   "lightning",
+                                   function(cmp) {
+                                       // do some stuff
+                                   });
+    }
+  
+    
+     
+    $Lightning.use("c:LM_CustomerAPP", function() {
+        $Lightning.createComponent("c:LM_CustomerCMP", {
+            accID: AccountID,servId:ServiceID
+        },
+                                   "lightning",
+                                   function(cmp) {
+                                         
+                         
+                                       var loadingDivElt = document.getElementById("PopupPanel");
+                                       loadingDivElt.style.display = 'none' ;  
+                                       var loadingDivElt = document.getElementById("popupBackground");
+                                       loadingDivElt.style.display = 'none' ; 
+                                       
+                                   }
+                                                
+                                  );
+        
+    });
+    //  $(".ddlstAccount").css("display","none"); 
+    // $(".ddlstService").css("display","none");
+
+    </script>
+</apex:page>

@@ -1,0 +1,239 @@
+<apex:page controller="TechnologyReportDetails">
+    
+        
+   
+    <!-------- Bootstrap ----->
+                          
+        <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/bootstrap.js')}"/>        
+       <!--<link href="{!URLFOR($Resource.ODS_Assets,'css/style.css')}" rel="stylesheet" type="text/css"  />-->
+    
+    <style type="text/css">
+	input[type=button]{
+        border: 0px;
+        background: 0;
+        margin: 3px 5px;
+    }
+	</style>
+    <apex:form >
+        
+
+         <div>
+             
+       
+        <apex:outputPanel id="AccOutputPlaneId" rendered="{!(accountList.size !=0 && accountList !='' && accountList !=null ) }">  
+            <apex:pageBlock title="Account">
+                <apex:pageBlockTable value="{!accountList}" var="accValue" width="100%" first="{!CurrentPage }" rows="{!PageSize}">
+                    <apex:column >
+                        <apex:facet name="header"><b>Account Name</b></apex:facet>
+                        
+                        <apex:outputlink value="#" onclick="window.open('/{!accValue.Id}','_blank');">{!accValue.Name}</apex:outputlink>
+
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"><b>Account Owner  </b></apex:facet>
+                        <apex:outputField value="{!accValue.Owner.Name}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"><b>Account Status </b></apex:facet>
+                        <apex:outputField value="{!accValue.Account_Status__c}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"><b>Created Date</b></apex:facet>
+                        <apex:outputField value="{!accValue.CreatedDate}"/> 
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"><b>Force.Com Account Status</b></apex:facet>
+                        <apex:outputField value="{!accValue.Force_com_Account_Status__c}"/> 
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"><b>Industry</b></apex:facet>
+                        <apex:outputField value="{!accValue.Industry}"/> 
+                    </apex:column>
+                    
+                </apex:pageBlockTable> 
+                 <apex:outputPanel styleClass="page-nav-bg" rendered="{!(accountList.size !=0 && accountList !='' && accountList !=null ) }"> 
+                                <apex:commandButton value="<< First" action="{!showFirst}" disabled="{!!ShowPrevious}" rerender="AccOutputPlaneId" styleClass="save-submit page-nav-btn first-nav-btn"/>
+                                <apex:commandButton value="< Previous" action="{!showPrevious}" disabled="{!!ShowPrevious}" rerender="AccOutputPlaneId" styleClass="save-submit page-nav-btn previous-nav-btn"/>
+                                <apex:outputText value="{!CurrentPageInfo}" />
+                                <apex:commandButton value="Next >" action="{!showNext}" disabled="{!!ShowNext}" rerender="AccOutputPlaneId" styleClass="save-submit page-nav-btn next-nav-btn"/>
+                                <apex:commandButton value="Last >>" action="{!showLast}" disabled="{!!ShowNext}" rerender="AccOutputPlaneId" styleClass="save-submit page-nav-btn last-nav-btn"/>       
+                            </apex:outputPanel>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        
+          
+        
+         </div>
+    <div>
+        
+       
+         <apex:outputPanel id="ConOutputPlaneId" rendered="{!(contactList.size !=0 && contactList !='' && contactList !=null ) }">  
+            <apex:pageBlock title="Contact">
+                <apex:pageBlockTable value="{!contactList}" var="conValue" width="100%" first="{!ConCurrentPage }" rows="{!PageSize}">
+                    <apex:column >
+                        <apex:facet name="header"><b>Contact Name</b></apex:facet>
+                        
+                        <apex:outputlink value="#" onclick="window.open('/{!conValue.Id}','_blank');">{!conValue.Name}</apex:outputlink>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"><b>Account Name</b></apex:facet>
+                        <apex:outputField value="{!conValue.Account.Name}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"><b>Created Date</b></apex:facet>
+                        <apex:outputField value="{!conValue.CreatedDate}"/>
+                    </apex:column>
+                  
+                    <apex:column >
+                        <apex:facet name="header"><b>Email</b></apex:facet>
+                        <apex:outputField value="{!conValue.Email}"/>
+                    </apex:column>
+                     <apex:column >
+                        <apex:facet name="header"><b>Phone</b></apex:facet>
+                        <apex:outputField value="{!conValue.Phone}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"><b>Status</b></apex:facet>
+                        <apex:outputField value="{!conValue.Status__c}"/> 
+                    </apex:column>
+                    
+                </apex:pageBlockTable> 
+                <apex:outputPanel styleClass="page-nav-bg" rendered="{!(contactList.size !=0 && contactList !='' && contactList !=null ) }">  
+                                <apex:commandButton value="<< First" action="{!conShowFirst}" disabled="{!!ConShowPrevious}" rerender="ConOutputPlaneId" styleClass="save-submit page-nav-btn first-nav-btn"/>
+                                <apex:commandButton value="< Previous" action="{!conshowPrevious}" disabled="{!!ConShowPrevious}" rerender="ConOutputPlaneId" styleClass="save-submit page-nav-btn previous-nav-btn"/>
+                                <apex:outputText value="{!ConCurrentPageInfo}" />
+                                <apex:commandButton value="Next >" action="{!conShowNext}" disabled="{!!ConShowNext}" rerender="ConOutputPlaneId" styleClass="save-submit page-nav-btn next-nav-btn"/>
+                                <apex:commandButton value="Last >>" action="{!conShowLast}" disabled="{!!ConShowNext}" rerender="ConOutputPlaneId" styleClass="save-submit page-nav-btn last-nav-btn"/>       
+                            </apex:outputPanel> 
+            </apex:pageBlock>
+        </apex:outputPanel>
+        
+
+         </div>
+        
+        <div>
+            
+       
+        <apex:outputPanel id="oppOutputPlaneId" rendered="{!(opportunityList.size !=0 && opportunityList !='' && opportunityList !=null ) }">  
+            <apex:pageBlock title="Opportunity">
+                <apex:pageBlockTable value="{!opportunityList}" var="accValue" width="100%" first="{!OpportunityCurrentPage }" rows="{!PageSize}">
+                    <apex:column >
+                        <apex:facet name="header"><b>Opportunity Name</b></apex:facet>
+                        <apex:outputlink value="#" onclick="window.open('/{!accValue.Id}','_blank');">{!accValue.Name}</apex:outputlink>
+                                           </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"><b>Created Date</b></apex:facet>
+                        <apex:outputField value="{!accValue.CreatedDate}"/> 
+                    </apex:column>
+                     <apex:column >
+                        <apex:facet name="header"><b>Stage Name</b></apex:facet>
+                        <apex:outputField value="{!accValue.StageName}"/> 
+                    </apex:column>
+                    StageName
+                    <apex:column >
+                        <apex:facet name="header"><b>Status</b></apex:facet>
+                        <apex:outputField value="{!accValue.Status__c}"/> 
+                    </apex:column>
+                    
+                </apex:pageBlockTable> 
+                 <apex:outputPanel styleClass="page-nav-bg" rendered="{!(opportunityList.size !=0 && opportunityList !='' && opportunityList !=null ) }">  
+                                <apex:commandButton value="<< First" action="{!OpportunityShowFirst}" disabled="{!!OpportunityShowPrevious}" rerender="oppOutputPlaneId" styleClass="save-submit page-nav-btn first-nav-btn"/>
+                                <apex:commandButton value="< Previous" action="{!OpportunityshowPrevious}" disabled="{!!OpportunityShowPrevious}" rerender="oppOutputPlaneId" styleClass="save-submit page-nav-btn previous-nav-btn"/>
+                                <apex:outputText value="{!OpportunityCurrentPageInfo}" />
+                                <apex:commandButton value="Next >" action="{!OpportunityShowNext}" disabled="{!!OpportunityShowNext}" rerender="oppOutputPlaneId" styleClass="save-submit page-nav-btn next-nav-btn"/>
+                                <apex:commandButton value="Last >>" action="{!OpportunityShowLast}" disabled="{!!OpportunityShowNext}" rerender="oppOutputPlaneId" styleClass="save-submit page-nav-btn last-nav-btn"/>       
+                            </apex:outputPanel>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        
+            
+            
+        
+         </div>
+        
+        <div>
+            
+       
+        <apex:outputPanel id="LedOutputPlaneId" rendered="{!(leadList.size !=0 && leadList !='' && leadList !=null ) }">  
+            <apex:pageBlock title="Lead">
+                <apex:pageBlockTable value="{!leadList}" var="accValue" width="100%" first="{!LeadCurrentPage }" rows="{!PageSize}">
+                    <apex:column >
+                        <apex:facet name="header"><b>Name</b></apex:facet>
+                        <apex:outputlink value="#" onclick="window.open('/{!accValue.Id}','_blank');">{!accValue.Name}</apex:outputlink>
+                        
+                    </apex:column>
+                     <apex:column >
+                        <apex:facet name="header"><b>Campaigns Associated</b></apex:facet>
+                        <apex:outputField value="{!accValue.Campaigns_Associated__c}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"><b>Created Date</b></apex:facet>
+                        <apex:outputField value="{!accValue.CreatedDate}"/>
+                    </apex:column>
+                    
+                    <apex:column >
+                        <apex:facet name="header"><b>Email</b></apex:facet>
+                        <apex:outputField value="{!accValue.Email}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"><b>Status </b></apex:facet>
+                        <apex:outputField value="{!accValue.Status }"/> 
+                    </apex:column>
+                    
+                    
+                </apex:pageBlockTable>
+                 <apex:outputPanel styleClass="page-nav-bg" rendered="{!(leadList.size !=0 && leadList !='' && leadList !=null ) }">  
+                                <apex:commandButton value="<< First" action="{!LeadShowFirst}" disabled="{!!LeadShowPrevious}" rerender="LedOutputPlaneId" styleClass="save-submit page-nav-btn first-nav-btn"/>
+                                <apex:commandButton value="< Previous" action="{!LeadshowPrevious}" disabled="{!!LeadShowPrevious}" rerender="LedOutputPlaneId" styleClass="save-submit page-nav-btn previous-nav-btn"/>
+                                <apex:outputText value="{!LeadCurrentPageInfo}" />
+                                <apex:commandButton value="Next >" action="{!LeadShowNext}" disabled="{!!LeadShowNext}" rerender="LedOutputPlaneId" styleClass="save-submit page-nav-btn next-nav-btn"/>
+                                <apex:commandButton value="Last >>" action="{!LeadShowLast}" disabled="{!!LeadShowNext}" rerender="LedOutputPlaneId" styleClass="save-submit page-nav-btn last-nav-btn"/>       
+                            </apex:outputPanel>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        
+       
+        
+         </div>
+        
+        <div>
+            
+            
+       
+           <apex:outputPanel id="TaskOutputPlaneId" rendered="{!(TList.size !=0 && TList !='' && TList !=null ) }">  
+            <apex:pageBlock title="Task">
+                <apex:pageBlockTable value="{!TList}" var="accValue" width="100%" first="{!TaskCurrentPage }" rows="{!PageSize}">
+                    <apex:column >
+                        <apex:facet name="header"><b>Subject</b></apex:facet>
+                        <apex:outputlink value="#" onclick="window.open('/{!accValue.Id}','_blank');">{!accValue.Subject}</apex:outputlink>
+                                           </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"><b>Created Date</b></apex:facet>
+                        <apex:outputField value="{!accValue.CreatedDate}"/> 
+                    </apex:column>
+                     <apex:column >
+                        <apex:facet name="header"><b>Task Owner</b></apex:facet>
+                        <apex:outputField value="{!accValue.Owner.Name}"/> 
+                    </apex:column>
+                  
+                    <apex:column >
+                        <apex:facet name="header"><b>Status</b></apex:facet>
+                        <apex:outputField value="{!accValue.Status}"/> 
+                    </apex:column>
+                    
+                </apex:pageBlockTable> 
+                 <apex:outputPanel styleClass="page-nav-bg" rendered="{!(TList.size !=0 && TList !='' && TList !=null ) }">  
+                                <apex:commandButton value="<< First " action="{!TaskShowFirst}" disabled="{!!TaskShowPrevious}" rerender="TaskOutputPlaneId" styleClass="save-submit page-nav-btn first-nav-btn"/>
+                                <apex:commandButton value="< Previous " action="{!TaskshowPrevious}" disabled="{!!TaskShowPrevious}" rerender="TaskOutputPlaneId" styleClass="save-submit page-nav-btn previous-nav-btn"/>
+                                <apex:outputText value="{!TaskCurrentPageInfo}" />
+                                <apex:commandButton value=" Next >" action="{!TaskShowNext}" disabled="{!!TaskShowNext}" rerender="TaskOutputPlaneId" styleClass="save-submit page-nav-btn next-nav-btn"/>
+                                <apex:commandButton value=" Last >>" action="{!TaskShowLast}" disabled="{!!TaskShowNext}" rerender="TaskOutputPlaneId" styleClass="save-submit page-nav-btn last-nav-btn"/>       
+                            </apex:outputPanel>
+               
+            </apex:pageBlock>
+        </apex:outputPanel>
+        
+            
+             </div>
+    </apex:form>
+</apex:page>

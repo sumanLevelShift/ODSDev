@@ -1,0 +1,56 @@
+.tsearchButton Button{
+background: #4ECAF4 !important;
+    font-size: 13px !important;
+    color: #fff !important;
+    padding: 4px 10px !important;
+    cursor: pointer !important;
+    border-radius: 3px !important;
+    width: 90px !important;
+    float: right !important;
+	border: 1px !important;
+    font-size: 14px !important;
+}
+.tsearchv2 Button{
+	    background: #4ECAF4 !important;
+    float: left !important;
+    padding: 5px 20px !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    border-radius: 5px !important;
+    border: navajowhite !important;
+    margin-top: 14px !important;
+    margin-left: 15px !important;
+}
+.startdate input{
+	width: 100% !important;
+}
+.enddate input{
+	width: 100% !important;
+}
+lightning-datepicker > div > div > lightning-calendar > div.slds-dropdown{ font-size:12px !important; }
+.slds-datepicker td{
+    
+    font-size:12px !important;
+ }
+ 
+ div.slds-listbox{
+    font-size: 12px !important;
+color:black !important;
+}
+lightning-button-icon{
+	margin-top: 20px !important;
+}
+
+.apply_dataTable {
+    overflow-x:hidden !important;
+ overflow-y:auto !important;
+}
+
+td {
+    border-spacing:0;
+    white-space:nowrap;
+    overflow: hidden;
+    text-overflow: hidden;
+    -ms-text-overflow:hidden;
+}
+

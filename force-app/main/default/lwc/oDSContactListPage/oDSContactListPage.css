@@ -1,0 +1,147 @@
+.mid-bg .panel-body {
+    background-color: #F4F4F4;
+}
+.panel-body {
+    padding: 15px;
+}
+.mid-bg {
+    background: #FFFFFF;
+    width: 100%;
+    padding: 0 2% 15px 2%;
+    float: left;
+}
+.sub-warp {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.mid-white{
+    background: #F4F4F4;
+    width: 100%;
+    padding: 5px 15px;
+    float: left;
+}
+.panel-heading {
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: #FFFFFF;
+    background-color: #4ECAF4;
+}
+.panel-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: inherit;
+}
+.pull-right {
+    float: right !important;
+}
+.custPopup {
+    border: solid 2px skyblue;
+    background-color: white;
+    font-family: sans-serif;
+    left: 20%;
+    top: 12.5%;
+    right: 20%;
+    bottom: 12.5%;
+    margin-top: -25px;
+    z-index: 999;
+    overflow-y: scroll;
+    position: fixed;
+}
+.form-group {
+    margin-bottom: 15px;
+    margin-right: -15px;
+    margin-left: -15px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    background-color: #fff;
+}
+.slds-form-element__icon {/* Replace this class name "slds-form-element__icon" by your finding. */
+    display: none !important;
+}
+.control-label {
+    padding-top: 7px;
+    margin-bottom: 0;
+    text-align: right;
+    font-weight: bold;
+}
+.col-md-4 {
+    width: 33.33333333%;
+}
+.col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+    float: left;
+}
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.col-md-8 {
+    width: 66.66666667%;
+}
+.exampleHolder{
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+.popupBackground {
+    background-color: black;
+    opacity: 0.20;
+    filter: alpha(opacity = 20);
+    width: 100%;
+    height:100%;
+    top: 0;
+    left: 0;
+    z-index: 998;
+    position: absolute;
+    font-family: sans-serif;
+    cursor: wait;
+}
+.PopupPanel {
+    display: block;
+    border: solid 2px skyblue;
+    background-color: white;
+    font-family: sans-serif;
+    left: 50%;
+    width: 100px;
+    margin-left: -100px;
+    top: 50%;
+    height: 100px;
+    margin-top: -25px;
+    z-index: 999;
+    position: fixed;
+    cursor: pointer;
+}
+
+.mid-user-sec{
+    border-bottom: 5px solid #666666;
+    float: left;
+    width: 100%;
+}
+a.time_view i {
+    font-size: 23px;
+   
+}
+.p-viewer, .p-viewer2{
+    float: right;
+    margin-top: -55px;
+    position: relative;
+    z-index: 1;
+    cursor:pointer;
+  }
+  
+  .slds-icon_medium {
+    color: #4ECAF4;
+  }
+
+  .form-label{
+      color:#1a1a1a;
+      font-size:14px;
+      font-weight:700;
+  }

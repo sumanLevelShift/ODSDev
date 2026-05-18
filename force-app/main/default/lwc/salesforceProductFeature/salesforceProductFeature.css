@@ -1,0 +1,103 @@
+.accordion {
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  padding: 6px 12px;
+  width: 100%;
+  /*border: none;*/
+  text-align: left;
+  outline: none;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  }
+  .active, .accordion:hover {
+    background: #e7e7e7;
+  }
+  .accordion:after {
+    content: '\002B';
+    color: #999;
+    font-weight: 600;
+    float: right;
+    line-height: 22px;
+    margin-left: 5px;
+    font-size: 26px;
+  }
+  .active:after {
+    content: '\2212';
+  }
+  .panel {
+    margin-bottom: 10px;
+    padding: 0;
+    background-color: #fff;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .2s ease-out;
+  }
+/*.slds-input:focus, .slds-input:active {
+  outline: 0;
+  border-color: rgb(21, 137, 238);
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 0 3px #0070d2;
+}*/
+.blue-box{
+  background-color: #4bc9f4;
+  padding-bottom: 25px;
+}
+.blue-box label{
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+.grey-box{
+  background-color: #efefef;
+}
+.grey-box label{
+  font-size: 16px;
+  font-weight: 600;
+  columns: #4d4d4d;
+}
+.scroll{
+  overflow-y: scroll;
+  height: 170px;
+}
+.table1{
+  color: #000;
+  font-family: 'Arial', sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+
+}
+.table1 , .table2{
+  table-layout: fixed;
+  width: 100%;
+
+}
+.table1 tbody tr th {
+  padding: 8px;
+  border: 1px solid #d4d4d4;
+  background: #dcdcdc;
+
+}
+.table1 td , .table2 td{
+  border: 1px solid #d4d4d4;
+}
+.table2 tbody tr td{
+  padding: 8px;
+}
+.table2 tr:hover {background-color:#f5f5f5;}
+.actionrow{
+    width: 100%;
+    text-align: center;
+}
+.inner{
+    display: inline-block;
+}
+.runbutton{
+  background-color: #4bc9f4;
+  font-size: 16px;
+  font-weight: 600;
+  border: 0;
+}
+.loadspan{
+  border: 0px !important;
+}

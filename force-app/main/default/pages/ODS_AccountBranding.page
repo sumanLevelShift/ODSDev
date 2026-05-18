@@ -1,0 +1,28 @@
+<apex:page standardController="Account" showHeader="false" sidebar="false">
+    <style>
+        .partnerCls {       
+            width: 100%; 
+            background-color: blue;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+        .odsCustomerCls {
+            width: 100%;
+            background-color: #06704b;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+    <apex:form >
+        <center>
+        <apex:outputPanel styleClass="partnerCls" rendered="{!IF(Account.isPartner__c=true,true,false)}">
+            <apex:outputText value="PARTNER ACCOUNT"/>
+        </apex:outputPanel>
+        <apex:outputPanel styleClass="odsCustomerCls" rendered="{!IF(Account.isPartner__c=true,false,true)}">
+            <apex:outputText value="ODS CUSTOMER"/>
+        </apex:outputPanel>
+        </center>
+    </apex:form>
+</apex:page>

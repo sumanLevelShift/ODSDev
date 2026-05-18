@@ -1,0 +1,349 @@
+<!--*******************************************************************************************
+* @author           Gireesh
+* @version          1.0 
+* @Status           Development Completed
+* @Class Name       ODS_ContactViewController
+* @description      This page is written to show/get the contact detils
+*********************************************************************************************
+Version     Date        	Team        	Comments
+*********************************************************************************************
+* 1        	15-MAR-2021    	DemandBlue 		Initial Development
+*********************************************************************************************-->
+<apex:page showHeader="false" sidebar="false" controller="ODS_ContactViewController">
+    <apex:form >
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE; IE=10; IE=11; " />            
+            <apex:includeScript value="https://code.jquery.com/jquery-latest.min.js" /> 
+            <!-------- Bootstrap ----->
+            <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/bootstrap.css')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/bootstrap.js')}"/> 
+            <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/style.css')}"/>
+            <link href="{!URLFOR($Resource.ODS_Assets,'css/style_dev.css')}" rel="stylesheet" type="text/css"/>       
+            <apex:stylesheet value="{!URLFOR($Resource.ODS_Assets,'css/jquery-ui.css')}"/>
+            <script>
+            $(document).ready(function() {
+                $("#contact").addClass("active");
+                var AccountID = $(".ddlstAccount").val();
+                var ServiceID = $(".ddlstService").val();                
+                var currentContactId = '{!CurrentContactId}';
+                var btnSaveVar = document.getElementById('j_id0:j_id1:btnSave').value;
+                if(currentContactId != null && currentContactId != undefined && currentContactId.length != 0){
+                    document.getElementById('j_id0:j_id1:btnSave').value = 'Update';
+                }
+                /***phone number format***/
+                $("input[name='j_id0:j_id1:MobilePhoneId']").keypress(function (e) {
+                    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                        return false;
+                    }
+                    var curchr = this.value.length;
+                    var curval = $(this).val();
+                    if (curchr == 3 && curval.indexOf("(") <= -1) {
+                        $(this).val("(" + curval + ")" + " ");
+                    } else if (curchr == 4 && curval.indexOf("(") > -1) {
+                        $(this).val(curval + ") ");
+                    } else if (curchr == 5 && curval.indexOf(")") > -1) {
+                        $(this).val(curval + "-");
+                    } else if (curchr == 9) {
+                        $(this).val(curval + "-");
+                        $(this).attr('maxlength', '14');
+                    }
+                });
+                
+            });
+            function ApplySearch(){
+                var AccountID = $(".ddlstAccount").val();
+                var ServiceID = $(".ddlstService").val();                
+                AddAccountIDAction(AccountID,ServiceID);
+            }
+            function validateContact(){        
+                var accountNameVar = document.getElementById('j_id0:j_id1:AccountName').value;
+                if(accountNameVar === "undefined" || accountNameVar == null || accountNameVar.trim() == "" || accountNameVar.length <= 0) {
+                    alert("Account Name should not be empty!!");
+                    document.getElementById('j_id0:j_id1:AccountName').focus();
+                    return false;
+                }
+                var lastNameVar = document.getElementById('j_id0:j_id1:LastNameId').value;
+                if(lastNameVar === "undefined" || lastNameVar == null || lastNameVar.trim() == "" || lastNameVar.length <= 0) {
+                    alert("Last Name should not be empty!!");
+                    document.getElementById('j_id0:j_id1:LastNameId').focus();
+                    return false;
+                }
+                var firstNameVar = document.getElementById('j_id0:j_id1:FirstNameId').value;
+                if(firstNameVar === "undefined" || firstNameVar == null || firstNameVar.trim() == "" || firstNameVar.length <= 0) {
+                    alert("First Name should not be empty!!");
+                    document.getElementById('j_id0:j_id1:FirstNameId').focus();
+                    return false;
+                }                
+                var emailVar = document.getElementById('j_id0:j_id1:EmailId').value;
+                if(emailVar != "undefined" && emailVar != null && emailVar.trim() != "" && emailVar.length <= 0) {
+                    if(!(/\S+@\S+\.\S+/.test(emailVar))){
+                        alert("You have entered an invalid email address!!");
+                        document.getElementById('j_id0:j_id1:EmailId').focus();
+                        return false;
+                    }
+                } 
+            }
+            </script>
+            <title>ON DEMAND SERVICES </title>
+            <style>
+                input[type="checkbox"]{
+                cursor: pointer;
+                border-radius: 1px;
+                box-sizing: border-box;
+                position: relative;
+                box-sizing: content-box ;
+                width: 24px;
+                height: 24px;
+                border-width: 0;
+                transition: all .3s linear;
+                }
+                input[type="checkbox"]:checked{
+                background-color: #2ECC71;
+                }
+                input[type="checkbox"]:focus{
+                outline: 0 none;
+                box-shadow: none;
+                }             
+                .mid-bg {
+                background: #FFFFFF;
+                width: 100%;
+                padding: 30px 2% 15px 2%;
+                float: left;
+                }
+            </style>
+        </head>        
+        <body>
+            <apex:pageMessages id="showmsg"></apex:pageMessages>
+            <div class="shadow-show"></div>
+            <c:ODS_HeaderComponent />
+            <apex:actionStatus id="statusSaveTrip" stopText="">
+                <apex:facet name="start">
+                    <div>
+                        <div class="popupBackground" />
+                        <div class="PopupPanel">
+                            <table border="0" width="100%" height="100%">
+                                <tr>
+                                    <td align="center"><b>Please Wait</b></td>
+                                </tr>
+                                <tr>
+                                    <td align="center"><img src="{!$Resource.ODS_Statussign}" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionStatus> 
+            <!-- Action functions -->
+            <apex:actionFunction name="AddAccountIDAction" action="{!GetTimesheetByAccountServiceID}" status="statusSaveTrip" reRender="PanelId" immediate="True" >
+                <apex:param name="SelectedAccountId" value="" assignTo="{!AccountId}"/>
+                <apex:param name="SelectedServiceID" value="" assignTo="{!ServiceId}"/>
+            </apex:actionFunction>             
+            <div class="clr"></div>
+            <div class="clr"></div>
+            <div class="mid-bg">
+                <div class="sub-warp">
+                    <div class="panel panel-default">          
+                        <div class="panel-heading" style="color: #FFFFFF;background-color: #4ECAF4">
+                            <h3 class="panel-title">CONTACT</h3>
+                        </div>   
+                        <div class="panel-body">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-horizontal"> 
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Account Name<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span>
+                                        </label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:selectList styleClass="form-control qq initiativeType"  id="AccountName" value="{!contactWraper.AccountId}"  size="1"> 
+                                                <apex:selectOptions value="{!Accounts}"></apex:selectOptions>
+                                                <apex:actionSupport event="onchange" reRender="ReportsToId"/>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Contact Last Name<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span>
+                                        </label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="LastNameId" styleClass="form-control"  value="{!contactWraper.LastName}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Contact First Name<span style="color:#ff9797; font-size:15px; cursor:default;" title="Mandatory">*</span>
+                                        </label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="FirstNameId" styleClass="form-control"  value="{!contactWraper.FirstName}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Title
+                                        </label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="TitleId" styleClass="form-control"  value="{!contactWraper.Title}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Reports To
+                                        </label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:selectList styleClass="form-control qq initiativeType"  id="ReportsToId" value="{!contactWraper.ReportsToId}"  size="1"> 
+                                                <apex:selectOptions value="{!ReportsToId}"></apex:selectOptions>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Role - Level
+                                        </label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:selectList styleClass="form-control qq initiativeType"  id="RoleLevelId" value="{!contactWraper.RoleLevel}"  size="1"> 
+                                                <apex:selectOptions value="{!RoleLevels}"></apex:selectOptions>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Force.com Status
+                                        </label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:selectList styleClass="form-control qq initiativeType"  id="ForcecomStatusId" value="{!contactWraper.Status}"  size="1"> 
+                                                <apex:selectOptions value="{!ForceComStatus}"></apex:selectOptions>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Mailing Address:</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Mailing Street</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="MailingStreet" styleClass="form-control"  value="{!contactWraper.MailingStreet}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Mailing City</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="MailingCity" styleClass="form-control"  value="{!contactWraper.MailingCity}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Mailing State/Province</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="MailingState" styleClass="form-control" maxlength="2" value="{!contactWraper.MailingState}" /><span class ="optionalmsg" id = "optMsg">[Please enter TWO letter State/Province code]</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Mailing Zip/Postal Code</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="MailingZipCode" styleClass="form-control" maxlength="6" value="{!contactWraper.MailingPostalCode}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Mailing Country</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="MailingCountry" styleClass="form-control"  value="{!contactWraper.MailingCountry}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                            
+                            <div class="col-md-6 col-sm-6 col-xs-12">                                 
+                                <div id="Second_Column" class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Main</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">                                            
+                                            <apex:inputText id="PhoneId" styleClass="form-control phone-format" maxlength="40" value="{!contactWraper.Phone}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Direct</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="MobilePhoneId" styleClass="form-control"  maxlength="14" value="{!contactWraper.MobilePhone}" />
+                                        </div>
+                                    </div>                        
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Email</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="EmailId" styleClass="form-control"  value="{!contactWraper.Email}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">ODS DotNet Status
+                                        </label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:selectList styleClass="form-control qq initiativeType"  id="ODSDotNetStatus" value="{!contactWraper.ODSDotNetStatus}"  size="1"> 
+                                                <apex:selectOptions value="{!ODSDotNetStatus}"></apex:selectOptions>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">IsPrimary  </label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputCheckbox id="IsPrimary" styleClass="form-control" value="{!contactWraper.isPrimary}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Email Opt Out</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputCheckbox id="EmailOptOut" styleClass="form-control" value="{!contactWraper.HasOptedOutOfEmail}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label" width = "10%">Is Portal Access</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputCheckbox id="IsPortalAccess" styleClass="form-control" value="{!contactWraper.IsPortalAccess}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Other Address:</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Other Street</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="OtherStreet" styleClass="form-control"  value="{!contactWraper.OtherStreet}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Other City</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="OtherCity" styleClass="form-control"  value="{!contactWraper.OtherCity}" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Other State/Province</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="OtherState" styleClass="form-control" maxlength="2" value="{!contactWraper.OtherState}" /><span class ="optionalmsg" id = "optMsg">[Please enter TWO letter State/Province code]</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Other Zip/Postal Code</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="OtherZipCode" styleClass="form-control" maxlength="6" value="{!contactWraper.OtherPostalCode}" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 col-sm-4 col-xs-12 control-label">Other Country</label>
+                                        <div class="col-md-8 col-sm-8 col-xs-12">
+                                            <apex:inputText id="OtherCountry" styleClass="form-control"  value="{!contactWraper.OtherCountry}" />
+                                        </div>
+                                    </div>
+                                </div>     
+                            </div> 
+                        </div>
+                    </div>                    
+                    <div class="time-submit">
+                        <div class="pull-right"> 
+                            <apex:commandButton id="btnSave" value="Save" styleClass="save-submit" action="{!saveContact}" onclick="return validateContact();" />
+                            <apex:commandButton id="btnCancel" value="Cancel" styleClass="save-submit" action="{!redirectToContact}" />
+                        </div> 
+                        <div class="pull-right">
+                            <apex:commandLink reRender="showmsg" action="{!redirectToContact}">
+                                <input type="button" id="btnBack" class="cancel" value="Back" style="margin-right: 10px;" />
+                            </apex:commandLink>
+                        </div>                  
+                    </div>
+                </div> 
+            </div>
+            <c:ODS_FooterComponent />
+        </body>
+    </apex:form>
+</apex:page>

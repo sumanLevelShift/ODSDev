@@ -1,0 +1,37 @@
+.mid-white {
+    background: #F4F4F4;
+    width: 100%;
+    padding: 5px 15px;
+    float: left;
+}
+.timeline-scroll {
+    overflow: auto;
+    float: left;
+    width: 100%;
+}
+.thcls{
+    color: #fff;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid #d7d7d7;
+    background: #4bc9f4;
+    padding: 4px 10px;
+    text-transform: uppercase;
+
+}
+.tdcls{
+    color: #000;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: left;
+    border: 1px solid #d7d7d7;
+    padding: 8px 10px;
+    text-wrap: balance;
+
+}
+.add-excelbutton{
+    float: right;
+}

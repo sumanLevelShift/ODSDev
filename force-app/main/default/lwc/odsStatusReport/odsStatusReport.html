@@ -1,0 +1,149 @@
+<template>
+    <!-- Top Search Section -->
+    <div class="top-srch">
+        <h1>Status Report</h1>
+        <div class="tsearch" onclick={toggleSearch}>Search<i class="fa fa-search" aria-hidden="true"></i></div>
+        <div class="advnc_search">
+            <div class="search-fields">
+                <input type="text" name="txt_from" class="tfrom_date" placeholder="From Date" id="date_service" />
+                <input type="text" name="txt_to" class="tto_date" placeholder="To Date" id="date_service1" />
+                <template if:true={showStatusDropdown}>
+                    <select class="sr-status-select" name="srStatus">
+                        <option value="All">All</option>
+                        <template for:each={statusOptions} for:item="option">
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                        </template>
+                    </select>
+                </template>
+                <button class="search-btn" onclick={handleSearch}>Search</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="mid-white">
+        <div class="mid-user-sec">
+            <div class="mid-usertxt">
+                <strong>Customer:</strong> {AccountName} - <strong>Service:</strong> {ServiceName}
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-container">
+            <div class="filter-row">
+                <div class="filter-item">
+                    <label class="filter-label">Account</label>
+                    <select class="filter-select" value={selectedAccount} onchange={handleAccountChange}>
+                        <option value="All">All</option>
+                        <template for:each={accountOptions} for:item="option">
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                        </template>
+                    </select>
+                </div>
+                
+                <div class="filter-item">
+                    <label class="filter-label">Service</label>
+                    <select class="filter-select" value={selectedService} onchange={handleServiceChange}>
+                        <option value="All">All</option>
+                        <template for:each={serviceOptions} for:item="option">
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                        </template>
+                    </select>
+                </div>
+                
+                <div class="filter-item">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select" value={selectedStatus} onchange={handleStatusChange}>
+                        <option value="All">All</option>
+                        <template for:each={statusOptions} for:item="option">
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                        </template>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Status Report Button -->
+        <template if:true={showAddSRButton}>
+            <div class="time-submit">
+                <button class="save-submit" onclick={handleAddStatusReport}>Add Status Report</button>
+            </div>
+        </template>
+
+        <!-- Status Reports Table -->
+        <div class="table-container">
+            <template if:true={isStatusReportsEmpty}>
+                <div class="no-records">
+                    <strong>No Records Found.</strong>
+                </div>
+            </template>
+            
+            <template if:false={isStatusReportsEmpty}>
+                <lightning-datatable
+                    key-field="Id"
+                    data={statusReports}
+                    columns={columns}
+                    onrowaction={handleRowAction}
+                    hide-checkbox-column
+                    resize-column-disabled>
+                </lightning-datatable>
+            </template>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-container">
+            <button class="page-nav-btn first-nav-btn" onclick={handleFirst} disabled={isFirstDisabled}>First</button>
+            <button class="page-nav-btn previous-nav-btn" onclick={handlePrevious} disabled={isPreviousDisabled}>Previous</button>
+            <span class="page-info">{currentPageInfo}</span>
+            <button class="page-nav-btn next-nav-btn" onclick={handleNext} disabled={isNextDisabled}>Next</button>
+            <button class="page-nav-btn last-nav-btn" onclick={handleLast} disabled={isLastDisabled}>Last</button>
+        </div>
+
+        <!-- Modal for View Report -->
+        <template if:true={showModal}>
+            <div class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4>{formattedSelectedReportDate}</h4>
+                        <button class="modal-close" onclick={closeModal}>&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="popup-scroll">
+                            <template if:true={showDailyPopup}>
+                                <div class="popuptext-width daily-sr-popup show">
+                                    <strong>WORK PERFORMED TODAY</strong><br />
+                                    <span>{sanitizedWorkForToday}</span>
+                                </div>
+                            </template>
+                            <template if:true={showWeeklyPopup}>
+                                <div class="popuptext-width weekly-sr-popup show">
+                                    <strong>WORK PERFORMED FOR THE WEEK</strong><br />
+                                    <span>{sanitizedWorkForToday}</span>
+                                </div>
+                            </template>
+                            <template if:true={showDailyPopup}>
+                                <div class="popuptext-width status-bg daily-sr-popup show">
+                                    <strong>WORK TO BE PERFORMED NEXT WORKING DAY</strong><br />
+                                    <span>{sanitizedWorkForNextDay}</span>
+                                </div>
+                            </template>
+                            <template if:true={showWeeklyPopup}>
+                                <div class="popuptext-width status-bg weekly-sr-popup show">
+                                    <strong>WORK TO BE PERFORMED NEXT WEEK</strong><br />
+                                    <span>{sanitizedWorkForNextDay}</span>
+                                </div>
+                            </template>
+                            <div class="popuptext-width">
+                                <strong>ISSUES / CONCERNS / ROAD BLOCKS / QUESTIONS</strong><br />
+                                <span>{sanitizedIssuesAndConcerns}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-default" onclick={closeModal}>CLOSE</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

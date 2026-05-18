@@ -1,0 +1,63 @@
+<apex:page showHeader="false" sidebar="false" standardStyleSheets="false" readOnly="true">
+    <apex:includeScript value="{!URLFOR($Resource.ODS_Assets,'js/jquery-1.4.4.min.js')}"/> 
+    
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $("#newsAlerts").addClass("active");
+    });
+    </script>
+    <style>
+        .goog_alertGoogleAlert_RSSFeed .header{
+            height: 100% !important;
+            font-size: 1.35rem;
+        }
+
+        .slds-scope .slds-icon{
+            height: 1.25rem !important;
+            width: 1.25rem !important;
+            margin-left: -10px !important;
+            margin-right: 5px !important;
+        }
+            
+        .goog_alertGoogleAlert_RSSFeed{
+            background-color: #f3f2f2;
+        }
+            
+        .goog_alertGoogleAlert_RSSFeed .orderedListArticleHeader, 
+            .goog_alertGoogleAlert_RSSFeed .orderedListDate, 
+            .goog_alertGoogleAlert_RSSFeed .orderedListBody{
+            font-size: 1.25rem !important; 
+            color: #333 !important;
+        }
+
+        .LC_RssRSSViewer{
+            font-size: 1.15rem;
+            padding: 10px;
+        }
+
+        /*#salesforceBlogs{*/
+        .sfBlogsView{
+            background-color: #f3f2f2 !important;
+            padding: 1px !important;
+        }
+    </style>
+    <apex:form id="formId">
+        <apex:includeLightning />    
+        <apex:includeScript value="/lightning/lightning.out.js" />
+        <c:ODS_HeaderComponent />        
+
+        <!--<c:ODS_SalesforceBlogFeed elementId="salesforceBlogs" URL="https://www.salesforce.org/blog/feed/" />-->
+        <c:ODS_SalesforceBlogFeed elementId="demandblueBlogs" URL="https://www.levelshift.com/category/blog/feed/" />
+
+        <c:ODS_GoogleAlertsFeed elementId="salesforce_CRM" URL="https://www.google.com/alerts/feeds/04086515158784609025/7192016638427040463" titleHeader="Salesforce CRM" numberOfEntries="10" />
+        <c:ODS_GoogleAlertsFeed elementId="healthcare" URL="https://www.google.com/alerts/feeds/04086515158784609025/12189924155194735797" titleHeader="Healthcare" />
+        <c:ODS_GoogleAlertsFeed elementId="einstein" URL="https://www.google.com/alerts/feeds/04086515158784609025/6129355480263552653" titleHeader="Einstein" />
+        <c:ODS_GoogleAlertsFeed elementId="service" URL="https://www.google.com/alerts/feeds/04086515158784609025/15993045380710926984" titleHeader="Service" />
+        <c:ODS_GoogleAlertsFeed elementId="financialServices" URL="https://www.google.com/alerts/feeds/04086515158784609025/618291202047665829" titleHeader="Financial Services" />
+        <c:ODS_GoogleAlertsFeed elementId="insurance" URL="https://www.google.com/alerts/feeds/04086515158784609025/4273542338353013288" titleHeader="Insurance" />
+        <c:ODS_GoogleAlertsFeed elementId="banking" URL="https://www.google.com/alerts/feeds/04086515158784609025/17300556260889906558" titleHeader="Banking" />
+        <c:ODS_GoogleAlertsFeed elementId="nonProfit" URL="https://www.google.com/alerts/feeds/04086515158784609025/15993045380710926615" titleHeader="Non-Profit" />
+
+        <c:ODS_FooterComponent />
+    </apex:form>
+</apex:page>

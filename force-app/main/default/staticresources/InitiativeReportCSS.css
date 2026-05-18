@@ -1,0 +1,20 @@
+
+div.slds-listbox{
+    font-size: 12px !important;
+color:black !important;
+}
+span.slds-checkbox_faux{
+    width: 20px !important;
+    height: 20px !important;
+}
+.slds-datepicker{
+font-size: 13px !important;
+}
+.slds-size_8-of-12{
+width: 320px !important;
+}
+lightning-datepicker > div > div > lightning-calendar > div.slds-dropdown{ font-size:12px !important; }
+.slds-datepicker td{
+    
+    font-size:12px !important;
+ }
