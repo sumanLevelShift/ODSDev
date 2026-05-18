@@ -11,7 +11,7 @@ public with sharing class Claude_OrgComparisonViaFiles1 {
 
     private static final String ANTHROPIC_MESSAGES_URL = 'https://api.anthropic.com/v1/messages';
     private static final String ANTHROPIC_VERSION = '2023-06-01';
-    private static final String ANTHROPIC_API_KEY = 'sk-ant-api03_REPLACE_WITH_YOUR_KEY';
+    private static final String ANTHROPIC_API_KEY = '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';
     private static final String MODEL_ID = 'claude-sonnet-4-6';
     private static final Integer MAX_OUTPUT_TOKENS = 8192;
 
