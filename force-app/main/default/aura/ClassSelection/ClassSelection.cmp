@@ -1,0 +1,10 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <div class="slds-checkbox_add-button">
+        <input type="checkbox" class="slds-assistive-text" id="add-checkbox-17" value="add-checkbox-17" checked="" aria-describedby="help"/>
+        <label for="add-checkbox-17" class="slds-checkbox_faux">
+            <span class="slds-assistive-text">Add product</span>
+        </label>
+    </div>
+    
+</aura:component>

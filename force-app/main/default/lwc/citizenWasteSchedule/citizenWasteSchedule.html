@@ -1,0 +1,22 @@
+<template>
+    <lightning-card title="My Waste Collection Schedule">
+        <template if:true={schedules.data}>
+            <lightning-datatable key-field="Id" data={schedules.data} columns={columns} hide-checkbox-column onrowaction={handleRowAction}>
+            </lightning-datatable>
+        </template>
+        <template if:true={schedules.error}>
+            <lightning-formatted-text value="Unable to load schedules."></lightning-formatted-text>
+        </template>
+    </lightning-card>
+
+    <template if:true={selectedScheduleId}>
+        <lightning-record-edit-form object-api-name="MissedPickupReport__c" onsuccess={handleReportSuccess}>
+            <lightning-messages></lightning-messages>
+            <lightning-input-field field-name="Schedule__c" value={selectedScheduleId}></lightning-input-field>
+            <lightning-input-field field-name="Reason__c"></lightning-input-field>
+            <lightning-input-field field-name="Location__c"></lightning-input-field>
+            <lightning-input-field field-name="Evidence__c"></lightning-input-field>
+            <lightning-button class="slds-m-top_small" type="submit" label="Submit Missed Pickup"></lightning-button>
+        </lightning-record-edit-form>
+    </template>
+</template>

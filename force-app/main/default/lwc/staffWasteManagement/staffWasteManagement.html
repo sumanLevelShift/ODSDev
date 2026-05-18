@@ -1,0 +1,11 @@
+<template>
+    <lightning-card title="Waste Management Staff Dashboard">
+        <div class="slds-m-around_medium">
+            <lightning-button label="Refresh" onclick={refresh}></lightning-button>
+            <lightning-button class="slds-m-left_small" variant="brand" label="Optimize Route (Mock)" onclick={optimize}></lightning-button>
+        </div>
+        <template if:true={reports.data}>
+            <lightning-datatable key-field="Id" data={reports.data} columns={reportColumns} onrowaction={handleReportAction}></lightning-datatable>
+        </template>
+    </lightning-card>
+</template>

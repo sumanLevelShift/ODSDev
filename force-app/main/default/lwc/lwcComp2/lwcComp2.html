@@ -1,0 +1,20 @@
+<template>
+    Called from another component.
+    <c-l-w-c-comp1></c-l-w-c-comp1>
+
+    <ul class="slds-m-around_meduim">
+        <template for:each={contacts} for:item="con">
+            <li key={con.id}>
+                {con.Name}, {con.Title}
+            </li>
+        </template>
+    </ul>
+    
+    <template iterator:it={contacts}>
+        <li key={it.value.Id}>
+            <div if:true={it.first} class="list-first"></div>
+            {it.value.Name}, {it.value.Title}
+            <div if:true={it.last} class="list-last"></div>
+        </li>
+    </template>
+</template>

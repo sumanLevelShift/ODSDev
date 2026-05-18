@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="Event to handle overlay Action" >
+ <aura:attribute name="message" type="String"/>
+</aura:event>

@@ -1,0 +1,64 @@
+<aura:component controller="Dennemeyer_POC" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="propId" type="String" default="a0IXXXXXXXXXXXX"/>
+    <aura:attribute name="files" type="ContentDocument[]"/>  
+    
+    <aura:registerEvent name="QuestionNextEvent" type="c:HandleQuestionNext"/>
+    <aura:registerEvent name="QuestionNextEvent2" type="c:HandleQuestionNext"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.createRecord}"/>
+    
+    <aura:handler event="c:OverlayLibraryModalEvent" action="{!c.handleApplicationEvent}"/>
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    
+    <div class="slds"> 
+        <lightning:notificationsLibrary aura:id="notifLib"/>
+        
+        <div class="row">
+            <lightning:input aura:id="q1" name="answer1" label="Question 1 -Text field with predefined value" placeholder="type here..."/>
+            <br/>
+            <lightning:input aura:id="q2" name="answer2" label="Question 2 -Text field with predefined value" placeholder="type here..."/>
+            <br/>
+            <lightning:input aura:id="q3" name="answer3" label="Question 3 -Text field with predefined value" placeholder="type here..."/>
+            <br/>
+            <lightning:fileUpload label="Question 4 -Text field with predefined value"
+                                  name="fileUploader"
+                                  multiple="true"
+                                  accept=".pdf, .png"
+                                  recordId="{!v.propId}"
+                                  onuploadfinished="{!c.handleUploadFinished}" 
+                                  disabled="false"/>
+        </div>
+        <div class="slds-form--compound" style="position:relative">
+            <table class="slds-table slds-table--bordered">  
+                <thead>  
+                    <tr>  
+                        <th></th>
+                        <th>Title</th>  
+                        <th>FileType</th>                    
+                    </tr>  
+                </thead>  
+                <tbody>
+                    <aura:iteration items="{!v.files}" var="f">  
+                        <tr>  
+                            <td><a href="javascript:void(0)" id="{!f.Id}" onclick="{!c.delFiles}">Delete</a></td>
+                            <td><a href="" id="{!f.Id}" onclick="{!c.previewFile}">{!f.Title}</a></td>  
+                            <td>{!f.FileType}</td>                              
+                        </tr>  
+                    </aura:iteration>  
+                </tbody>  
+            </table>  
+            <aura:if isTrue="{!v.Spinner}">
+                <div class="slds-spinner_container">
+                    <div class="slds-spinner slds-spinner--medium" aria-hidden="false" role="alert">
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+            </aura:if>
+        </div>
+        <div class="row">
+            <lightning:button variant="brand" label="Next" title="Next" onclick="{! c.handleNextClick }" />
+            <lightning:button variant="brand" label="Cancel" title="Cancel" onclick="{! c.handleCancelClick }"/>
+        </div>
+    </div>
+</aura:component>

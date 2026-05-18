@@ -1,0 +1,29 @@
+<aura:component controller="AccountTableComponentClass" implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="accounts" type="List"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+    	<thead>
+        	<tr class="slds-text-title_caps">
+            	<th scope="col"> Account Id </th>
+                <th scope="col"> Account Name </th>
+                <th scope="col"> Account Type </th>
+            </tr>
+        </thead>
+        <tbody>
+        	<aura:iteration items="{!v.accounts}" var="acc">
+                <tr>
+                    <td>
+                        {!acc.Id}
+                    </td>
+                    <td>
+                        {!acc.Name}
+                    </td>
+                    <td>
+                        {!acc.Type}
+                    </td>
+                </tr>
+            </aura:iteration>
+        </tbody>
+    </table>
+</aura:component>

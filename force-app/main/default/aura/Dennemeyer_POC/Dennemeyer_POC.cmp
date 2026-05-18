@@ -1,0 +1,36 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <!--style to incraee width-->
+    <aura:html tag="style">
+        .slds-modal__container{
+        max-width: 80rem !important;
+        width:50% !important;
+        
+        }
+    </aura:html>
+    
+    <aura:attribute name="displayClassTab" type="Boolean" default="false" />
+    <aura:attribute name="displayCountryTab" type="Boolean" default="false" />
+    <aura:attribute name="selTabId" type="string" default="1" />
+    
+    
+    <aura:handler name="QuestionNextEvent" event="c:HandleQuestionNext" action="{!c.createClassTab}" />
+    <aura:handler name="QuestionNextEvent2" event="c:HandleQuestionNext" action="{!c.moveToClasstab}" />
+    
+    
+    <lightning:tabset selectedTabId="{!v.selTabId}">
+        <lightning:tab label="Trademark" id="1">
+            <c:TradeMark/>
+        </lightning:tab>
+        <aura:if isTrue="{! v.displayClassTab }">
+            <lightning:tab label="Classes" id="2">
+                <c:ClassSelection/>
+            </lightning:tab>
+        </aura:if>
+        <aura:if isTrue="{! v.displayCountryTab }">
+            <lightning:tab label="Countries" id="3">
+                <c:CountrySelection/>
+            </lightning:tab>
+        </aura:if>
+    </lightning:tabset>
+    
+</aura:component>

@@ -1,0 +1,16 @@
+<aura:component controller="CandidateTableComponentClass" implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" >
+	<aura:attribute name="candidate" type="Candidate__c" default="{'sObjectType':'Candidate__c',
+                                                                  'Name':'','Candidate_Email__c':''}"/>
+   	<div class="slds-p-*-around_*">
+    <div  class="slds-p-around_medium">
+    	<ui:inputText aura:id="candName" label="Name" value="{!v.candidate.Name}" required="true"/>
+    </div>
+    <div class="slds-p-around_medium">
+    	<ui:inputText aura:id="candEmail" label="Email" value="{!v.candidate.Candidate_Email__c}" required="true"/>
+    </div>
+    <div class="slds-p-around_medium">
+    	<ui:button label="Create" press="{!c.saveCandidate}"/>
+        <ui:button label="Delete" press="{!c.deleteCandidate}"/>
+    </div>
+    </div>
+</aura:component>

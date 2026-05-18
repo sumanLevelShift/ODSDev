@@ -1,0 +1,52 @@
+{
+  "objectFieldDifferences": [
+    {
+      "fieldDifferences": [
+        {
+          "difference": "length changed from 80 to 100",
+          "apiName": "DeveloperName"
+        },
+        {
+          "difference": "label updated from AI Application Id to Application ID",
+          "apiName": "Id"
+        }
+      ],
+      "objectApiName": "AIApplication"
+    },
+    {
+      "fieldDifferences": [
+        {
+          "difference": "DataType update from Integer to String",
+          "apiName": "ServiceId__c"
+        },
+        {
+          "difference": " isRequired updated from True to False",
+          "apiName": "ServiceId__c"
+        }
+      ],
+      "objectApiName": "Contact"
+    }
+  ],
+  "onlyInTargetObjects": [
+    {
+      "fields": [
+        {
+          "label": "Stage",
+          "apiName": "Status__c"
+        }
+      ],
+      "objectApiName": "Contact"
+    }
+  ],
+  "onlyInSourceObjects": [
+    {
+      "fields": [
+        {
+          "label": "App Type",
+          "apiName": "Type"
+        }
+      ],
+      "objectApiName": "AIApplication"
+    }
+  ]
+}

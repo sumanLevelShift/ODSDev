@@ -1,0 +1,32 @@
+<apex:page controller="PaginationCC">
+    <script type="text/javascript">
+        function jsFunction(){
+            var x = ' NAME column';
+            alert('Clicked on ' + x);
+            console.log('Clicked NAME column');
+        }
+    </script>
+    <apex:form >
+        <apex:pageBlock id="pb" >
+            <apex:pageBlockTable id="accTable" value="{!accounts}" var="lwc">
+                <apex:column >
+                    <apex:inputCheckbox value="{!lwc.selected}"/>
+                </apex:column>
+                <apex:column value="{!lwc.acc.id}"/>
+                <apex:column value="{!lwc.acc.name}" onclick="jsFunction()"/>
+                <apex:column value="{!lwc.acc.phone}"/>
+            </apex:pageBlockTable>
+            
+            <apex:outputPanel >
+                <apex:selectList multiselect="false" size="1" value="{!noOfRecords}">
+                    <apex:selectOptions value="{!loption}"/>
+                    <apex:actionSupport event="onChange" reRender="pb" action="{!runQuery}"/>
+                </apex:selectList>
+            </apex:outputPanel>
+        </apex:pageBlock>
+        <apex:commandButton value=" << " action="{!stdSetController.first}"/>
+        <apex:commandButton value="PREV" action="{!stdSetController.previous}"/>
+        <apex:commandButton value="NEXT" action="{!stdSetController.next}"/>
+        <apex:commandButton value = " >> " action = "{!stdSetController.last}"/>
+    </apex:form>
+</apex:page>

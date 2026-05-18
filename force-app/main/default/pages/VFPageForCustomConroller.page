@@ -1,0 +1,10 @@
+<apex:page controller="AccountControllerCustom">
+    <apex:pageBlock >
+        <apex:pageBlockTable value="{!lacc}" var="a">
+            <apex:column value="{!a.id}"/>
+            <apex:column value="{!a.name}"/>
+            <apex:column value="{!a.phone}"/>
+            <apex:column value="{!a.website}"/>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:page>

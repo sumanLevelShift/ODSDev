@@ -1,0 +1,6 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="attr" type="String" default="Nothing Clicked"/>
+    Click : {!v.attr}
+    <ui:button aura:id="button1" class="button" label="Click 1" press="{!c.identifyClick}"/>
+    <ui:button aura:id="button2" class="button" label="Click 2" press="{!c.identifyClick}"/>
+ </aura:component>

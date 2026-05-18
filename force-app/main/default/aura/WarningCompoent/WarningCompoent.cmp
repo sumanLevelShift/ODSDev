@@ -1,0 +1,6 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" >
+	<ui:message title="Confirmation" severity="confirm" closable="true">
+      This is a confirmation message.
+  	</ui:message>	
+    <lightning:button variant="brand" label="Submit" onclick="{! c.handleClick }" />
+</aura:component>

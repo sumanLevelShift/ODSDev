@@ -1,0 +1,7 @@
+<aura:component controller="ApexClassApexExample" implements="flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="stringArray" type="String[]" default="RED,YELLOW,GREEN"/>
+    <aura:iteration items="{!v.stringArray}" var="s">
+    	{!s}
+    </aura:iteration>
+    <lightning:button label="Submit" onclick="{!c.getNewStringArray}" />
+</aura:component>

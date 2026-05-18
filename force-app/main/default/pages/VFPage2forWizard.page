@@ -1,0 +1,9 @@
+<apex:page controller="WizardCustomController">
+    <apex:form >
+        <div>
+            <p> This is page 2</p>
+        </div>
+        <apex:commandButton value="PREVIOUS" action="{!goToFirstPage}"/>
+        <apex:commandButton value="NEXT" action="{!finish}"/>
+    </apex:form> 
+</apex:page>

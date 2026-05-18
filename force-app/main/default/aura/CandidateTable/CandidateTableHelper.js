@@ -1,0 +1,5 @@
+({
+	validateTheInput : function() {
+		
+	}
+})

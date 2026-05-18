@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
+
+body, html{margin:0; padding: 0; font-family: 'Open Sans', sans-serif; }
+.inner_wrapper{padding: 0 15px;}
+.control-label{margin-top: 7px; padding-left: 0; color: #1A1A1A; font-size: 12px;}
+.form-group label{color: #1A1A1A; font-size: 12px;}
+input, input.form-control{border:1px solid #CCCCCC; border-radius: 0; background: #fff;}
+input, select{border:1px solid #CCCCCC; border-radius: 0; height: 25px; width: 100%; padding: 0 5px; font-size: 13px; color: #000;}
+input[type="checkbox"]{width: auto; margin: -3px 5px 0 0; padding: 0;}
+.ThrChoise .form-check-inline{margin-right: 1.75rem;}
+label.NoBold{font-weight: normal;}
+.TotalUnitRow .form-group{margin-bottom: 0;}
+.form-check-inline { display: -ms-inline-flexbox; display: inline-flex; -ms-flex-align: center; align-items: center; padding-left: 0; margin-right: 2.75rem; }
+.form-check-inline .form-check-input { position: static; margin-top: 0; margin-right: .3125rem; margin-left: 0; width: auto; height: auto; cursor: pointer;}
+label.form-check-label{font-weight: normal; font-size: 12px; cursor: pointer;}
+
+header{display: inline-block; width: 100%;  -webkit-box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.75); -moz-box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.75); box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.75); }
+header h2{display: inline-block; float: right; color: #000; font-weight: bold; font-size: 18px; margin: 14px 0 0;}
+header img{width: 170px;}
+
+.PropHeader{background: #F2F2F2; padding: 20px 15px; border:1px solid #CCCCCC; margin:20px 0 17px;}
+
+.RentalRates{border:1px solid #CCCCCC; border-top: none; padding:6px 20px 15px;}
+.RentalTitle{ padding: 12px 15px; border: 1px solid #CCCCCC; display: inline-block; width: 100%; margin-top: 20px;}
+.RentalTitle h1{font-weight: bold; font-size: 18px; color: #4173A8; margin:0; padding: 0; display: inline-block; position: relative; z-index: -1;}
+button.btn-NewRow{float: right; border-radius: 0; background: #4173A8; font-size: 11px; color:  #fff; position: relative; }
+button.btn-NewRow:hover{color: #fff; background: #224E77;}
+
+table.style1{table-layout: fixed; width: 100%;}
+table.MarketOverview{width: 100%; margin-bottom: 40px;}
+table.style1 th, table.style2 th, table.MarketOverview th{font-size: 12px; font-weight: bold;}
+table.style1 th, table.style1 td, table.MarketOverview td, table.MarketOverview th{padding: 5px 10px;}
+table.style1 thead{border-bottom: 1px solid #CCCCCC;}
+table.style1 tbody tr{border: 1px solid #CCCCCC; border-top:none; }
+table.style1 tbody tr:nth-child(odd), table.MarketOverview tbody tr:nth-child(odd){background: #F2F2F2;}
+table.style1 td:nth-child(1){ min-width: 110px; max-width: 110px}
+table.style1 td:nth-child(2){ min-width: 100px; max-width: 100px}
+
+table.style1.style2 td:nth-child(1){min-width: auto; max-width: 100%;}
+table.style1.style2 td:nth-child(2){min-width: auto; max-width: 100%;}
+
+table.MarketOverview td:nth-child(1){font-weight: bold; font-size: 12px;}
+table.style1.style2{width: 100%;}
+
+.RentalRateTotal{display: inline-block; padding: 20px 15px; font-size: 14px; font-weight: bold; color: #000; text-align: right; width: 100%; border-bottom: 1px solid #E6E6E6;}
+.RentalRateTotal div{display: inline-block; margin-left: 25px;}
+
+.UnitOccupid h2{font-size: 15px; font-weight: bold; margin:30px 0 20px;}
+.TotalUnitRow{font-size: 13px; margin-bottom: 15px; display: inline-block; width: 100%;}
+
+.ManagmntPlcy{border:1px solid #CCCCCC; padding: 20px 15px;}
+
+.SIF-submit{width: 100%; display: inline-block; margin:30px 0 40px 0; text-align: right;}
+.btn.NomalBtn{background: none; border:1px solid #CCCCCC; color: #000; font-size: 15px; border-radius: 0; padding: 7px 28px;}
+.btn.NomalBtn:hover{background: #ccc;}
+.btn.BlueBtn{background: #4173A8; border:1px solid #4173A8; color: #fff; font-size: 15px; border-radius: 0; margin-left: 15px; padding: 7px 28px;}
+.btn.BlueBtn:hover{background: #224E77;}
+
+.Datepicker{position: relative;}
+.Datepicker:after{content: '\f073'; font-family: FontAwesome; position: absolute; top: 7px; right: 25px;}
+
+h3.FootTitl{font-size: 19px; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 18px; width: 97%;}
+
+.ToggledTab{display: none;}
+.TabToggle{cursor: pointer; position: relative;}
+.TabToggle:after{content:'\f13a'; font-family: FontAwesome; position: absolute; top:5px; right: 20px; font-size: 25px; color: #4173A8; transition: 0.5s ease all;}
+.TabToggle.TabActive:after{transform: rotate(180deg);}
+
+.PropName{border: 1px solid #e7e7e7; padding: 5px 10px; font-weight: bold;}
+
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px)  {
+	table.style1, .style1 thead, .style1 tbody, .style1 th, .style1 td, .style1 tr { display: block; }
+	.style1 thead tr { position: absolute; top: -9999px; left: -9999px; }
+	.style1 tr { margin: 0 0 1rem 0; }
+	.style1 tr:nth-child(odd) { background: #ccc; }
+	.style1 td { border: none; border-bottom: 1px solid #eee; position: relative; padding-left: 50%; }
+	.style1 td:before { position: absolute; top: 0; left: 10px; width: 45%; padding-right: 10px; white-space: nowrap; }
+	.style1 td:nth-of-type(1):before { content: "Bedroom Size"; top: 20px;}
+	.style1 td:nth-of-type(2):before { content: "AMI %"; }
+	.style1 td:nth-of-type(3):before { content: "Total Units"; }
+	.style1 td:nth-of-type(4):before { content: "Rent"; }
+	.style1 td:nth-of-type(5):before { content: "Utility Allowance"; }
+	.style1 td:nth-of-type(6):before { content: "Most Restricted"; }
+	.style1 td:nth-of-type(7):before { content: "Monthly Income"; }
+	.style1 td:nth-of-type(8):before { content: "Annual Income"; }
+	.style1 td:nth-of-type(9):before { content: ""; }
+
+	header .col-md-6{text-align: center;}
+	a.Logo{display: inline-block;}
+	header h2{width: 100%; margin: 5px 0 10px 0;}
+
+	.style1.style2 td:nth-of-type(1):before { content: "Title"; top: 20px;}
+	.style1.style2 td:nth-of-type(2):before { content: "Name"; }
+	.style1.style2 td:nth-of-type(3):before { content: "Length of Time at Property"; }
+	.style1.style2 td:nth-of-type(4):before { content: "Full Time/Part Time"; }
+	.style1.style2 td:nth-of-type(5):before { content: "Occupy Unit?"; }
+
+	table.style1 td:nth-child(1){ min-width: 100%; max-width: 100%; padding-top: 45px;}
+	table.style1 td:nth-child(2){ min-width: 100%; max-width: 100%;}
+	table.style1 td{padding-top: 23px;}
+	table.style1 tbody tr{border-top:1px solid #ccc; }
+
+	.RentalRateTotal div{width: 100%; margin-bottom: 10px; margin-left: 12px;}
+	.PropHeader .col-md-10{padding: 0;}
+	.RentalTitle h1{width: 100%; padding-right: 25px;}
+	.RentalRates{padding-top: 20px;}
+
+	button.btn-NewRow{margin-top: 17px; float: left;}
+	.TotalUnitRow .col-md-4{margin-top: 10px; margin-bottom: 10px;}
+
+	table.MarketOverview td{padding: 5px 1px; font-size: 12px;}
+}

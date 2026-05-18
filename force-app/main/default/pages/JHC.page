@@ -1,0 +1,1205 @@
+<apex:page >
+    <apex:stylesheet value="{!URLFOR($Resource.JHC_SiteInspection, '/css/bootstrap-min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.JHC_SiteInspection, '/css/styles.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.JHC_SiteInspection, '/js/html5shiv.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.JHC_SiteInspection, '/font-awesome/css/font-awesome-min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.JHC_SiteInspection, '/css/datepicker-min.css')}"/>
+    
+    <apex:includeScript value="{!URLFOR($Resource.JHC_SiteInspection, '/js/jquery-1-11-0-min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.JHC_SiteInspection, '/js/bootstrap-min.js')}"/>
+    <!--<apex:includeScript value="{!$Resource.SiteInspection_DatePicker}"/>-->
+    <apex:includeScript value="{!URLFOR($Resource.JHC_SiteInspection, '/js/common.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.JHC_SiteInspection, '/js/datepicker-min.js')}"/>
+    <html>
+        <body>
+            <header class="inner_wrapper">
+                <div  class="row">
+                    <div class="col-md-6">
+                        <a href="" class="Logo"><apex:image value="{!URLFOR($Resource.JHC_SiteInspection,'/images/logo.png')}"/></a>
+                    </div>
+                    <div class="col-md-6">
+                        <h2>Site Inspection Form</h2>
+                    </div>
+                </div>
+            </header>
+            <div class="inner_wrapper"><!--- Inner Wrapper -->
+                <div class="PropHeader">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <label class="col-md-2 control-label">Property Name</label>	
+                            <div class="col-md-10">
+                                <div class="PropName">Alice Court Apartments</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="col-md-2 control-label text-right">Date</label>	
+                            <div class="col-md-10 Datepicker">
+                                <input class="form-control" name="property_name" data-toggle="datepicker" id="" type="text" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="RentalRates" class="RentalTitle TabToggle TabActive">
+                    <h1>Rental Rates</h1>
+                </div>
+                <div class="RentalRates ToggledTab TabOpen">
+                    <table class="style1" role="table">
+                        <thead role="rowgroup">
+                            <tr role="row">
+                                <th role="columnheader">Bedroom Size</th>
+                                <th role="columnheader">AMI %</th>
+                                <th role="columnheader">Total Units</th>
+                                <th role="columnheader">Rent</th>
+                                <th role="columnheader">Utility Allowance</th>
+                                <th role="columnheader">Most Restricted</th>
+                                <th role="columnheader">Monthly Income</th>
+                                <th role="columnheader">Annual Income</th>
+                                <th role="columnheader"></th>
+                            </tr>
+                        </thead>
+                        <tbody role="rowgroup">
+                            <tr role="row">
+                                <td role="cell">
+                                    <select>
+                                        <option value="0">Select...</option>
+                                        <option value="1">0 BR</option>
+                                        <option value="2">2 BR</option>
+                                        <option value="3">3 BR</option>
+                                        <option value="4">4 BR</option>
+                                    </select>
+                                </td>
+                                <td role="cell"><input type="text" class="txt_ami" value="0%" /></td>
+                                <td role="cell"><input type="text" class="txt_units" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_rent" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_allowance" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_restricted" value="$ 0.00" /></td>
+                                <td role="cell"><input type="text" class="txt_MonthlyIncome" value="$ 0.00" /></td>
+                                <td role="cell"><input type="text" class="txt_AnnualIncome" value="$ 0.00" /></td>
+                                <td role="cell">
+                                    <select>
+                                        <option value="0">Select...</option>
+                                        <option value="1">TCAC</option>
+                                        <option value="2">HAP</option>
+                                        <option value="3">HOME High</option>
+                                        <option value="4">HOME Low</option>
+                                        <option value="5">MHSA</option>
+                                        <option value="6">RDA</option>
+                                        <option value="7">Exempt</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr role="row">
+                                <td role="cell">
+                                    <select>
+                                        <option value="0">Select...</option>
+                                        <option value="1">0 BR</option>
+                                        <option value="2">2 BR</option>
+                                        <option value="3">3 BR</option>
+                                        <option value="4">4 BR</option>
+                                    </select>
+                                </td>
+                                <td role="cell"><input type="text" class="txt_ami" value="0%" /></td>
+                                <td role="cell"><input type="text" class="txt_units" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_rent" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_allowance" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_restricted" value="$ 0.00" /></td>
+                                <td role="cell"><input type="text" class="txt_MonthlyIncome" value="$ 0.00" /></td>
+                                <td role="cell"><input type="text" class="txt_AnnualIncome" value="$ 0.00" /></td>
+                                <td role="cell">
+                                    <select>
+                                        <option value="0">Select...</option>
+                                        <option value="1">TCAC</option>
+                                        <option value="2">HAP</option>
+                                        <option value="3">HOME High</option>
+                                        <option value="4">HOME Low</option>
+                                        <option value="5">MHSA</option>
+                                        <option value="6">RDA</option>
+                                        <option value="7">Exempt</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>    
+                </div>
+                <div id="MangePolicies" class="RentalTitle MangPlics TabToggle">
+                    <h1>Management Policies and Practices</h1>
+                </div>
+                <div class="ManagmntPlcy ToggledTab"><!-- Management policies -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="comment">Summarize the delinquency policy.</label>
+                                <textarea class="form-control" rows="3" id="comment"></textarea>
+                            </div> 
+                            <div class="form-group">
+                                <label>How many evictions are currently in progress?</label>
+                                <input type="text" class="form-control" id="evictions"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="comment">Summarize the eviction policy and procedure</label>
+                                <textarea class="form-control" rows="3" id="comment"></textarea>
+                            </div> 
+                        </div>
+                    </div>
+                </div><!-- Management policies -->
+                <div id="ManualDocs" class="RentalTitle MangPlics TabToggle">
+                    <h1>Are the Following Manuals and Documents Contained On-Site?</h1>
+                </div>
+                <div class="ManagmntPlcy ToggledTab"><!-- Manuals and Documents -->
+                    <div class="row">
+                        
+                        <div class="col-md-6">
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Standard Operating Procedures</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio11">
+                                            <input type="radio" class="form-check-input" id="radio11" name="optradio6" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio12">
+                                            <input type="radio" class="form-check-input" id="radio12" name="optradio6" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Regulatory Agreement(s)</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio13">
+                                            <input type="radio" class="form-check-input" id="radio13" name="optradio7" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio14">
+                                            <input type="radio" class="form-check-input" id="radio14" name="optradio7" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Compliance Manual</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio15">
+                                            <input type="radio" class="form-check-input" id="radio15" name="optradio8" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio16">
+                                            <input type="radio" class="form-check-input" id="radio16" name="optradio8" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Emergency Response/Procedure Binder</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio17">
+                                            <input type="radio" class="form-check-input" id="radio17" name="optradio9" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio18">
+                                            <input type="radio" class="form-check-input" id="radio18" name="optradio9" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Warranty Binder/CD</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio19">
+                                            <input type="radio" class="form-check-input" id="radio19" name="optradio10" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio20">
+                                            <input type="radio" class="form-check-input" id="radio20" name="optradio10" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div><!-- Manuals and Documents -->
+                <div id="ManualDocs" class="RentalTitle MangPlics TabToggle">
+                    <h1>Are the Following Manuals and Documents Contained On-Site?</h1>
+                </div>
+                <div class="ManagmntPlcy ToggledTab"><!-- Manuals and Documents -->
+                    <div class="row">
+                        
+                        <div class="col-md-6">
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Standard Operating Procedures</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio11">
+                                            <input type="radio" class="form-check-input" id="radio11" name="optradio6" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio12">
+                                            <input type="radio" class="form-check-input" id="radio12" name="optradio6" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Regulatory Agreement(s)</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio13">
+                                            <input type="radio" class="form-check-input" id="radio13" name="optradio7" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio14">
+                                            <input type="radio" class="form-check-input" id="radio14" name="optradio7" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Compliance Manual</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio15">
+                                            <input type="radio" class="form-check-input" id="radio15" name="optradio8" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio16">
+                                            <input type="radio" class="form-check-input" id="radio16" name="optradio8" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Emergency Response/Procedure Binder</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio17">
+                                            <input type="radio" class="form-check-input" id="radio17" name="optradio9" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio18">
+                                            <input type="radio" class="form-check-input" id="radio18" name="optradio9" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Warranty Binder/CD</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio19">
+                                            <input type="radio" class="form-check-input" id="radio19" name="optradio10" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio20">
+                                            <input type="radio" class="form-check-input" id="radio20" name="optradio10" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="OrgTenant" class="RentalTitle MangPlics TabToggle">
+                    <h1>Organization of Tenant Filing System</h1>
+                </div>
+                <div class="ManagmntPlcy ToggledTab"><!-- Organization of Tenant Filing System -->
+                    <div class="row">
+                        
+                        <div class="col-md-6">
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Are the First Year Tenant Files located on site?</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio21">
+                                            <input type="radio" class="form-check-input" id="radio21" name="optradio11" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio22">
+                                            <input type="radio" class="form-check-input" id="radio22" name="optradio11" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Are the files stored in a fire proof file cabinet?</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio23">
+                                            <input type="radio" class="form-check-input" id="radio23" name="optradio12" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio24">
+                                            <input type="radio" class="form-check-input" id="radio24" name="optradio12" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Are tenant files scanned?</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio25">
+                                            <input type="radio" class="form-check-input" id="radio25" name="optradio13" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="radio26">
+                                            <input type="radio" class="form-check-input" id="radio26" name="optradio13" value="option1"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">Where are the files located?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div><!-- Organization of Tenant Filing System -->
+                
+                <div id="OnsiteEmp" class="RentalTitle TabToggle">
+                    <h1>On Site Employees</h1>
+                </div>
+                <div class="RentalRates OnSiteEmp ToggledTab">
+                    <table class="style1 style2" role="table">
+                        <thead role="rowgroup">
+                            <tr role="row">
+                                <th role="columnheader">Title</th>
+                                <th role="columnheader">Name</th>
+                                <th role="columnheader">Length of Time at Property</th>
+                                <th role="columnheader">Full Time/Part Time</th>
+                                <th role="columnheader">Occupy Unit?</th>
+                            </tr>
+                        </thead>
+                        <tbody role="rowgroup">
+                            
+                            <tr role="row">
+                                <td role="cell"><input type="text" class="txt_title" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_name" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_length" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_fulltime" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_occupy" value="" /></td>
+                            </tr>
+                            
+                            <tr role="row">
+                                <td role="cell"><input type="text" class="txt_title" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_name" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_length" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_fulltime" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_occupy" value="" /></td>
+                            </tr>
+                            
+                            <tr role="row">
+                                <td role="cell"><input type="text" class="txt_title" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_name" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_length" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_fulltime" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_occupy" value="" /></td>
+                            </tr>
+                            
+                            <tr role="row">
+                                <td role="cell"><input type="text" class="txt_title" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_name" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_length" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_fulltime" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_occupy" value="" /></td>
+                            </tr>
+                            
+                            <tr role="row">
+                                <td role="cell"><input type="text" class="txt_title" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_name" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_length" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_fulltime" value="" /></td>
+                                <td role="cell"><input type="text" class="txt_occupy" value="" /></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="Complinc" class="RentalTitle MangPlics TabToggle">
+                    <h1>Compliance</h1>
+                </div>
+                <div class="ManagmntPlcy ToggledTab"><!-- Compliance -->
+                    <div class="row">
+                        
+                        <div class="col-md-6">
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Have all administrative staff attended a Low Income Tax Credit Certification program?</div>
+                                <div class="col-md-4 ThrChoise">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio1">
+                                            <input type="radio" class="form-check-input" id="stradio1" name="opstaf" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio2">
+                                            <input type="radio" class="form-check-input" id="stradio2" name="opstaf" value="option1"/>No
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio3">
+                                            <input type="radio" class="form-check-input" id="stradio3" name="opstaf" value="option1"/>N/A
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="comment" class="NoBold">If yes, list dates and names the programs. If no, please explain your compliance training program.</label>
+                                        <textarea class="form-control" rows="3" id="comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Have all administrative staff attended Fair Housing Rules and Regulations training?</div>
+                                <div class="col-md-4 ThrChoise">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio4">
+                                            <input type="radio" class="form-check-input" id="stradio4" name="opstaf1" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio5">
+                                            <input type="radio" class="form-check-input" id="stradio5" name="opstaf1" value="option1"/>No
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio6">
+                                            <input type="radio" class="form-check-input" id="stradio6" name="opstaf1" value="option1"/>N/A
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Is the property in compliance with Fair Housing Rules and Regulations?</div>
+                                <div class="col-md-4 ThrChoise">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio7">
+                                            <input type="radio" class="form-check-input" id="stradio7" name="opstaf2" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio8">
+                                            <input type="radio" class="form-check-input" id="stradio8" name="opstaf2" value="option1"/>No
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio9">
+                                            <input type="radio" class="form-check-input" id="stradio9" name="opstaf2" value="option1"/>N/A
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">Where is the “Equal Housing Opportunity Provider” sign located at the site?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Does the property have a written TCAC recertification waiver?</div>
+                                <div class="col-md-4 ThrChoise">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio10">
+                                            <input type="radio" class="form-check-input" id="stradio10" name="opstaf3" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio11">
+                                            <input type="radio" class="form-check-input" id="stradio11" name="opstaf3" value="option1"/>No
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio12">
+                                            <input type="radio" class="form-check-input" id="stradio12" name="opstaf3" value="option1"/>N/A
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="comment" class="NoBold">In the past 12 months, what state or local agencies have conducted inspections at the site?</label>
+                                        <textarea class="form-control" rows="3" id="comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Was a copy of the agency inspection report sent to the Jamboree Housing Corporation?</div>
+                                <div class="col-md-4 ThrChoise">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio13">
+                                            <input type="radio" class="form-check-input" id="stradio13" name="opstaf4" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio14">
+                                            <input type="radio" class="form-check-input" id="stradio14" name="opstaf4" value="option1"/>No
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio15">
+                                            <input type="radio" class="form-check-input" id="stradio15" name="opstaf4" value="option1"/>N/A
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="col-md-6">
+                            
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Have any 8823’s been issued?</div>
+                                <div class="col-md-4 ThrChoise">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio16">
+                                            <input type="radio" class="form-check-input" id="stradio16" name="opstaf5" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio17">
+                                            <input type="radio" class="form-check-input" id="stradio17" name="opstaf5" value="option1"/>No
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio18">
+                                            <input type="radio" class="form-check-input" id="stradio18" name="opstaf5" value="option1"/>N/A
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">If yes, when?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">How many corrected 8823’s have been issued?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">When was the last time a corrected 8823 form was issued?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">When was the last HUD Physical Inspection (REAC) conducted by a HUD Representative?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Was the HUD Management Review “Satisfactory”?</div>
+                                <div class="col-md-4 ThrChoise">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio19">
+                                            <input type="radio" class="form-check-input" id="stradio19" name="opstaf6" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio20">
+                                            <input type="radio" class="form-check-input" id="stradio20" name="opstaf6" value="option1"/>No
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio21">
+                                            <input type="radio" class="form-check-input" id="stradio21" name="opstaf6" value="option1"/>N/A
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">What was the REAC score?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Was the REAC report provided to the Jamboree Housing Corporation?</div>
+                                <div class="col-md-4 ThrChoise">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio22">
+                                            <input type="radio" class="form-check-input" id="stradio22" name="opstaf7" value="option1"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio23">
+                                            <input type="radio" class="form-check-input" id="stradio23" name="opstaf7" value="option1"/>No
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="stradio24">
+                                            <input type="radio" class="form-check-input" id="stradio24" name="opstaf7" value="option1"/>N/A
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="comment" class="NoBold">Describe the procedure for the Next Available Unit Rule.</label>
+                                        <textarea class="form-control" rows="3" id="comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                </div><!-- Compliance -->
+                
+                <div id="MarktOverviw" class="RentalTitle TabToggle">
+                    <h1>Market Overview</h1>
+                </div>
+                <div class="RentalRates OnSiteEmp ToggledTab"><!---Market Overview -->
+                    <table class="MarketOverview" role="table">
+                        <thead role="rowgroup">
+                            <tr role="row">
+                                <th colspan="10" role="columnheader">Enter the number of waitlisted people for each AMI % at the property.</th>
+                            </tr>
+                        </thead>
+                        <tbody role="rowgroup">
+                            
+                            <tr role="row">
+                                <td role="cell">AMI%</td>
+                                <td role="cell"><input type="text" class="" value="0%" /></td>
+                                <td role="cell"><input type="text" class="" value="0%" /></td>
+                                <td role="cell"><input type="text" class="" value="0%" /></td>
+                                <td role="cell"><input type="text" class="" value="0%" /></td>
+                                <td role="cell"><input type="text" class="" value="0%" /></td>
+                                <td role="cell"><input type="text" class="" value="0%" /></td>
+                                <td role="cell"><input type="text" class="" value="0%" /></td>
+                                <td role="cell"><input type="text" class="" value="0%" /></td>
+                                <td role="cell"><input type="text" class="" value="0%" /></td>
+                            </tr>
+                            
+                            <tr role="row">
+                                <td role="cell">0 BR</td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                            </tr>
+                            
+                            <tr role="row">
+                                <td role="cell">1 BR</td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                            </tr>
+                            
+                            <tr role="row">
+                                <td role="cell">2 BR</td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                            </tr>
+                            
+                            <tr role="row">
+                                <td role="cell">3 BR</td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                            </tr>
+                            
+                            <tr role="row">
+                                <td role="cell">4 BR</td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                                <td role="cell"><input type="text" class="" value="" /></td>
+                            </tr>
+                            
+                            <tr role="row" class="MarketOvwTotal">
+                                <td role="cell">Total</td>
+                                <td role="cell"><input type="text" class="" value="0" /></td>
+                                <td role="cell"><input type="text" class="" value="0" /></td>
+                                <td role="cell"><input type="text" class="" value="0" /></td>
+                                <td role="cell"><input type="text" class="" value="0" /></td>
+                                <td role="cell"><input type="text" class="" value="0" /></td>
+                                <td role="cell"><input type="text" class="" value="0" /></td>
+                                <td role="cell"><input type="text" class="" value="0" /></td>
+                                <td role="cell"><input type="text" class="" value="0" /></td>
+                                <td role="cell"><input type="text" class="" value="0" /></td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    
+                    <div class="row MrkOvrWrp">
+                        <div class="col-md-6">
+                            
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Are there any new LIHTC/subsidized properties in the area?</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="mrkradio1">
+                                            <input class="form-check-input" id="mrkradio1" name="mrkopt1" value="option1" type="radio"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="mrkradio2">
+                                            <input class="form-check-input" id="mrkradio2" name="mrkopt1" value="option1" type="radio"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">If yes, are they complete, and if not complete, when is completion anticipated?</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="mrkradio3">
+                                            <input class="form-check-input" id="mrkradio3" name="mrkopt2" value="option1" type="radio"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="mrkradio4">
+                                            <input class="form-check-input" id="mrkradio4" name="mrkopt2" value="option1" type="radio"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="comment" class="NoBold">Describe condition of market and surrounding neighborhood.</label>
+                                        <textarea class="form-control" rows="3" id="comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="comment" class="NoBold">Describe market trends in the area.</label>
+                                        <textarea class="form-control" rows="3" id="comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">What are the incentives/concessions offered by other properties in the area?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </div><!---Market Overview -->
+                
+                <div id="LandScap" class="RentalTitle MangPlics TabToggle">
+                    <h1>Landscaping</h1>
+                </div>
+                <div class="ManagmntPlcy ToggledTab"><!---Landscaping -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">When was the last property walk with the landscaper?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">How frequently do you do a site walk with the landscaper?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="comment" class="NoBold">Have you noticed any plant failures? If so, what?</label>
+                                        <textarea class="form-control" rows="3" id="comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="comment" class="NoBold">Have you noticed any over/under irrigated areas? If so, where?</label>
+                                        <textarea class="form-control" rows="3" id="comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="comment" class="NoBold">Are there any landscaping upgrades planned for the year? If so, what upgrades?</label>
+                                        <textarea class="form-control" rows="3" id="comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">When is the tree trimming scheduled?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Are there bids for the tree trimming?</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="mrkradio5">
+                                            <input class="form-check-input" id="mrkradio5" name="landOpt2" value="option1" type="radio"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="mrkradio6">
+                                            <input class="form-check-input" id="mrkradio6" name="landOpt2" value="option1" type="radio"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div><!---Landscaping -->
+                
+                <div id="ResidntReltn" class="RentalTitle MangPlics TabToggle">
+                    <h1>Resident Relations</h1>
+                </div>
+                <div class="ManagmntPlcy ToggledTab"><!---Resident Relations -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">When was the last resident meeting?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">How often are resident meetings held?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">What is the average attendance at the meetings?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div><!---Resident Relations -->
+                
+                <div id="Maintnces" class="RentalTitle MangPlics TabToggle">
+                    <h1>Maintenance</h1>
+                </div>
+                <div class="ManagmntPlcy ToggledTab"><!---Maintenance -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Are there solar panels on site?</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="maintncadio1">
+                                            <input class="form-check-input" id="maintncadio1" name="maintncOpt1" value="option1" type="radio"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="maintncadio2">
+                                            <input class="form-check-input" id="maintncadio2" name="maintncOpt1" value="option1" type="radio"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="comment" class="NoBold">If yes, is there a maintenance contract for the solar panels? If there is no maintenance contract, what is done to maintain them?</label>
+                                        <textarea class="form-control" rows="3" id="comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Does the property have assigned parking?</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="maintncadio3">
+                                            <input class="form-check-input" id="maintncadio3" name="maintncOpt2" value="option1" type="radio"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="maintncadio4">
+                                            <input class="form-check-input" id="maintncadio4" name="maintncOpt2" value="option1" type="radio"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="comment" class="NoBold">Please explain the parking policy?</label>
+                                        <textarea class="form-control" rows="3" id="comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">How often are the garages inspected?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8"><label style="font-weight: normal; font-size: 13px;" class="control-label">When was the last time the garages were inspected?</label></div>
+                                <div class="col-md-4">
+                                    <input class="form-control" name="file_loc" id="" value="" type="text"/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-8">Are there tankless water heaters on site?</div>
+                                <div class="col-md-4">
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="maintncadio5">
+                                            <input class="form-check-input" id="maintncadio5" name="maintncOpt3" value="option1" type="radio"/>Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label class="form-check-label" for="maintncadio6">
+                                            <input class="form-check-input" id="maintncadio6" name="maintncOpt3" value="option1" type="radio"/>No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="comment" class="NoBold">If yes, is there a maintenance contract for the water heaters? If there is no maintenance contract, what is done to maintain them?</label>
+                                        <textarea class="form-control" rows="3" id="comment"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div><!---Maintenance -->
+                
+                <div id="InfoAvail" class="RentalTitle MangPlics TabToggle">
+                    <h1>Please Have the Following Information Available at the Site Inspection</h1>
+                </div>
+                <div class="ManagmntPlcy ToggledTab"><!---Please Have the Following Information Available at the Site Inspection -->
+                    <div class="row">
+                        <div class="col-md-4">
+                            
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="checkbox"><label><input type="checkbox" value=""/>Rent Roll (must show delinquency as well)</label></div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="checkbox"><label><input type="checkbox" value=""/>Aged Delinquency Report</label></div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="checkbox"><label><input type="checkbox" value=""/>Aged Payable Report</label></div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="checkbox"><label><input type="checkbox" value=""/>Preventative Maintenance Schedule</label></div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-4">
+                            
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="checkbox"><label><input type="checkbox" value=""/>Copies of Outstanding Work Orders</label></div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="checkbox"><label><input type="checkbox" value=""/>Market Survey (including addresses and comps)</label></div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="checkbox"><label><input type="checkbox" value=""/>Tenant Recertification Renewal Report</label></div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-4">
+                            
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="checkbox"><label><input type="checkbox" value=""/>Safety Inspection/Risk Prevention Report</label></div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="checkbox"><label><input type="checkbox" value=""/>Prospective Tenant Package (including application, rental rates, income limits)</label></div>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12">
+                                    <div class="checkbox"><label><input type="checkbox" value=""/>Lease Package (documents executed at time of move-in)</label></div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div><!---Please Have the Following Information Available at the Site Inspection -->
+                
+                <div class="PropHeader">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3 class="FootTitl">Completed By Property Management</h3>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12 form-group">
+                                    <label for="usr">Name</label>
+                                    <input type="text" class="form-control" id=""/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12 form-group">
+                                    <label for="usr">Sign</label>
+                                    <input type="text" class="form-control" id=""/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12 form-group">
+                                    <label for="usr">Title</label>
+                                    <input type="text" class="form-control" id=""/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12 form-group">
+                                    <label for="usr">Date</label>
+                                    <div class="Datepicker"><input type="text" data-toggle="datepicker" class="form-control" id=""/></div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <h3 class="FootTitl">Reviewed By Asset Management (JHC)</h3>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12 form-group">
+                                    <label for="usr">Name</label>
+                                    <input type="text" class="form-control" id=""/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12 form-group">
+                                    <label for="usr">Sign</label>
+                                    <input type="text" class="form-control" id=""/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12 form-group">
+                                    <label for="usr">Title</label>
+                                    <input type="text" class="form-control" id=""/>
+                                </div>
+                            </div>
+                            <div class="TotalUnitRow row">
+                                <div class="col-md-12 form-group">
+                                    <label for="usr">Date</label>
+                                    <div class="Datepicker"><input type="text" data-toggle="datepicker" class="form-control" id=""/></div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="SIF-submit">
+                    <button class="btn NomalBtn">Cancel</button>
+                    <button class="btn BlueBtn">Submit</button>
+                </div>
+                
+            </div>
+            
+            
+        </body>
+    </html>
+    
+</apex:page>

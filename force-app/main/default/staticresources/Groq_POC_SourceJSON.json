@@ -1,0 +1,106 @@
+{
+  "objects" : [ {
+    "fields" : [ {
+      "referenceTo" : null,
+      "isNillable" : false,
+      "isUnique" : false,
+      "isRequired" : true,
+      "scale" : 0,
+      "precision" : 0,
+      "length" : 18,
+      "normalizedType" : "Id",
+      "dataType" : "id",
+      "label" : "AI Application ID",
+      "apiName" : "Id"
+    }, {
+      "referenceTo" : null,
+      "isNillable" : false,
+      "isUnique" : false,
+      "isRequired" : true,
+      "scale" : 0,
+      "precision" : 0,
+      "length" : 80,
+      "normalizedType" : "Text",
+      "dataType" : "string",
+      "label" : "Name",
+      "apiName" : "DeveloperName"
+    },  {
+      "referenceTo" : null,
+      "isNillable" : false,
+      "isUnique" : false,
+      "isRequired" : true,
+      "scale" : 0,
+      "precision" : 0,
+      "length" : 255,
+      "normalizedType" : "Picklist",
+      "dataType" : "picklist",
+      "label" : "Status",
+      "apiName" : "Status"
+    }, {
+      "referenceTo" : null,
+      "isNillable" : false,
+      "isUnique" : false,
+      "isRequired" : true,
+      "scale" : 0,
+      "precision" : 0,
+      "length" : 255,
+      "normalizedType" : "Picklist",
+      "dataType" : "picklist",
+      "label" : "App Type",
+      "apiName" : "Type"
+    } ],
+    "fieldCount" : 4,
+    "isQueryable" : true,
+    "isCustom" : false,
+    "label" : null,
+    "apiName" : "AIApplication"
+  }, {
+    "fields" : [ {
+      "referenceTo" : null,
+      "isNillable" : false,
+      "isUnique" : false,
+      "isRequired" : true,
+      "scale" : 0,
+      "precision" : 0,
+      "length" : 18,
+      "normalizedType" : "Id",
+      "dataType" : "id",
+      "label" : "AIInsightAction ID",
+      "apiName" : "Id"
+    }, {
+      "referenceTo" : null,
+      "isNillable" : false,
+      "isUnique" : false,
+      "isRequired" : true,
+      "scale" : 0,
+      "precision" : 0,
+      "length" : 255,
+      "normalizedType" : "Text",
+      "dataType" : "string",
+      "label" : "Name",
+      "apiName" : "Name"
+    }, {
+      "referenceTo" : "ApexClass",
+      "isNillable" : true,
+      "isUnique" : false,
+      "isRequired" : false,
+      "scale" : 0,
+      "precision" : 0,
+      "length" : 18,
+      "normalizedType" : "Lookup",
+      "dataType" : "reference",
+      "label" : "Action ID",
+      "apiName" : "ActionId"
+    } ],
+    "fieldCount" : 3,
+    "isQueryable" : true,
+    "isCustom" : false,
+    "label" : null,
+    "apiName" : "AIInsightAction"
+  }],
+  "totalObjects" : 2,
+  "generatedAt" : "3/17/2026, 6:40 PM",
+  "snapshotId" : "a97Kj000001wqhNIAQ",
+  "orgType" : "Source",
+  "orgAlias" : "ODSDevORG"
+}

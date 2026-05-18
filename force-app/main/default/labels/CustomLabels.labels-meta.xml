@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Gemini_API_Key</fullName>
+        <categories>Google AI Studio</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Google AI Studio API key for Gemini_DateFetcher (Gemini generateContent)</shortDescription>
+        <value>REPLACE_ME</value>
+    </labels>
+    <labels>
+        <fullName>Groq_API_Key</fullName>
+        <categories>Groq Cloud</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Groq API key for Groq_DateFetcher (Bearer token)</shortDescription>
+        <value>REPLACE_ME</value>
+    </labels>
+</CustomLabels>
